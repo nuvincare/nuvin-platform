@@ -1,0 +1,1133 @@
+  1	<!DOCTYPE html>
+     2	<html lang="ko">
+     3	<head>
+     4	  <meta charset="UTF-8"/>
+     5	<meta property="og:type" content="website"/>
+     6	<meta property="og:title" content="NUVIN — 간병보호자를 위한 수술이후 케어 플랫폼"/>
+     7	<meta property="og:description" content="암·뇌질환·대사질환 보호자를 위한 맞춤 가이드북, 선배 멘토 연결, 커뮤니티까지. 30초 무료 가입, 앱 설치 불필요."/>
+     8	<meta property="og:image" content="https://vplviksu.gensparkspace.com/images/og-image.jpg"/>
+     9	<meta property="og:image:width" content="1200"/>
+    10	<meta property="og:image:height" content="630"/>
+    11	<meta property="og:url" content="https://vplviksu.gensparkspace.com/index.html"/>
+    12	<meta property="og:site_name" content="누빈 NUVIN"/>
+    13	<meta name="twitter:card" content="summary_large_image"/>
+    14	<meta name="twitter:title" content="NUVIN — 간병보호자를 위한 수술이후 케어 플랫폼"/>
+    15	<meta name="twitter:description" content="암·뇌질환·대사질환 보호자를 위한 맞춤 가이드북, 선배 멘토 연결, 커뮤니티까지. 30초 무료 가입."/>
+    16	<meta name="twitter:image" content="https://vplviksu.gensparkspace.com/images/og-image.jpg"/>
+    17	  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+    18	  <title>누빈 NUVIN - 간병 보호자를 위한 토탈 케어 플랫폼</title>
+    19	  <!-- PWA -->
+    20	  <link rel="manifest" href="manifest.json"/>
+    21	  <meta name="theme-color" content="#667eea"/>
+    22	  <meta name="mobile-web-app-capable" content="yes"/>
+    23	  <meta name="apple-mobile-web-app-capable" content="yes"/>
+    24	  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    25	  <meta name="apple-mobile-web-app-title" content="누빈"/>
+    26	  <link rel="apple-touch-icon" href="images/icon-192.png"/>
+    27	  <script src="https://cdn.tailwindcss.com"></script>
+    28	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+    29	  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+    30	  <style>
+    31	    * { font-family: 'Noto Sans KR', sans-serif; }
+    32	    body { background: #0f0f1a; color: white; overflow-x: hidden; }
+    33	
+    34	    /* Hero Gradient */
+    35	    .hero-bg {
+    36	      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #533483 100%);
+    37	      position: relative;
+    38	      overflow: hidden;
+    39	    }
+    40	    .hero-bg::before {
+    41	      content: '';
+    42	      position: absolute;
+    43	      top: -40%;
+    44	      right: -20%;
+    45	      width: 600px;
+    46	      height: 600px;
+    47	      border-radius: 50%;
+    48	      background: radial-gradient(circle, rgba(102,126,234,0.15) 0%, transparent 70%);
+    49	      pointer-events: none;
+    50	    }
+    51	    .hero-bg::after {
+    52	      content: '';
+    53	      position: absolute;
+    54	      bottom: -30%;
+    55	      left: -10%;
+    56	      width: 400px;
+    57	      height: 400px;
+    58	      border-radius: 50%;
+    59	      background: radial-gradient(circle, rgba(240,147,251,0.1) 0%, transparent 70%);
+    60	      pointer-events: none;
+    61	    }
+    62	
+    63	    /* Logo */
+    64	    .nuvin-logo {
+    65	      display: flex;
+    66	      align-items: center;
+    67	      gap: 10px;
+    68	    }
+    69	    .nuvin-logo-icon {
+    70	      width: 40px;
+    71	      height: 40px;
+    72	      border-radius: 12px;
+    73	      background: linear-gradient(135deg, #667eea, #764ba2);
+    74	      display: flex;
+    75	      align-items: center;
+    76	      justify-content: center;
+    77	      font-size: 20px;
+    78	      font-weight: 900;
+    79	      color: white;
+    80	      flex-shrink: 0;
+    81	    }
+    82	    .nuvin-logo-text {
+    83	      font-size: 22px;
+    84	      font-weight: 900;
+    85	      color: white;
+    86	      letter-spacing: 2px;
+    87	    }
+    88	
+    89	    /* Buttons */
+    90	    .btn-primary {
+    91	      background: linear-gradient(135deg, #667eea, #764ba2);
+    92	      border: none;
+    93	      border-radius: 16px;
+    94	      padding: 16px 28px;
+    95	      color: white;
+    96	      font-weight: 900;
+    97	      font-size: 16px;
+    98	      cursor: pointer;
+    99	      transition: all 0.2s;
+   100	      display: inline-flex;
+   101	      align-items: center;
+   102	      gap: 8px;
+   103	    }
+   104	    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,0.4); }
+   105	    .btn-secondary {
+   106	      background: rgba(255,255,255,0.08);
+   107	      border: 1.5px solid rgba(255,255,255,0.15);
+   108	      border-radius: 16px;
+   109	      padding: 14px 24px;
+   110	      color: white;
+   111	      font-weight: 700;
+   112	      font-size: 14px;
+   113	      cursor: pointer;
+   114	      transition: all 0.2s;
+   115	      display: inline-flex;
+   116	      align-items: center;
+   117	      gap: 8px;
+   118	    }
+   119	    .btn-secondary:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); }
+   120	
+   121	    /* Cards */
+   122	    .feature-card {
+   123	      background: rgba(255,255,255,0.04);
+   124	      border: 1px solid rgba(255,255,255,0.08);
+   125	      border-radius: 20px;
+   126	      padding: 24px;
+   127	      transition: all 0.3s;
+   128	    }
+   129	    .feature-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(102,126,234,0.3); transform: translateY(-4px); }
+   130	
+   131	    /* Disease chips */
+   132	    .disease-chip {
+   133	      background: rgba(255,255,255,0.08);
+   134	      border: 1px solid rgba(255,255,255,0.15);
+   135	      border-radius: 999px;
+   136	      padding: 8px 18px;
+   137	      font-size: 13px;
+   138	      font-weight: 700;
+   139	      display: inline-flex;
+   140	      align-items: center;
+   141	      gap: 6px;
+   142	      cursor: default;
+   143	    }
+   144	
+   145	    /* Stats card */
+   146	    .stats-card {
+   147	      background: white;
+   148	      color: #1a1a2e;
+   149	      border-radius: 20px;
+   150	      padding: 20px 24px;
+   151	    }
+   152	
+   153	    /* Modal */
+   154	    .modal-overlay {
+   155	      position: fixed;
+   156	      inset: 0;
+   157	      background: rgba(0,0,0,0.7);
+   158	      z-index: 100;
+   159	      display: flex;
+   160	      align-items: flex-end;
+   161	      justify-content: center;
+   162	    }
+   163	    .modal-content {
+   164	      background: #1a1a2e;
+   165	      border-radius: 24px 24px 0 0;
+   166	      padding: 28px;
+   167	      width: 100%;
+   168	      max-width: 480px;
+   169	      border-top: 1px solid #2a2a45;
+   170	      max-height: 92vh;
+   171	      overflow-y: auto;
+   172	      -webkit-overflow-scrolling: touch;
+   173	    }
+   174	    .input-dark {
+   175	      background: #0f0f1a;
+   176	      border: 1.5px solid #333;
+   177	      color: white;
+   178	      border-radius: 14px;
+   179	      padding: 14px 16px;
+   180	      width: 100%;
+   181	      font-size: 15px;
+   182	      outline: none;
+   183	      transition: border-color 0.2s;
+   184	      font-family: 'Noto Sans KR', sans-serif;
+   185	    }
+   186	    .input-dark:focus { border-color: #667eea; }
+   187	    .input-dark::placeholder { color: #555; }
+   188	
+   189	    /* Animations */
+   190	    @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+   191	    .fade-up { animation: fadeInUp 0.6s ease forwards; }
+   192	    .fade-up-2 { animation: fadeInUp 0.6s 0.1s ease forwards; opacity:0; }
+   193	    .fade-up-3 { animation: fadeInUp 0.6s 0.2s ease forwards; opacity:0; }
+   194	    .fade-up-4 { animation: fadeInUp 0.6s 0.3s ease forwards; opacity:0; }
+   195	
+   196	    /* Shimmer for lock icon */
+   197	    .lock-badge { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 6px 10px; }
+   198	
+   199	    .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+   200	    @keyframes pulseDot { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+   201	  </style>
+   202	</head>
+   203	<body>
+   204	
+   205	<!-- ═══ HEADER ═══ -->
+   206	<header class="hero-bg">
+   207	  <div class="max-w-lg mx-auto px-5 pt-12 pb-2">
+   208	    <!-- Top bar -->
+   209	    <div class="flex items-center justify-between mb-10">
+   210	      <div class="nuvin-logo">
+   211	        <div class="nuvin-logo-icon">N</div>
+   212	        <span class="nuvin-logo-text">NUVIN</span>
+   213	      </div>
+   214	      <button onclick="goAdmin()" class="text-xs bg-white bg-opacity-10 border border-white border-opacity-20 text-white px-3 py-2 rounded-xl font-bold hover:bg-opacity-20 transition-all">
+   215	        <i class="fas fa-shield-alt mr-1"></i>관리자
+   216	      </button>
+   217	    </div>
+   218	
+   219	    <!-- Hero Text -->
+   220	    <div class="pb-12 fade-up">
+   221	      <p class="text-xs text-purple-300 font-bold mb-3 tracking-widest uppercase flex items-center gap-2">
+   222	        <span class="w-2 h-2 bg-purple-400 rounded-full pulse-dot inline-block"></span>
+   223	        FOR CAREGIVERS
+   224	      </p>
+   225	      <h1 class="text-3xl font-black leading-tight mb-4">
+   226	        당신의 지친<br/>
+   227	        <span style="background:linear-gradient(135deg,#a78bfa,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">간병 여정,</span><br/>
+   228	        누빈이 함께합니다
+   229	      </h1>
+   230	      <p class="text-sm text-gray-300 leading-relaxed mb-6">
+   231	        암·뇌질환·대사질환 보호자를 위한<br/>대한민국 최초 토탈 케어 플랫폼
+   232	      </p>
+   233	
+   234	      <!-- Disease chips -->
+   235	      <div class="flex flex-wrap gap-2 mb-8 fade-up-2">
+   236	        <span class="disease-chip">🎗️ 암</span>
+   237	        <span class="disease-chip">🧠 뇌질환</span>
+   238	        <span class="disease-chip">💊 대사질환</span>
+   239	      </div>
+   240	
+   241	      <!-- CTA -->
+   242	      <div class="flex flex-col gap-3 fade-up-3">
+   243	        <button onclick="showRegisterModal()" class="btn-primary w-full justify-center text-lg py-5">
+   244	          <i class="fas fa-heart mr-2"></i>무료로 시작하기 — 30초
+   245	        </button>
+   246	
+   247	      </div>
+   248	    </div>
+   249	  </div>
+   250	</header>
+   251	
+   252	<!-- ═══ STATS ═══ -->
+   253	<div class="max-w-lg mx-auto px-5 -mt-4 fade-up-4">
+   254	  <div class="stats-card shadow-2xl">
+   255	    <div class="grid grid-cols-3 divide-x divide-gray-200">
+   256	      <div class="text-center px-2">
+   257	        <p class="text-2xl font-black text-purple-600">3가지</p>
+   258	        <p class="text-xs text-gray-500 mt-1 font-medium">질환 맞춤 지원</p>
+   259	      </div>
+   260	      <div class="text-center px-2">
+   261	        <p class="text-2xl font-black text-pink-600">100%</p>
+   262	        <p class="text-xs text-gray-500 mt-1 font-medium">완전 무료</p>
+   263	      </div>
+   264	      <div class="text-center px-2">
+   265	        <p class="text-2xl font-black text-blue-600">30초</p>
+   266	        <p class="text-xs text-gray-500 mt-1 font-medium">가입 소요</p>
+   267	      </div>
+   268	    </div>
+   269	  </div>
+   270	</div>
+   271	
+   272	<!-- ═══ 3번: 1분 상황 체크인 (니즈 수집) ═══ -->
+   273	<section class="max-w-lg mx-auto px-5 mt-12 pb-8">
+   274	  <div class="bg-gradient-to-br from-purple-900 via-purple-800 to-pink-900 rounded-3xl p-6 shadow-2xl">
+   275	    <div class="text-center mb-6">
+   276	      <p class="text-xs text-purple-200 font-bold mb-2 tracking-widest uppercase">1분 상황 체크</p>
+   277	      <h3 class="text-xl font-black text-white mb-2">지금 가장 힘든 부분은<br/>무엇인가요?</h3>
+   278	      <p class="text-sm text-purple-100 opacity-90">클릭 한 번으로 딱 맞는 도움을 찾아드려요</p>
+   279	    </div>
+   280	    
+   281	    <div class="grid grid-cols-2 gap-3 mb-4">
+   282	      <button onclick="selectNeed('식단관리')" class="need-btn bg-white bg-opacity-10 hover:bg-opacity-20 backdrop-blur-sm border border-white border-opacity-20 rounded-2xl p-4 text-center transition-all">
+   283	        <div class="text-3xl mb-2">🍽️</div>
+   284	        <p class="text-xs font-bold text-white">식단 관리</p>
+   285	      </button>
+   286	      <button onclick="selectNeed('심리적안정')" class="need-btn bg-white bg-opacity-10 hover:bg-opacity-20 backdrop-blur-sm border border-white border-opacity-20 rounded-2xl p-4 text-center transition-all">
+   287	        <div class="text-3xl mb-2">💙</div>
+   288	        <p class="text-xs font-bold text-white">심리적 안정</p>
+   289	      </button>
+   290	      <button onclick="selectNeed('재정지원')" class="need-btn bg-white bg-opacity-10 hover:bg-opacity-20 backdrop-blur-sm border border-white border-opacity-20 rounded-2xl p-4 text-center transition-all">
+   291	        <div class="text-3xl mb-2">💰</div>
+   292	        <p class="text-xs font-bold text-white">재정 지원 정보</p>
+   293	      </button>
+   294	      <button onclick="selectNeed('병원소통')" class="need-btn bg-white bg-opacity-10 hover:bg-opacity-20 backdrop-blur-sm border border-white border-opacity-20 rounded-2xl p-4 text-center transition-all">
+   295	        <div class="text-3xl mb-2">🏥</div>
+   296	        <p class="text-xs font-bold text-white">병원 소통</p>
+   297	      </button>
+   298	    </div>
+   299	    <p class="text-center text-xs text-purple-200 opacity-75">선택하시면 가입 시 맞춤 가이드를 먼저 보내드려요</p>
+   300	  </div>
+   301	</section>
+   302	
+   303	<!-- ═══ 2번: 희망 메신저 하이라이트 ═══ -->
+   304	<section class="max-w-lg mx-auto px-5 mt-12 pb-8">
+   305	  <div class="text-center mb-6">
+   306	    <p class="text-xs text-purple-400 font-bold mb-2 tracking-widest uppercase flex items-center justify-center gap-2">
+   307	      <span class="w-2 h-2 bg-purple-400 rounded-full pulse-dot inline-block"></span>
+   308	      먼저 이겨낸 분들의 이야기
+   309	    </p>
+   310	    <h3 class="text-xl font-black text-white mb-2">💛 혼자가 아니에요</h3>
+   311	    <p class="text-sm text-gray-400">힘든 시기를 극복한 선배들이 전하는 희망의 메시지</p>
+   312	  </div>
+   313	
+   314	  <div class="space-y-4">
+   315	    <!-- 희망 메시지 카드 1 -->
+   316	    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-5 border border-gray-700 shadow-xl">
+   317	      <div class="flex items-start gap-3 mb-3">
+   318	        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-xl flex-shrink-0">👩</div>
+   319	        <div class="flex-1">
+   320	          <p class="text-sm font-bold text-white">참여자 A님</p>
+   321	          <p class="text-xs text-gray-400">암 환자 보호자 · 40대 딸</p>
+   322	        </div>
+   323	        <span class="text-xs bg-purple-900 text-purple-300 px-2 py-1 rounded-full font-bold">극복 완료</span>
+   324	      </div>
+   325	      <p class="text-sm text-gray-300 leading-relaxed italic">"처음엔 아무것도 모르고 두려웠는데, 같은 경험을 한 선배님들의 조언이 정말 큰 힘이 됐어요. 지금은 저도 누군가에게 힘이 되고 싶어요."</p>
+   326	    </div>
+   327	
+   328	    <!-- 희망 메시지 카드 2 -->
+   329	    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-5 border border-gray-700 shadow-xl">
+   330	      <div class="flex items-start gap-3 mb-3">
+   331	        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-xl flex-shrink-0">👨</div>
+   332	        <div class="flex-1">
+   333	          <p class="text-sm font-bold text-white">참여자 B님</p>
+   334	          <p class="text-xs text-gray-400">뇌질환 보호자 · 50대 배우자</p>
+   335	        </div>
+   336	        <span class="text-xs bg-blue-900 text-blue-300 px-2 py-1 rounded-full font-bold">희망 전달</span>
+   337	      </div>
+   338	      <p class="text-sm text-gray-300 leading-relaxed italic">"재활 병원 선택이 막막했는데, 직접 경험한 분의 현실적인 조언이 의사 선생님 말씀보다 더 와닿았어요. 당신도 할 수 있습니다!"</p>
+   339	    </div>
+   340	
+   341	    <!-- 희망 메시지 카드 3 -->
+   342	    <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-5 border border-gray-700 shadow-xl">
+   343	      <div class="flex items-start gap-3 mb-3">
+   344	        <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center text-xl flex-shrink-0">👧</div>
+   345	        <div class="flex-1">
+   346	          <p class="text-sm font-bold text-white">참여자 C님</p>
+   347	          <p class="text-xs text-gray-400">당뇨병 보호자 · 30대 자녀</p>
+   348	        </div>
+   349	        <span class="text-xs bg-green-900 text-green-300 px-2 py-1 rounded-full font-bold">함께 성장</span>
+   350	      </div>
+   351	      <p class="text-sm text-gray-300 leading-relaxed italic">"비슷한 상황의 사람들이 모인 커뮤니티가 있다는 게 정말 큰 위로가 됐어요. 내 고민이 이상한 게 아니라는 걸 알게 됐죠."</p>
+   352	    </div>
+   353	  </div>
+   354	
+   355	  <!-- CTA 버튼 -->
+   356	  <div class="mt-6 text-center">
+   357	    <button onclick="showRegisterModal()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg">
+   358	      <i class="fas fa-hand-holding-heart mr-2"></i>나와 비슷한 멘토 만나보기
+   359	    </button>
+   360	    <p class="text-xs text-gray-500 mt-3">가입 후 질환·상황 맞춤 멘토가 자동 매칭돼요</p>
+   361	  </div>
+   362	</section>
+   363	
+   364	<!-- ═══ FEATURES ═══ -->
+   365	<section class="max-w-lg mx-auto px-5 mt-12 pb-8">
+   366	  <h2 class="text-lg font-black mb-5 text-white">누빈에서 할 수 있는 것들</h2>
+   367	
+   368	  <div class="space-y-3">
+   369	    <!-- 가이드북 미리보기 강조 카드 -->
+   370	    <div class="feature-card" style="background: linear-gradient(135deg, rgba(102,126,234,0.15), rgba(118,75,162,0.15)); border: 2px solid rgba(102,126,234,0.3); padding: 20px; cursor: pointer;" onclick="showGuidebookPreview()">
+   371	      <div class="flex items-start gap-4">
+   372	        <div class="w-16 h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0"
+   373	          style="background:linear-gradient(135deg,#667eea,#764ba2); box-shadow: 0 4px 12px rgba(102,126,234,0.4);">📖</div>
+   374	        <div class="flex-1">
+   375	          <div class="flex items-center gap-2 mb-2">
+   376	            <p class="font-black text-base text-white">암·뇌질환 전문 가이드북</p>
+   377	            <span class="text-xs font-bold px-2 py-0.5 rounded-full" style="background: linear-gradient(135deg, #f093fb, #f5576c); color: white;">🎁 무료</span>
+   378	          </div>
+   379	          <p class="text-sm text-gray-300 mb-3">52페이지 | 국립암센터·대한뇌졸중학회 검증</p>
+   380	          <div class="grid grid-cols-2 gap-2 text-xs">
+   381	            <div class="flex items-center gap-1.5">
+   382	              <i class="fas fa-check text-green-400"></i>
+   383	              <span class="text-gray-300">암종별 상세 치료</span>
+   384	            </div>
+   385	            <div class="flex items-center gap-1.5">
+   386	              <i class="fas fa-check text-green-400"></i>
+   387	              <span class="text-gray-300">보호자 체크리스트</span>
+   388	            </div>
+   389	            <div class="flex items-center gap-1.5">
+   390	              <i class="fas fa-check text-green-400"></i>
+   391	              <span class="text-gray-300">응급상황 대처법</span>
+   392	            </div>
+   393	            <div class="flex items-center gap-1.5">
+   394	              <i class="fas fa-check text-green-400"></i>
+   395	              <span class="text-gray-300">뇌졸중 재활 가이드</span>
+   396	            </div>
+   397	          </div>
+   398	          <button class="mt-4 w-full py-2.5 rounded-xl font-bold text-sm" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; box-shadow: 0 4px 12px rgba(102,126,234,0.3);">
+   399	            👀 미리보기 & 무료 받기
+   400	          </button>
+   401	        </div>
+   402	      </div>
+   403	    </div>
+   404	
+   405	    <div class="feature-card flex items-center gap-4 cursor-pointer" onclick="location.href='mentors.html'">
+   406	      <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+   407	        style="background:linear-gradient(135deg,#f093fb22,#f093fb44)">🤝</div>
+   408	      <div class="flex-1">
+   409	        <p class="font-bold text-sm">선배 보호자 1:1 멘토링</p>
+   410	        <p class="text-xs text-gray-400 mt-0.5">직접 경험한 선배 보호자 멘토와 연결</p>
+   411	      </div>
+   412	      <div class="lock-badge">
+   413	        <i class="fas fa-chevron-right text-xs text-gray-500"></i>
+   414	      </div>
+   415	    </div>
+   416	
+   417	    <div class="feature-card flex items-center gap-4 cursor-pointer" onclick="location.href='community.html'">
+   418	      <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+   419	        style="background:linear-gradient(135deg,#43e97b22,#43e97b44)">💬</div>
+   420	      <div class="flex-1">
+   421	        <p class="font-bold text-sm">간병 커뮤니티</p>
+   422	        <p class="text-xs text-gray-400 mt-0.5">같은 상황 보호자끼리 정보 공유·위로</p>
+   423	      </div>
+   424	      <div class="lock-badge">
+   425	        <i class="fas fa-chevron-right text-xs text-gray-500"></i>
+   426	      </div>
+   427	    </div>
+   428	
+   429	    <div class="feature-card flex items-center gap-4 cursor-pointer" onclick="location.href='dashboard.html'">
+   430	      <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
+   431	        style="background:linear-gradient(135deg,#fbbf2422,#fbbf2444)">📊</div>
+   432	      <div class="flex-1">
+   433	        <p class="font-bold text-sm">맞춤형 간병 대시보드</p>
+   434	        <p class="text-xs text-gray-400 mt-0.5">환자 상태·일정·체크리스트 한눈에 관리</p>
+   435	      </div>
+   436	      <div class="lock-badge">
+   437	        <i class="fas fa-chevron-right text-xs text-gray-500"></i>
+   438	      </div>
+   439	    </div>
+   440	  </div>
+   441	
+   442	  <!-- Bottom CTA -->
+   443	  <div class="mt-8 text-center">
+   444	    <p class="text-sm text-gray-400 mb-4">30초 가입 · 완전 무료 · 앱 설치 불필요</p>
+   445	    <button onclick="showRegisterModal()" class="btn-primary w-full justify-center py-5">
+   446	      <i class="fas fa-arrow-right mr-2"></i>지금 무료 가입하기
+   447	    </button>
+   448	  </div>
+   449	
+   450	  <!-- Social proof — 실제 DB 인원 + 더미 200명 합산 -->
+   451	  <div class="mt-6 flex items-center justify-center gap-2">
+   452	    <div class="flex -space-x-2" id="socialAvatars">
+   453	      <div class="w-8 h-8 rounded-full bg-purple-600 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">김</div>
+   454	      <div class="w-8 h-8 rounded-full bg-pink-600 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">이</div>
+   455	      <div class="w-8 h-8 rounded-full bg-blue-600 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">박</div>
+   456	      <div class="w-8 h-8 rounded-full bg-green-600 border-2 border-gray-900 flex items-center justify-center text-xs font-bold">최</div>
+   457	    </div>
+   458	    <p class="text-xs text-gray-400"><span id="socialProofCount">200</span>명이 이미 함께하고 있어요</p>
+   459	  </div>
+   460	</section>
+   461	
+   462	<!-- ═══ REGISTER MODAL ═══ -->
+   463	<div id="registerModal" class="modal-overlay hidden" onclick="closeModalOutside(event)">
+   464	  <div class="modal-content">
+   465	    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-6"></div>
+   466	    <h2 class="text-xl font-black mb-1">무료 시작하기</h2>
+   467	    <p class="text-xs text-gray-400 mb-6">간병 가족을 위한 맞춤 서비스 · 30초 완성</p>
+   468	
+   469	    <!-- Step indicator -->
+   470	    <div class="flex items-center gap-2 mb-6">
+   471	      <div id="step1Dot" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-white" style="background:linear-gradient(135deg,#667eea,#764ba2)">1</div>
+   472	      <div class="flex-1 h-0.5 bg-gray-700" id="stepLine12"></div>
+   473	      <div id="step2Dot" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black bg-gray-700 text-gray-400">2</div>
+   474	      <div class="flex-1 h-0.5 bg-gray-700" id="stepLine23"></div>
+   475	      <div id="step3Dot" class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black bg-gray-700 text-gray-400">3</div>
+   476	    </div>
+   477	
+   478	    <!-- Step 1: 기본 정보 + 동의 -->
+   479	    <div id="stepContent1">
+   480	      <p class="text-sm font-bold mb-4">📋 기본 정보를 입력해주세요</p>
+   481	      <div class="space-y-3 mb-4">
+   482	        <input id="regName" type="text" class="input-dark" placeholder="성함 (예: 홍길동)"/>
+   483	        <input id="regEmail" type="email" class="input-dark" placeholder="이메일 주소"/>
+   484	        <input id="regPhone" type="tel" class="input-dark" placeholder="연락처 (선택)"/>
+   485	      </div>
+   486	
+   487	      <!-- 약관 동의 섹션 (접기/펼치기) -->
+   488	      <div style="border:1px solid rgba(255,255,255,0.12); border-radius:14px; overflow:hidden; margin-bottom:14px;">
+   489	
+   490	        <!-- 전체 동의 (항상 노출 - 한 줄) -->
+   491	        <label style="display:flex; align-items:center; gap:10px; padding:13px 16px; background:rgba(102,126,234,0.12); cursor:pointer;" onclick="event.stopPropagation();">
+   492	          <input type="checkbox" id="agreeAll" onchange="toggleAllAgree(this)" style="width:18px; height:18px; accent-color:#667eea; cursor:pointer; flex-shrink:0;">
+   493	          <span style="font-size:13px; font-weight:800; color:white; flex:1;">🛡️ 서비스 이용 전체 동의</span>
+   494	          <span style="font-size:11px; color:#a78bfa; font-weight:600;">[필수2] [선택1]</span>
+   495	          <button onclick="toggleTermsDetail()" id="termsToggleBtn" style="background:none; border:none; color:#667eea; font-size:13px; cursor:pointer; padding:0; margin-left:4px; flex-shrink:0;">펼치기 ▼</button>
+   496	        </label>
+   497	
+   498	        <!-- 상세 항목 (기본 숨김) -->
+   499	        <div id="termsDetail" style="display:none;">
+   500	          <!-- 필수1 -->
+   501	          <div style="padding:10px 16px; border-top:1px solid rgba(255,255,255,0.07); background:rgba(0,0,0,0.2);">
+   502	            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+   503	              <input type="checkbox" id="agreeMedical" onchange="syncAllAgree()" style="width:16px; height:16px; accent-color:#667eea; cursor:pointer; flex-shrink:0; margin-top:2px;">
+   504	              <div style="flex:1;">
+   505	                <span style="font-size:11px; color:#a78bfa; font-weight:700;">[필수]</span>
+   506	                <span style="font-size:11px; color:#e5e7eb; margin-left:4px;">누빈 서비스는 의학적 진단·치료를 대신하지 않음에 동의합니다.</span>
+   507	              </div>
+   508	            </label>
+   509	            <button onclick="showTermModal('medical')" style="font-size:10px; color:#667eea; background:none; border:none; cursor:pointer; margin-left:26px; margin-top:3px; padding:0; text-decoration:underline;">내용 보기 ▶</button>
+   510	          </div>
+   511	          <!-- 필수2 -->
+   512	          <div style="padding:10px 16px; border-top:1px solid rgba(255,255,255,0.07); background:rgba(0,0,0,0.2);">
+   513	            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+   514	              <input type="checkbox" id="agreeSensitive" onchange="syncAllAgree()" style="width:16px; height:16px; accent-color:#667eea; cursor:pointer; flex-shrink:0; margin-top:2px;">
+   515	              <div style="flex:1;">
+   516	                <span style="font-size:11px; color:#a78bfa; font-weight:700;">[필수]</span>
+   517	                <span style="font-size:11px; color:#e5e7eb; margin-left:4px;">맞춤형 정보 제공을 위한 민감정보(질환 정보) 수집에 동의합니다.</span>
+   518	              </div>
+   519	            </label>
+   520	            <button onclick="showTermModal('sensitive')" style="font-size:10px; color:#667eea; background:none; border:none; cursor:pointer; margin-left:26px; margin-top:3px; padding:0; text-decoration:underline;">내용 보기 ▶</button>
+   521	          </div>
+   522	          <!-- 선택 -->
+   523	          <div style="padding:10px 16px; border-top:1px solid rgba(255,255,255,0.07); background:rgba(0,0,0,0.2);">
+   524	            <label style="display:flex; align-items:flex-start; gap:10px; cursor:pointer;">
+   525	              <input type="checkbox" id="agreeMarketing" onchange="syncAllAgree()" style="width:16px; height:16px; accent-color:#667eea; cursor:pointer; flex-shrink:0; margin-top:2px;">
+   526	              <div style="flex:1;">
+   527	                <span style="font-size:11px; color:#9ca3af; font-weight:700;">[선택]</span>
+   528	                <span style="font-size:11px; color:#e5e7eb; margin-left:4px;">혜택 및 맞춤형 이벤트 정보 수신 동의 (SMS, 이메일 등)</span>
+   529	              </div>
+   530	            </label>
+   531	            <button onclick="showTermModal('marketing')" style="font-size:10px; color:#667eea; background:none; border:none; cursor:pointer; margin-left:26px; margin-top:3px; padding:0; text-decoration:underline;">내용 보기 ▶</button>
+   532	          </div>
+   533	        </div>
+   534	      </div>
+   535	
+   536	      <button onclick="nextStep(2)" class="btn-primary w-full justify-center mt-2">
+   537	        다음 <i class="fas fa-arrow-right ml-2"></i>
+   538	      </button>
+   539	    </div>
+   540	
+   541	    <!-- Step 2: 질환 선택 + 민감정보 동의 안내 -->
+   542	    <div id="stepContent2" class="hidden">
+   543	      <p class="text-sm font-bold mb-4">🏥 어떤 질환으로 간병 중이신가요?</p>
+   544	      <div class="grid grid-cols-3 gap-3 mb-4">
+   545	        <button onclick="selectDisease(this,'cancer')" class="disease-select-btn border-2 border-gray-700 rounded-2xl p-4 text-center transition-all hover:border-purple-500">
+   546	          <div class="text-2xl mb-2">🎗️</div>
+   547	          <div class="text-xs font-bold">암</div>
+   548	        </button>
+   549	        <button onclick="selectDisease(this,'brain')" class="disease-select-btn border-2 border-gray-700 rounded-2xl p-4 text-center transition-all hover:border-purple-500">
+   550	          <div class="text-2xl mb-2">🧠</div>
+   551	          <div class="text-xs font-bold">뇌질환</div>
+   552	        </button>
+   553	        <button onclick="selectDisease(this,'metabolic')" class="disease-select-btn border-2 border-gray-700 rounded-2xl p-4 text-center transition-all hover:border-purple-500">
+   554	          <div class="text-2xl mb-2">💊</div>
+   555	          <div class="text-xs font-bold">대사질환</div>
+   556	        </button>
+   557	      </div>
+   558	      <button onclick="nextStep(3)" class="btn-primary w-full justify-center mt-4">
+   559	        다음 <i class="fas fa-arrow-right ml-2"></i>
+   560	      </button>
+   561	    </div>
+   562	
+   563	    <!-- Step 3: 주요 고충 + 병기 + 간병 연차 -->
+   564	    <div id="stepContent3" class="hidden">
+   565	      <p class="text-sm font-bold mb-3">💬 가장 힘드신 점을 선택해주세요 <span class="text-gray-500 font-normal">(복수 선택)</span></p>
+   566	      <div class="flex flex-wrap gap-2 mb-5">
+   567	        <button onclick="toggleIssue(this,'보호자번아웃')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">😮‍💨 보호자번아웃</button>
+   568	        <button onclick="toggleIssue(this,'식사거부')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">🍽️ 식사거부</button>
+   569	        <button onclick="toggleIssue(this,'치료비부담')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">💸 치료비부담</button>
+   570	        <button onclick="toggleIssue(this,'환자우울증')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">😢 환자우울증</button>
+   571	        <button onclick="toggleIssue(this,'배변욕창관리')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">🏥 배변욕창관리</button>
+   572	        <button onclick="toggleIssue(this,'간호정보부족')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">📚 간호정보부족</button>
+   573	        <button onclick="toggleIssue(this,'병원소통어려움')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">🏨 병원소통</button>
+   574	        <button onclick="toggleIssue(this,'재정지원정보부족')" class="issue-btn border border-gray-700 rounded-xl px-3 py-2 text-xs font-bold transition-all hover:border-purple-500">📋 재정지원</button>
+   575	      </div>
+   576	
+   577	      <!-- 병기 선택 (암 선택 시에만 표시) -->
+   578	      <div id="stageSection" class="hidden mb-4">
+   579	        <p class="text-xs font-bold text-gray-300 mb-2">🔬 현재 병기를 알려주세요 <span class="text-gray-500 font-normal">(선택)</span></p>
+   580	        <div class="grid grid-cols-4 gap-2" id="stageButtons">
+   581	          <button onclick="selectStage(this,'1기')" class="stage-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">1기</button>
+   582	          <button onclick="selectStage(this,'2기')" class="stage-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">2기</button>
+   583	          <button onclick="selectStage(this,'3기')" class="stage-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">3기</button>
+   584	          <button onclick="selectStage(this,'4기')" class="stage-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">4기</button>
+   585	          <button onclick="selectStage(this,'완치후관리')" class="stage-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500 col-span-2">완치 후 관리</button>
+   586	          <button onclick="selectStage(this,'모름')" class="stage-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500 col-span-2">모름/비공개</button>
+   587	        </div>
+   588	      </div>
+   589	
+   590	      <!-- 간병 연차 -->
+   591	      <div class="mb-5">
+   592	        <p class="text-xs font-bold text-gray-300 mb-2">📅 간병을 시작한 지 얼마나 됐나요? <span class="text-gray-500 font-normal">(선택)</span></p>
+   593	        <div class="grid grid-cols-2 gap-2" id="careYearButtons">
+   594	          <button onclick="selectCareYear(this,'1개월미만')" class="careyear-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">막 시작했어요</button>
+   595	          <button onclick="selectCareYear(this,'1~6개월')" class="careyear-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">1~6개월</button>
+   596	          <button onclick="selectCareYear(this,'6개월~1년')" class="careyear-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">6개월~1년</button>
+   597	          <button onclick="selectCareYear(this,'1~3년')" class="careyear-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500">1~3년</button>
+   598	          <button onclick="selectCareYear(this,'3년이상')" class="careyear-btn border border-gray-700 rounded-xl py-2 text-xs font-bold transition-all hover:border-purple-500 col-span-2">3년 이상 (베테랑)</button>
+   599	        </div>
+   600	      </div>
+   601	
+   602	      <button onclick="completeRegister()" class="btn-primary w-full justify-center py-5">
+   603	        <i class="fas fa-check mr-2"></i>가입 완료 🎉
+   604	      </button>
+   605	    </div>
+   606	
+   607	    <button onclick="closeModal()" class="w-full text-sm text-gray-500 py-3 mt-2 hover:text-gray-300 transition-colors">취소</button>
+   608	  </div>
+   609	</div>
+   610	
+   611	<!-- ═══ TERMS MODAL ═══ -->
+   612	<div id="termModal" class="modal-overlay hidden" onclick="if(event.target===this)closeTermModal()" style="align-items:center; padding:20px;">
+   613	  <div style="background:#1a1a2e; border-radius:24px; padding:28px; max-width:480px; width:100%; max-height:80vh; overflow-y:auto; border:1px solid rgba(255,255,255,0.1);">
+   614	    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+   615	      <h3 id="termTitle" style="font-size:16px; font-weight:900; color:white;"></h3>
+   616	      <button onclick="closeTermModal()" style="background:rgba(255,255,255,0.1); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:16px;">✕</button>
+   617	    </div>
+   618	    <div id="termBody" style="font-size:13px; color:#d1d5db; line-height:1.9;"></div>
+   619	    <button onclick="closeTermModal()" class="btn-primary w-full justify-center mt-6" style="margin-top:20px;">확인</button>
+   620	  </div>
+   621	</div>
+   622	
+   623	<!-- ═══ SUCCESS MODAL ═══ -->
+   624	<div id="successModal" class="modal-overlay hidden">
+   625	  <div class="modal-content text-center">
+   626	    <div class="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4"
+   627	      style="background:linear-gradient(135deg,#43e97b,#38f9d7)">🎉</div>
+   628	    <h2 class="text-2xl font-black mb-2">가입 완료!</h2>
+   629	    <p class="text-sm text-gray-300 mb-1">환영합니다!</p>
+   630	    <p class="text-xs text-gray-500 mb-6">누빈과 함께 더 나은 간병 여정을 시작해요</p>
+   631	    <div class="bg-gray-800 rounded-2xl p-4 mb-6 text-left">
+   632	      <p class="text-xs text-gray-400 mb-2 font-bold">🎁 가입 혜택이 준비됐어요</p>
+   633	      <div class="space-y-2">
+   634	        <div class="flex items-center gap-2 text-xs"><i class="fas fa-check text-green-400"></i> 질환별 맞춤 가이드북 무료 제공</div>
+   635	        <div class="flex items-center gap-2 text-xs"><i class="fas fa-check text-green-400"></i> 선배 보호자 멘토 매칭 시작</div>
+   636	        <div class="flex items-center gap-2 text-xs"><i class="fas fa-check text-green-400"></i> 커뮤니티 참여 권한 활성화</div>
+   637	      </div>
+   638	    </div>
+   639	    <button onclick="closeSuccess()" class="btn-primary w-full justify-center">확인</button>
+   640	  </div>
+   641	</div>
+   642	
+   643	<script>
+   644	// ─── State ───
+   645	let selectedDisease = null;
+   646	let selectedStage = null;
+   647	let selectedCareYear = null;
+   648	const selectedIssues = [];
+   649	
+   650	// ─── 전체 동의 토글 ───
+   651	function toggleAllAgree(cb) {
+   652	  // 상세 펼치기
+   653	  if (cb.checked) {
+   654	    document.getElementById('termsDetail').style.display = 'block';
+   655	    document.getElementById('termsToggleBtn').textContent = '접기 ▲';
+   656	  }
+   657	  ['agreeMedical','agreeSensitive','agreeMarketing'].forEach(id => {
+   658	    document.getElementById(id).checked = cb.checked;
+   659	  });
+   660	}
+   661	function syncAllAgree() {
+   662	  const all = ['agreeMedical','agreeSensitive','agreeMarketing'].every(id => document.getElementById(id).checked);
+   663	  document.getElementById('agreeAll').checked = all;
+   664	}
+   665	function toggleTermsDetail() {
+   666	  var detail = document.getElementById('termsDetail');
+   667	  var btn = document.getElementById('termsToggleBtn');
+   668	  if (detail.style.display === 'none') {
+   669	    detail.style.display = 'block';
+   670	    btn.textContent = '접기 ▲';
+   671	  } else {
+   672	    detail.style.display = 'none';
+   673	    btn.textContent = '펼치기 ▼';
+   674	  }
+   675	}
+   676	
+   677	// ─── 약관 상세 모달 ───
+   678	var TERMS = {
+   679	  medical: {
+   680	    title: '🛡️ 의료 정보 및 서비스 면책 동의서',
+   681	    body: `<p style="color:#a78bfa; font-weight:800; margin-bottom:12px;">[필수] 의료 행위 대체 불가 동의</p>
+   682	<p style="font-weight:700; margin-bottom:6px;">제1조 (서비스의 목적 및 한계)</p>
+   683	<p style="margin-bottom:14px;">'누빈(NUVIN)' 플랫폼에서 제공하는 모든 정보(게시물, 가이드북, 칼럼 등) 및 극복 경험자(멘토)와의 소통 내용은 환자 및 보호자의 간병과 일상생활을 돕기 위한 <strong>참고용 및 보조적 정보</strong>일 뿐입니다.<br><br>
+   684	본 서비스는 의사, 한의사, 치과의사 등 전문 의료인의 의학적 진단, 진료, 처방, 치료를 결코 대신할 수 없으며, 합법적인 의료 행위를 목적으로 하지 않습니다.</p>
+   685	<p style="font-weight:700; margin-bottom:6px;">제2조 (면책 조항)</p>
+   686	<p>환자의 건강 상태, 질병의 치료 및 투약과 관련된 모든 중대한 결정은 반드시 담당 주치의 및 전문 의료기관과의 상담을 통해 이루어져야 합니다.<br><br>
+   687	회원이 본 플랫폼의 정보나 멘토의 조언을 개인적으로 판단하여 실행한 결과(부작용, 질병 악화 등)에 대해 '누빈' 및 '정보 제공자(멘토)'는 어떠한 민·형사상 법적 책임도 지지 않습니다.</p>`
+   688	  },
+   689	  sensitive: {
+   690	    title: '🔒 민감정보 수집 및 이용 동의',
+   691	    body: `<p style="color:#a78bfa; font-weight:800; margin-bottom:12px;">[필수] 건강/질환 정보 수집 동의</p>
+   692	<p style="font-weight:700; margin-bottom:6px;">1. 수집하는 민감정보 항목</p>
+   693	<p style="margin-bottom:14px;">관심 질환명(암, 뇌질환, 대사질환 등), 세부 병기 및 상태, 환자의 주요 증상 및 고충 사항.</p>
+   694	<p style="font-weight:700; margin-bottom:6px;">2. 수집 및 이용 목적</p>
+   695	<p style="margin-bottom:14px;">사용자 맞춤형 극복 경험자(멘토) 매칭, 맞춤형 간병 가이드북 및 콘텐츠 제공, 서비스 품질 향상.</p>
+   696	<p style="font-weight:700; margin-bottom:6px;">3. 보유 및 이용 기간</p>
+   697	<p style="margin-bottom:14px;">회원 탈퇴 시 또는 개인정보 처리 방침에 명시된 보존 기한까지. (단, 관련 법령에 의해 보존할 필요가 있는 경우 해당 기간 동안 보관)</p>
+   698	<p style="background:rgba(167,139,250,0.1); border:1px solid rgba(167,139,250,0.3); border-radius:10px; padding:12px; font-size:12px; color:#c4b5fd;">⚠️ 귀하는 동의를 거부할 권리가 있으나, 거부 시 맞춤형 멘토 매칭 및 맞춤형 가이드북 제공 서비스 이용이 제한될 수 있습니다.</p>`
+   699	  },
+   700	  marketing: {
+   701	    title: '📢 마케팅 및 광고성 정보 수신 동의',
+   702	    body: `<p style="color:#9ca3af; font-weight:800; margin-bottom:12px;">[선택] 혜택 및 이벤트 정보 수신</p>
+   703	<p style="font-weight:700; margin-bottom:6px;">1. 전송 내용</p>
+   704	<p style="margin-bottom:14px;">누빈에서 제공하는 신규 간병 가이드북 안내, 맞춤형 식단 및 홈케어 용품 할인 혜택, 웨비나/클래스 초청, 기타 이벤트 및 광고성 정보.</p>
+   705	<p style="font-weight:700; margin-bottom:6px;">2. 전송 방법</p>
+   706	<p style="margin-bottom:14px;">휴대전화 문자메시지(SMS/MMS), 카카오톡 알림톡, 이메일 등.</p>
+   707	<p style="font-weight:700; margin-bottom:6px;">3. 철회 방법</p>
+   708	<p>언제든지 마이페이지 설정 또는 수신된 메시지의 수신 거부 링크를 통해 동의를 철회할 수 있습니다.</p><br>
+   709	<p style="background:rgba(156,163,175,0.1); border:1px solid rgba(156,163,175,0.2); border-radius:10px; padding:12px; font-size:12px; color:#9ca3af;">✅ 동의를 거부하셔도 누빈의 기본 서비스는 이용하실 수 있습니다.</p>`
+   710	  }
+   711	};
+   712	function showTermModal(type) {
+   713	  var t = TERMS[type];
+   714	  document.getElementById('termTitle').textContent = t.title;
+   715	  document.getElementById('termBody').innerHTML = t.body;
+   716	  document.getElementById('termModal').classList.remove('hidden');
+   717	}
+   718	function closeTermModal() {
+   719	  document.getElementById('termModal').classList.add('hidden');
+   720	}
+   721	
+   722	// ─── Modal ───
+   723	function showRegisterModal() {
+   724	  document.getElementById('registerModal').classList.remove('hidden');
+   725	  // reset
+   726	  selectedDisease = null;
+   727	  selectedIssues.length = 0;
+   728	  resetSteps();
+   729	}
+   730	
+   731	// ─── 3번: 니즈 선택 저장 (localStorage) ───
+   732	function selectNeed(need) {
+   733	  // localStorage에 선택한 니즈 저장
+   734	  localStorage.setItem('nuvin_user_need', need);
+   735	  
+   736	  // 시각적 피드백
+   737	  const btn = event.target.closest('.need-btn');
+   738	  btn.style.transform = 'scale(0.95)';
+   739	  setTimeout(() => { btn.style.transform = 'scale(1)'; }, 150);
+   740	  
+   741	  // 토스트 메시지
+   742	  const needNames = {
+   743	    '식단관리': '식단 관리',
+   744	    '심리적안정': '심리적 안정',
+   745	    '재정지원': '재정 지원 정보',
+   746	    '병원소통': '병원 소통'
+   747	  };
+   748	  const el = document.createElement('div');
+   749	  el.style.cssText = 'position:fixed;top:100px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#667eea,#764ba2);color:white;padding:12px 20px;border-radius:50px;font-size:13px;font-weight:700;z-index:9999;box-shadow:0 8px 30px rgba(102,126,234,0.5);font-family:Noto Sans KR,sans-serif;';
+   750	  el.innerHTML = `✅ <strong>${needNames[need]}</strong> 선택 완료!<br><span style="font-size:11px;opacity:0.9;">가입 시 맞춤 가이드를 먼저 보내드릴게요</span>`;
+   751	  document.body.appendChild(el);
+   752	  setTimeout(() => { el.remove(); }, 2500);
+   753	  
+   754	  // 1초 후 가입 모달 자동 오픈
+   755	  setTimeout(() => {
+   756	    showRegisterModal();
+   757	  }, 1000);
+   758	}
+   759	
+   760	function closeModal() {
+   761	  document.getElementById('registerModal').classList.add('hidden');
+   762	}
+   763	
+   764	function closeModalOutside(e) {
+   765	  if (e.target === e.currentTarget) closeModal();
+   766	}
+   767	
+   768	function closeSuccess() {
+   769	  document.getElementById('successModal').classList.add('hidden');
+   770	}
+   771	
+   772	function resetSteps() {
+   773	  document.getElementById('stepContent1').classList.remove('hidden');
+   774	  document.getElementById('stepContent2').classList.add('hidden');
+   775	  document.getElementById('stepContent3').classList.add('hidden');
+   776	  document.querySelectorAll('.disease-select-btn').forEach(b => b.classList.remove('border-purple-500', 'bg-purple-900'));
+   777	  document.querySelectorAll('.issue-btn').forEach(b => b.classList.remove('border-purple-500', 'bg-purple-900', 'text-purple-300'));
+   778	  updateStepIndicator(1);
+   779	}
+   780	
+   781	// ─── Steps ───
+   782	function nextStep(num) {
+   783	  if (num === 2) {
+   784	    const name = document.getElementById('regName').value.trim();
+   785	    const email = document.getElementById('regEmail').value.trim();
+   786	    if (!name || !email) { alert('성함과 이메일을 입력해주세요.'); return; }
+   787	    // 필수 동의 체크
+   788	    const medical = document.getElementById('agreeMedical').checked;
+   789	    const sensitive = document.getElementById('agreeSensitive').checked;
+   790	    if (!medical) { alert('⚠️ [필수] 의료 정보 면책 동의는 반드시 동의하셔야 합니다.'); return; }
+   791	    if (!sensitive) { alert('⚠️ [필수] 민감정보(질환 정보) 수집 동의는 반드시 동의하셔야 합니다.'); return; }
+   792	  }
+   793	  if (num === 3) {
+   794	    if (!selectedDisease) { alert('질환을 선택해주세요.'); return; }
+   795	  }
+   796	  document.querySelectorAll('[id^="stepContent"]').forEach(el => el.classList.add('hidden'));
+   797	  document.getElementById('stepContent' + num).classList.remove('hidden');
+   798	  updateStepIndicator(num);
+   799	}
+   800	
+   801	function updateStepIndicator(step) {
+   802	  const gradient = 'linear-gradient(135deg,#667eea,#764ba2)';
+   803	  for (let i = 1; i <= 3; i++) {
+   804	    const dot = document.getElementById('step' + i + 'Dot');
+   805	    if (i <= step) {
+   806	      dot.style.background = gradient;
+   807	      dot.classList.remove('bg-gray-700', 'text-gray-400');
+   808	      dot.classList.add('text-white');
+   809	    } else {
+   810	      dot.style.background = '';
+   811	      dot.classList.add('bg-gray-700', 'text-gray-400');
+   812	    }
+   813	  }
+   814	}
+   815	
+   816	function selectDisease(btn, disease) {
+   817	  document.querySelectorAll('.disease-select-btn').forEach(b => {
+   818	    b.classList.remove('border-purple-500', 'bg-purple-900');
+   819	  });
+   820	  btn.classList.add('border-purple-500', 'bg-purple-900');
+   821	  selectedDisease = disease;
+   822	  // 암 선택 시 병기 섹션 표시
+   823	  const stageSection = document.getElementById('stageSection');
+   824	  if (stageSection) {
+   825	    stageSection.classList.toggle('hidden', disease !== 'cancer');
+   826	  }
+   827	}
+   828	
+   829	function selectStage(btn, stage) {
+   830	  document.querySelectorAll('.stage-btn').forEach(b => {
+   831	    b.classList.remove('border-purple-500', 'bg-purple-900');
+   832	  });
+   833	  btn.classList.add('border-purple-500', 'bg-purple-900');
+   834	  selectedStage = stage;
+   835	}
+   836	
+   837	function selectCareYear(btn, year) {
+   838	  document.querySelectorAll('.careyear-btn').forEach(b => {
+   839	    b.classList.remove('border-purple-500', 'bg-purple-900');
+   840	  });
+   841	  btn.classList.add('border-purple-500', 'bg-purple-900');
+   842	  selectedCareYear = year;
+   843	}
+   844	
+   845	function toggleIssue(btn, issue) {
+   846	  const idx = selectedIssues.indexOf(issue);
+   847	  if (idx > -1) {
+   848	    selectedIssues.splice(idx, 1);
+   849	    btn.classList.remove('border-purple-500', 'bg-purple-900', 'text-purple-300');
+   850	  } else {
+   851	    selectedIssues.push(issue);
+   852	    btn.classList.add('border-purple-500', 'bg-purple-900', 'text-purple-300');
+   853	  }
+   854	}
+   855	
+   856	async function completeRegister() {
+   857	  const name = document.getElementById('regName').value.trim();
+   858	  const email = document.getElementById('regEmail').value.trim();
+   859	  if (!name || !email) { nextStep(1); return; }
+   860	
+   861	  const phoneEl = document.getElementById('regPhone');
+   862	  const phone = phoneEl ? phoneEl.value.trim() : '';
+   863	  const agreeMarketing = document.getElementById('agreeMarketing') ? document.getElementById('agreeMarketing').checked : false;
+   864	
+   865	  // 니즈 체크인에서 선택한 값 가져오기
+   866	  const userNeed = localStorage.getItem('nuvin_user_need') || null;
+   867	
+   868	  const userData = {
+   869	    name,
+   870	    email,
+   871	    phone: phone || null,
+   872	    primary_disease: selectedDisease || null,
+   873	    cancer_stage: selectedStage || null,
+   874	    care_years: selectedCareYear || null,
+   875	    main_issues: selectedIssues,
+   876	    user_need: userNeed,  // 추가: 니즈 저장
+   877	    step_completed: 3,
+   878	    agree_medical: true,
+   879	    agree_sensitive: true,
+   880	    agree_marketing: agreeMarketing,
+   881	    login_type: 'email',
+   882	    created_at: new Date().toISOString()
+   883	  };
+   884	
+   885	  // Tables API 저장 시도
+   886	  let savedToApi = false;
+   887	  try {
+   888	    const res = await fetch('tables/nuvin_users', {
+   889	      method: 'POST',
+   890	      headers: { 'Content-Type': 'application/json' },
+   891	      body: JSON.stringify(userData)
+   892	    });
+   893	    if (res.ok) {
+   894	      const saved = await res.json();
+   895	      savedToApi = true;
+   896	      console.log('[NUVIN] DB 저장 성공:', saved.id);
+   897	      // API 저장 성공 시 로컬에도 같은 id로 저장
+   898	      userData.id = saved.id;
+   899	    } else {
+   900	      console.warn('[NUVIN] DB 저장 실패:', res.status);
+   901	    }
+   902	  } catch(e) {
+   903	    console.warn('[NUVIN] API 연결 실패, 로컬 저장:', e.message);
+   904	  }
+   905	
+   906	  // localStorage에도 항상 저장 (id가 없으면 타임스탬프 사용)
+   907	  if (!userData.id) userData.id = Date.now();
+   908	  const users = JSON.parse(localStorage.getItem('nuvin_users') || '[]');
+   909	  // 중복 방지
+   910	  if (!users.find(u => String(u.id) === String(userData.id))) {
+   911	    users.push(userData);
+   912	    localStorage.setItem('nuvin_users', JSON.stringify(users));
+   913	  }
+   914	
+   915	  closeModal();
+   916	  document.getElementById('successModal').classList.remove('hidden');
+   917	  // 가입 직후 카운트 갱신
+   918	  setTimeout(updateMemberCount, 800);
+   919	}
+   920	
+   921	// ─── Navigation ───
+   922	function goAdmin() {
+   923	  window.location.href = 'admin-login.html';
+   924	}
+   925	
+   926	function showGuideComingSoon() {
+   927	  var el = document.createElement('div');
+   928	  el.style.cssText = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid #667eea;color:white;padding:14px 22px;border-radius:16px;font-size:13px;font-weight:700;z-index:9999;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.5);font-family:Noto Sans KR,sans-serif;white-space:pre-line;';
+   929	  el.textContent = '📖 가이드북 준비 중이에요!\n곧 업데이트될 예정입니다 🙏';
+   930	  document.body.appendChild(el);
+   931	  setTimeout(function() { el.remove(); }, 3000);
+   932	}
+   933	
+   934	// ─── 실제 회원 수 표시 (더미 200명 + 실제 DB 인원) ───
+   935	const DUMMY_BASE = 200; // 시드 더미 수
+   936	
+   937	async function updateMemberCount() {
+   938	  let realCount = 0;
+   939	  try {
+   940	    // 페이지네이션 없이 total 값만 가져옴
+   941	    const res = await fetch('tables/nuvin_users?limit=1&page=1');
+   942	    if (res.ok) {
+   943	      const data = await res.json();
+   944	      realCount = data.total || 0;
+   945	    }
+   946	  } catch(e) {
+   947	    // API 실패 시 로컬 카운트 사용
+   948	    const local = JSON.parse(localStorage.getItem('nuvin_users') || '[]');
+   949	    realCount = local.length;
+   950	  }
+   951	  const total = DUMMY_BASE + realCount;
+   952	  const el = document.getElementById('socialProofCount');
+   953	  if (el) {
+   954	    // 숫자 애니메이션 (500ms)
+   955	    const start = parseInt(el.textContent.replace(/,/g, '')) || DUMMY_BASE;
+   956	    const duration = 600;
+   957	    const startTime = performance.now();
+   958	    function animateCount(now) {
+   959	      const elapsed = now - startTime;
+   960	      const progress = Math.min(elapsed / duration, 1);
+   961	      const current = Math.round(start + (total - start) * progress);
+   962	      el.textContent = current.toLocaleString('ko-KR');
+   963	      if (progress < 1) requestAnimationFrame(animateCount);
+   964	    }
+   965	    requestAnimationFrame(animateCount);
+   966	  }
+   967	  console.log(`[NUVIN] 회원 수: 더미 ${DUMMY_BASE} + 실제 ${realCount} = 합계 ${total}`);
+   968	}
+   969	
+   970	// 페이지 로드 시 즉시 실행
+   971	updateMemberCount();
+   972	
+   973	// ─── Track (demo) ───
+   974	function track(event, data) {
+   975	  console.log('[NUVIN TRACK]', event, data);
+   976	}
+   977	track('page_view', { page: 'landing' });
+   978	
+   979	// ─── PWA 설치 배너 ───
+   980	let deferredPrompt = null;
+   981	window.addEventListener('beforeinstallprompt', (e) => {
+   982	  e.preventDefault();
+   983	  deferredPrompt = e;
+   984	  // 배너 표시
+   985	  const banner = document.getElementById('pwa-install-banner');
+   986	  if (banner) {
+   987	    banner.style.display = 'flex';
+   988	    setTimeout(() => banner.style.opacity = '1', 100);
+   989	  }
+   990	});
+   991	
+   992	function installPWA() {
+   993	  if (!deferredPrompt) return;
+   994	  deferredPrompt.prompt();
+   995	  deferredPrompt.userChoice.then((result) => {
+   996	    if (result.outcome === 'accepted') {
+   997	      document.getElementById('pwa-install-banner').style.display = 'none';
+   998	    }
+   999	    deferredPrompt = null;
+  1000	  });
+  1001	}
+  1002	
+  1003	function dismissPWABanner() {
+  1004	  const banner = document.getElementById('pwa-install-banner');
+  1005	  if (banner) banner.style.display = 'none';
+  1006	}
+  1007	
+  1008	// iOS Safari 감지
+  1009	const isIOS = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+  1010	const isInStandalone = window.matchMedia('(display-mode: standalone)').matches;
+  1011	if (isIOS && !isInStandalone) {
+  1012	  setTimeout(() => {
+  1013	    const iosBanner = document.getElementById('pwa-ios-banner');
+  1014	    if (iosBanner) {
+  1015	      iosBanner.style.display = 'flex';
+  1016	      setTimeout(() => iosBanner.style.opacity = '1', 100);
+  1017	    }
+  1018	  }, 3000);
+  1019	}
+  1020	
+  1021	// ─── 가이드북 미리보기 모달 ───
+  1022	function showGuidebookPreview() {
+  1023	  const modal = document.createElement('div');
+  1024	  modal.className = 'modal-overlay';
+  1025	  modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px;';
+  1026	  
+  1027	  modal.innerHTML = `
+  1028	    <div class="modal-content" style="background:#1a1a2e; border-radius:24px; max-width:500px; width:100%; max-height:90vh; overflow-y:auto; padding:32px; position:relative;">
+  1029	      <button onclick="this.closest('.modal-overlay').remove()" style="position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.1); border:none; color:white; width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:18px;">✕</button>
+  1030	      
+  1031	      <div style="text-align:center; margin-bottom:24px;">
+  1032	        <div style="width:80px; height:80px; margin:0 auto 16px; background:linear-gradient(135deg,#667eea,#764ba2); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:40px;">📖</div>
+  1033	        <h2 style="font-size:24px; font-weight:900; color:white; margin-bottom:8px;">암·뇌질환 전문 가이드북</h2>
+  1034	        <p style="color:#9ca3af; font-size:14px;">52페이지 | 국립암센터·대한뇌졸중학회 검증</p>
+  1035	      </div>
+  1036	
+  1037	      <div style="background:rgba(102,126,234,0.1); border:1px solid rgba(102,126,234,0.3); border-radius:16px; padding:20px; margin-bottom:24px;">
+  1038	        <h3 style="font-size:16px; font-weight:700; color:#667eea; margin-bottom:12px;">📚 가이드북 포함 내용</h3>
+  1039	        <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:12px; font-size:13px;">
+  1040	          <div style="display:flex; align-items:center; gap:8px;">
+  1041	            <i class="fas fa-check-circle" style="color:#10b981;"></i>
+  1042	            <span style="color:#d1d5db;">암종별 상세 치료</span>
+  1043	          </div>
+  1044	          <div style="display:flex; align-items:center; gap:8px;">
+  1045	            <i class="fas fa-check-circle" style="color:#10b981;"></i>
+  1046	            <span style="color:#d1d5db;">보호자 체크리스트</span>
+  1047	          </div>
+  1048	          <div style="display:flex; align-items:center; gap:8px;">
+  1049	            <i class="fas fa-check-circle" style="color:#10b981;"></i>
+  1050	            <span style="color:#d1d5db;">응급상황 대처법</span>
+  1051	          </div>
+  1052	          <div style="display:flex; align-items:center; gap:8px;">
+  1053	            <i class="fas fa-check-circle" style="color:#10b981;"></i>
+  1054	            <span style="color:#d1d5db;">뇌졸중 재활 가이드</span>
+  1055	          </div>
+  1056	          <div style="display:flex; align-items:center; gap:8px;">
+  1057	            <i class="fas fa-check-circle" style="color:#10b981;"></i>
+  1058	            <span style="color:#d1d5db;">영양·식이 관리</span>
+  1059	          </div>
+  1060	          <div style="display:flex; align-items:center; gap:8px;">
+  1061	            <i class="fas fa-check-circle" style="color:#10b981;"></i>
+  1062	            <span style="color:#d1d5db;">심리적 지지 방법</span>
+  1063	          </div>
+  1064	        </div>
+  1065	      </div>
+  1066	
+  1067	      <div style="background:rgba(245,158,11,0.1); border-left:4px solid #f59e0b; padding:16px; border-radius:8px; margin-bottom:24px;">
+  1068	        <p style="font-size:13px; color:#fbbf24; line-height:1.6;">
+  1069	          <strong>💡 이메일 인증 후 즉시 발송!</strong><br>
+  1070	          가입 완료 시 입력하신 이메일로<br>
+  1071	          PDF 가이드북 링크를 바로 보내드립니다.
+  1072	        </p>
+  1073	      </div>
+  1074	
+  1075	      <button onclick="this.closest('.modal-overlay').remove(); showRegisterModal();" style="width:100%; padding:16px; background:linear-gradient(135deg,#667eea,#764ba2); border:none; border-radius:16px; color:white; font-weight:900; font-size:16px; cursor:pointer; box-shadow:0 4px 12px rgba(102,126,234,0.4); margin-bottom:12px;">
+  1076	        🎁 무료 가입하고 가이드북 받기
+  1077	      </button>
+  1078	      
+  1079	      <button onclick="window.location.href='guidebook.html'" style="width:100%; padding:14px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); border-radius:16px; color:white; font-weight:600; font-size:14px; cursor:pointer;">
+  1080	        👀 먼저 온라인으로 둘러보기
+  1081	      </button>
+  1082	    </div>
+  1083	  `;
+  1084	  
+  1085	  document.body.appendChild(modal);
+  1086	}
+  1087	
+  1088	// ─── PWA Service Worker 등록 ───
+  1089	if ('serviceWorker' in navigator) {
+  1090	  window.addEventListener('load', () => {
+  1091	    navigator.serviceWorker.register('/service-worker.js')
+  1092	      .then(reg => console.log('[SW] 등록 성공:', reg.scope))
+  1093	      .catch(err => console.log('[SW] 등록 실패:', err));
+  1094	  });
+  1095	}
+  1096	</script>
+  1097	
+  1098	<!-- 개인정보 처리방침 푸터 -->
+  1099	<div style="background:#0a0a15;padding:16px 24px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
+  1100	  <p style="font-size:12px;color:#4b5563;font-family:'Noto Sans KR',sans-serif;">
+  1101	    © 2026 누빈(NUVIN)  ·  
+  1102	    <a href="privacy.html" style="color:#6b7280;text-decoration:none;">개인정보처리방침</a>  ·  
+  1103	    <a href="migration-guide.html" style="color:#6b7280;text-decoration:none;">서비스 안내</a>
+  1104	  </p>
+  1105	</div>
+  1106	
+  1107	<!-- PWA 설치 배너 (Android/Chrome) -->
+  1108	<div id="pwa-install-banner" style="display:none;opacity:0;transition:opacity 0.4s;position:fixed;bottom:0;left:0;right:0;z-index:9998;background:linear-gradient(135deg,#1a1a2e,#16213e);border-top:1px solid rgba(102,126,234,0.4);padding:14px 20px;align-items:center;gap:12px;font-family:'Noto Sans KR',sans-serif;">
+  1109	  <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+  1110	    <span style="color:white;font-size:20px;font-weight:900;">N</span>
+  1111	  </div>
+  1112	  <div style="flex:1;min-width:0;">
+  1113	    <p style="font-size:13px;font-weight:800;color:white;margin:0;">누빈 앱으로 설치하기</p>
+  1114	    <p style="font-size:11px;color:#9ca3af;margin:2px 0 0;">홈 화면에 추가하면 앱처럼 빠르게 접속해요</p>
+  1115	  </div>
+  1116	  <button onclick="installPWA()" style="background:linear-gradient(135deg,#667eea,#764ba2);border:none;color:white;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:'Noto Sans KR',sans-serif;">설치</button>
+  1117	  <button onclick="dismissPWABanner()" style="background:none;border:none;color:#6b7280;cursor:pointer;font-size:20px;padding:4px;flex-shrink:0;">×</button>
+  1118	</div>
+  1119	
+  1120	<!-- PWA 설치 안내 (iOS Safari) -->
+  1121	<div id="pwa-ios-banner" style="display:none;opacity:0;transition:opacity 0.4s;position:fixed;bottom:0;left:0;right:0;z-index:9998;background:linear-gradient(135deg,#1a1a2e,#16213e);border-top:1px solid rgba(102,126,234,0.4);padding:14px 20px;align-items:flex-start;gap:12px;font-family:'Noto Sans KR',sans-serif;">
+  1122	  <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+  1123	    <span style="color:white;font-size:20px;font-weight:900;">N</span>
+  1124	  </div>
+  1125	  <div style="flex:1;">
+  1126	    <p style="font-size:13px;font-weight:800;color:white;margin:0 0 4px;">iPhone에서 누빈 설치하기</p>
+  1127	    <p style="font-size:12px;color:#d1d5db;line-height:1.6;margin:0;">하단 공유 버튼(□↑) 탭 →<br/><strong style="color:#a78bfa;">"홈 화면에 추가"</strong> 선택</p>
+  1128	  </div>
+  1129	  <button onclick="document.getElementById('pwa-ios-banner').style.display='none'" style="background:none;border:none;color:#6b7280;cursor:pointer;font-size:20px;padding:4px;flex-shrink:0;">×</button>
+  1130	</div>
+  1131	</body>
+  1132	</html>
+  1133	
