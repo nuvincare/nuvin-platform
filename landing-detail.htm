@@ -1,0 +1,1000 @@
+   1	<!DOCTYPE html>
+     2	<html lang="ko">
+     3	<head>
+     4	<meta charset="UTF-8">
+     5	<meta property="og:type" content="website"/>
+     6	<meta property="og:title" content="간병의 무게, 혼자 지지마세요 함께해요!"/>
+     7	<meta property="og:description" content="암·뇌질환·대사질환 보호자를 위한 맞춤 가이드북, 1:1 멘토링, 커뮤니티, 간병 대시보드까지. 완전 무료."/>
+     8	<meta property="og:image" content="https://vplviksu.gensparkspace.com/images/og-image.jpg"/>
+     9	<meta property="og:image:width" content="1200"/>
+    10	<meta property="og:image:height" content="630"/>
+    11	<meta property="og:url" content="https://vplviksu.gensparkspace.com/landing-detail.html"/>
+    12	<meta property="og:site_name" content="누빈 NUVIN"/>
+    13	<meta name="twitter:card" content="summary_large_image"/>
+    14	<meta name="twitter:image" content="https://vplviksu.gensparkspace.com/images/og-image.jpg"/>
+    15	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    16	<script>
+    17	  // 브라우저 스크롤 자동 복원 비활성화 — 항상 맨 위에서 시작
+    18	  if ('scrollRestoration' in history) {
+    19	    history.scrollRestoration = 'manual';
+    20	  }
+    21	</script>
+    22	<title>누빈 솔루션 — 간병 보호자를 위한 모든 것</title>
+    23	<!-- PWA -->
+    24	<link rel="manifest" href="manifest.json"/>
+    25	<meta name="theme-color" content="#667eea"/>
+    26	<meta name="mobile-web-app-capable" content="yes"/>
+    27	<meta name="apple-mobile-web-app-capable" content="yes"/>
+    28	<meta name="apple-mobile-web-app-title" content="누빈"/>
+    29	<link rel="apple-touch-icon" href="images/icon-192.png"/>
+    30	<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    31	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    32	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    33	<style>
+    34	  :root {
+    35	    --primary: #5B6EF5;
+    36	    --primary-dark: #4455e0;
+    37	    --secondary: #FF6B8A;
+    38	    --accent: #00C9A7;
+    39	    --bg-dark: #0d0f1e;
+    40	    --bg-card: #151728;
+    41	    --text-main: #ffffff;
+    42	    --text-sub: #9ea8c4;
+    43	    --border: rgba(255,255,255,0.08);
+    44	  }
+    45	  * { margin: 0; padding: 0; box-sizing: border-box; }
+    46	  html { scroll-behavior: smooth; }
+    47	  body {
+    48	    font-family: 'Pretendard', 'Apple SD Gothic Neo', sans-serif;
+    49	    background: var(--bg-dark); color: var(--text-main);
+    50	    line-height: 1.6; overflow-x: hidden;
+    51	  }
+    52	
+    53	  /* NAV */
+    54	  nav {
+    55	    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    56	    background: rgba(13,15,30,0.92); backdrop-filter: blur(20px);
+    57	    border-bottom: 1px solid var(--border);
+    58	    padding: 16px 24px;
+    59	    display: flex; align-items: center; justify-content: space-between;
+    60	  }
+    61	  .nav-logo { font-size: 20px; font-weight: 800; color: var(--primary); text-decoration: none; letter-spacing: -0.3px; }
+    62	  .nav-links { display: flex; gap: 28px; align-items: center; }
+    63	  .nav-links a { color: var(--text-sub); text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; letter-spacing: 0; }
+    64	  .nav-links a:hover { color: white; }
+    65	  .nav-cta { background: var(--primary); color: white !important; padding: 9px 20px; border-radius: 50px; font-weight: 600 !important; font-size: 13px !important; }
+    66	
+    67	  /* HERO */
+    68	  .hero {
+    69	    min-height: 100vh;
+    70	    background: linear-gradient(135deg, #0d0f1e 0%, #1a1040 50%, #0d0f1e 100%);
+    71	    display: flex; align-items: center; justify-content: center;
+    72	    text-align: center; padding: 120px 24px 80px; position: relative; overflow: hidden;
+    73	  }
+    74	  .hero::before {
+    75	    content: ''; position: absolute; inset: 0;
+    76	    background: radial-gradient(ellipse at 30% 50%, rgba(91,110,245,0.15) 0%, transparent 60%),
+    77	                radial-gradient(ellipse at 70% 30%, rgba(255,107,138,0.1) 0%, transparent 50%);
+    78	  }
+    79	  .hero-badge {
+    80	    display: inline-flex; align-items: center; gap: 8px;
+    81	    background: rgba(91,110,245,0.12); border: 1px solid rgba(91,110,245,0.3);
+    82	    padding: 7px 18px; border-radius: 50px;
+    83	    font-size: 13px; font-weight: 500; color: #a5b0ff; margin-bottom: 28px; letter-spacing: 0;
+    84	  }
+    85	  .hero-badge .dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+    86	  @keyframes pulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.5; transform:scale(1.3); } }
+    87	  .hero h1 { font-size: clamp(30px, 5vw, 56px); font-weight: 800; line-height: 1.2; margin-bottom: 20px; letter-spacing: -0.8px; }
+    88	  .hero h1 .highlight { background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    89	  .hero p { font-size: clamp(14px, 1.6vw, 17px); color: var(--text-sub); max-width: 560px; margin: 0 auto 36px; line-height: 1.75; font-weight: 400; }
+    90	  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    91	  .btn-primary {
+    92	    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    93	    color: white; padding: 14px 34px; border-radius: 50px;
+    94	    font-size: 15px; font-weight: 700; text-decoration: none;
+    95	    display: inline-flex; align-items: center; gap: 8px;
+    96	    transition: all 0.3s; box-shadow: 0 6px 24px rgba(91,110,245,0.35);
+    97	  }
+    98	  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(91,110,245,0.45); }
+    99	  .btn-outline {
+   100	    background: transparent; color: rgba(255,255,255,0.75); border: 1.5px solid rgba(255,255,255,0.2);
+   101	    padding: 12px 28px; border-radius: 50px; font-size: 14px; font-weight: 500;
+   102	    text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;
+   103	  }
+   104	  .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+   105	
+   106	  /* STATS */
+   107	  .stats-bar { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 36px 24px; }
+   108	  .stats-grid { max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; text-align: center; }
+   109	  .stat-item .num {
+   110	    font-size: 34px; font-weight: 800;
+   111	    background: linear-gradient(135deg, var(--primary), var(--accent));
+   112	    -webkit-background-clip: text; -webkit-text-fill-color: transparent; display: block; line-height: 1;
+   113	  }
+   114	  .stat-item .label { font-size: 13px; color: var(--text-sub); margin-top: 6px; font-weight: 400; }
+   115	
+   116	  /* SECTIONS */
+   117	  section { padding: 80px 24px; }
+   118	  .section-inner { max-width: 1100px; margin: 0 auto; }
+   119	  .section-tag {
+   120	    display: inline-block; background: rgba(91,110,245,0.12); color: #a5b0ff;
+   121	    padding: 5px 14px; border-radius: 50px; font-size: 12px; font-weight: 600;
+   122	    letter-spacing: 0.5px; margin-bottom: 16px;
+   123	  }
+   124	  .section-title { font-size: clamp(22px, 3.5vw, 38px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; line-height: 1.25; }
+   125	  .section-sub { font-size: 15px; color: var(--text-sub); max-width: 560px; line-height: 1.75; font-weight: 400; }
+   126	
+   127	  /* PAIN */
+   128	  .pain-section { background: #0a0c1b; }
+   129	  .pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-top: 48px; }
+   130	  .pain-card {
+   131	    background: var(--bg-card); border: 1px solid var(--border);
+   132	    border-radius: 16px; padding: 24px; transition: all 0.3s;
+   133	  }
+   134	  .pain-card:hover { border-color: rgba(91,110,245,0.4); transform: translateY(-4px); box-shadow: 0 16px 48px rgba(91,110,245,0.12); }
+   135	  .pain-emoji { font-size: 32px; margin-bottom: 14px; display: block; }
+   136	  .pain-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: var(--secondary); line-height: 1.4; }
+   137	  .pain-card p { color: var(--text-sub); font-size: 14px; line-height: 1.75; }
+   138	
+   139	  /* FEATURES */
+   140	  .feature-list { display: flex; flex-direction: column; gap: 60px; margin-top: 60px; }
+   141	  .feature-item { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+   142	  .feature-item.reverse { direction: rtl; }
+   143	  .feature-item.reverse > * { direction: ltr; }
+   144	  .feature-visual {
+   145	    background: var(--bg-card); border: 1px solid var(--border);
+   146	    border-radius: 20px; padding: 36px; text-align: center; position: relative; overflow: hidden;
+   147	  }
+   148	  .feature-icon-big { font-size: 60px; display: block; margin-bottom: 16px; }
+   149	  .feature-mockup {
+   150	    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+   151	    border-radius: 16px; padding: 24px; text-align: left; font-size: 13px;
+   152	  }
+   153	  .mock-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+   154	  .mock-row:last-child { border-bottom: none; }
+   155	  .mock-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+   156	  .mock-label { flex: 1; color: var(--text-sub); }
+   157	  .mock-val { color: white; font-weight: 600; }
+   158	  .feature-content .tag { display: inline-block; padding: 5px 14px; border-radius: 50px; font-size: 12px; font-weight: 600; margin-bottom: 16px; }
+   159	  .feature-content h3 { font-size: clamp(20px, 2.5vw, 28px); font-weight: 800; letter-spacing: -0.3px; margin-bottom: 14px; line-height: 1.3; }
+   160	  .feature-content p { color: var(--text-sub); font-size: 15px; line-height: 1.8; margin-bottom: 22px; font-weight: 400; }
+   161	  .feature-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+   162	  .pill { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: var(--text-sub); padding: 7px 15px; border-radius: 50px; font-size: 13px; font-weight: 500; }
+   163	
+   164	  /* PHOTO SECTION */
+   165	  .photo-section {
+   166	    background: #ffffff;
+   167	    padding: 80px 24px;
+   168	  }
+   169	  .photo-wrap {
+   170	    max-width: 1100px; margin: 0 auto;
+   171	    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+   172	  }
+   173	  .photo-img-box {
+   174	    position: relative; border-radius: 28px; overflow: hidden;
+   175	    box-shadow: 0 30px 80px rgba(0,0,0,0.15);
+   176	  }
+   177	  .photo-img-box img {
+   178	    width: 100%; height: 420px; object-fit: cover; display: block;
+   179	    transition: transform 0.6s ease;
+   180	  }
+   181	  .photo-img-box:hover img { transform: scale(1.03); }
+   182	  .photo-img-box::after {
+   183	    content: '';
+   184	    position: absolute; inset: 0;
+   185	    background: linear-gradient(180deg, transparent 50%, rgba(13,15,30,0.4) 100%);
+   186	    pointer-events: none;
+   187	  }
+   188	  .photo-badge {
+   189	    position: absolute; bottom: 20px; left: 20px; z-index: 2;
+   190	    background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
+   191	    border: 1px solid rgba(91,110,245,0.2);
+   192	    border-radius: 50px; padding: 8px 18px;
+   193	    font-size: 13px; color: #667eea; font-weight: 700;
+   194	  }
+   195	  .photo-text h2 { font-size: clamp(22px, 3vw, 36px); font-weight: 800; line-height: 1.3; letter-spacing: -0.5px; margin-bottom: 16px; color: #1a1a2e; }
+   196	  .photo-text p { font-size: 14px; color: #6b7280; line-height: 1.8; margin-bottom: 22px; font-weight: 400; }
+   197	  .photo-quote {
+   198	    background: rgba(91,110,245,0.08); border-left: 3px solid var(--primary);
+   199	    border-radius: 0 12px 12px 0; padding: 14px 18px;
+   200	    font-size: 13px; color: #667eea; font-style: italic; line-height: 1.7;
+   201	    margin-bottom: 24px;
+   202	  }
+   203	  .photo-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+   204	  .photo-chip {
+   205	    background: rgba(0,201,167,0.1); border: 1px solid rgba(0,201,167,0.3);
+   206	    color: #059669; padding: 6px 14px; border-radius: 50px;
+   207	    font-size: 12px; font-weight: 600;
+   208	  }
+   209	  @media (max-width: 768px) {
+   210	    .photo-wrap { grid-template-columns: 1fr; gap: 36px; }
+   211	    .photo-img-box img { height: 280px; }
+   212	  }
+   213	
+   214	  /* HOW IT WORKS */
+   215	  .how-section { background: #ffffff; }
+   216	  .steps-wrapper { display: flex; gap: 0; margin-top: 52px; align-items: flex-start; }
+   217	  .step-item { flex: 1; text-align: center; position: relative; padding: 0 16px; }
+   218	  .step-item::after {
+   219	    content: ''; position: absolute; top: 33px;
+   220	    left: calc(50% + 33px); right: calc(-50% + 33px);
+   221	    height: 1.5px; background: linear-gradient(90deg, var(--primary), transparent);
+   222	  }
+   223	  .step-item:last-child::after { display: none; }
+   224	  .step-num {
+   225	    width: 64px; height: 64px; border-radius: 50%;
+   226	    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+   227	    display: flex; align-items: center; justify-content: center;
+   228	    font-size: 22px; font-weight: 800; color: white;
+   229	    margin: 0 auto 18px; box-shadow: 0 6px 24px rgba(91,110,245,0.35);
+   230	  }
+   231	  .step-item h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #1a1a2e; }
+   232	  .step-item p { font-size: 13px; color: #6b7280; line-height: 1.65; }
+   233	  .step-time { display: inline-block; background: rgba(0,201,167,0.12); color: #059669; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 600; margin-top: 8px; }
+   234	
+   235	  /* TESTIMONIALS */
+   236	  .testimonials-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 0; }
+   237	  .testimonial-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; transition: all 0.3s; }
+   238	  .testimonial-card:hover { border-color: rgba(91,110,245,0.35); }
+   239	  .stars { color: #FFD700; font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+   240	  .testimonial-text { font-size: 13px; line-height: 1.8; color: var(--text-sub); margin-bottom: 18px; font-style: italic; }
+   241	  .testimonial-author { display: flex; align-items: center; gap: 12px; }
+   242	  .author-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white; }
+   243	  .author-name { font-weight: 700; font-size: 13px; }
+   244	  .author-info { font-size: 12px; color: var(--text-sub); }
+   245	
+   246	  /* DISEASE TABS */
+   247	  .disease-tabs { display: flex; gap: 10px; margin: 32px 0 40px; flex-wrap: wrap; }
+   248	  .dtab { padding: 9px 22px; border-radius: 50px; background: var(--bg-card); border: 1.5px solid var(--border); color: var(--text-sub); font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+   249	  .dtab.active { background: var(--primary); border-color: var(--primary); color: white; }
+   250	  .dtab:hover:not(.active) { border-color: var(--primary); color: var(--primary); }
+   251	  .disease-panel { display: none; }
+   252	  .disease-panel.active { display: block; }
+   253	  .disease-content-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; align-items: center; }
+   254	  .disease-icon-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 36px; text-align: center; }
+   255	  .disease-icon { font-size: 60px; display: block; margin-bottom: 14px; }
+   256	  .disease-name { font-size: 22px; font-weight: 800; }
+   257	  .disease-count { color: var(--text-sub); margin-top: 6px; font-size: 13px; line-height: 1.5; }
+   258	  .disease-features h4 { font-size: 17px; font-weight: 700; margin-bottom: 16px; line-height: 1.4; }
+   259	  .disease-feature-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+   260	  .disease-feature-item:last-child { border-bottom: none; }
+   261	  .dfi-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+   262	  .dfi-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; line-height: 1.4; }
+   263	  .dfi-text span { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+   264	
+   265	  /* CHART CONTAINER */
+   266	  .chart-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin: 24px 0; }
+   267	  .chart-title { font-size: 15px; font-weight: 700; margin-bottom: 20px; color: var(--text-main); line-height: 1.4; }
+   268	  .chart-wrapper { position: relative; height: 280px; }
+   269	
+   270	  /* ACCORDION */
+   271	  .accordion-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+   272	  .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; transition: all 0.2s; }
+   273	  .accordion-header:hover { background: rgba(91,110,245,0.05); }
+   274	  .accordion-header-text { display: flex; align-items: center; gap: 12px; flex: 1; }
+   275	  .accordion-icon { font-size: 18px; flex-shrink: 0; }
+   276	  .accordion-title { font-size: 15px; font-weight: 600; line-height: 1.5; }
+   277	  .accordion-arrow { font-size: 12px; color: var(--text-sub); transition: transform 0.2s; }
+   278	  .accordion-item.active .accordion-arrow { transform: rotate(180deg); }
+   279	  .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+   280	  .accordion-item.active .accordion-content { max-height: 500px; }
+   281	  .accordion-body { padding: 0 20px 20px; font-size: 14px; line-height: 1.75; color: var(--text-sub); }
+   282	  .accordion-body ul { padding-left: 18px; }
+   283	  .accordion-body li { margin-bottom: 9px; line-height: 1.7; }
+   284	
+   285	  /* EMERGENCY LIST */
+   286	  .emergency-list { display: flex; flex-direction: column; gap: 12px; margin: 20px 0; }
+   287	  .emergency-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; display: flex; align-items: center; gap: 14px; }
+   288	  .emergency-icon { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+   289	  .emergency-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 3px; line-height: 1.4; }
+   290	  .emergency-text span { font-size: 13px; color: var(--text-sub); line-height: 1.65; }
+   291	
+   292	  /* MENTOR CTA BUTTON */
+   293	  .mentor-cta-btn { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; padding: 13px 30px; border-radius: 50px; font-size: 15px; font-weight: 600; text-decoration: none; margin-top: 24px; transition: all 0.3s; box-shadow: 0 4px 16px rgba(91,110,245,0.3); }
+   294	  .mentor-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(91,110,245,0.4); }
+   295	
+   296	  /* CTA */
+   297	  .cta-section { background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 50%, var(--secondary) 100%); text-align: center; padding: 90px 24px; position: relative; overflow: hidden; }
+   298	  .cta-section h2 { font-size: clamp(24px, 4vw, 44px); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 14px; }
+   299	  .cta-section p { font-size: 15px; opacity: 0.82; margin-bottom: 36px; font-weight: 400; }
+   300	  .btn-white { background: white; color: var(--primary); padding: 14px 44px; border-radius: 50px; font-size: 15px; font-weight: 700; text-decoration: none; display: inline-block; transition: all 0.3s; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+   301	  .btn-white:hover { transform: translateY(-3px); }
+   302	
+   303	  /* FOOTER */
+   304	  footer { background: #080a15; border-top: 1px solid var(--border); padding: 48px 24px 32px; text-align: center; }
+   305	  .footer-logo { font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 10px; letter-spacing: -0.3px; }
+   306	  .footer-tagline { color: var(--text-sub); font-size: 13px; margin-bottom: 28px; font-weight: 400; }
+   307	  .footer-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+   308	  .footer-links a { color: var(--text-sub); text-decoration: none; font-size: 13px; transition: color 0.2s; }
+   309	  .footer-links a:hover { color: white; }
+   310	  .footer-copy { color: #444; font-size: 12px; }
+   311	
+   312	  /* RESPONSIVE */
+   313	  @media (max-width: 768px) {
+   314	    .nav-links { display: none; }
+   315	    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+   316	    .stat-item .num { font-size: 26px; }
+   317	    .feature-item, .disease-content-grid { grid-template-columns: 1fr; gap: 28px; }
+   318	    .feature-item.reverse { direction: ltr; }
+   319	    .feature-list { gap: 40px; margin-top: 40px; }
+   320	    .pain-grid { grid-template-columns: 1fr; gap: 12px; }
+   321	    section { padding: 60px 20px; }
+   322	
+   323	    /* HOW IT WORKS 스텝 모바일 */
+   324	    .steps-wrapper {
+   325	      flex-direction: column;
+   326	      gap: 0;
+   327	      align-items: stretch;
+   328	    }
+   329	    .step-item {
+   330	      display: flex;
+   331	      align-items: center;
+   332	      gap: 16px;
+   333	      text-align: left;
+   334	      padding: 16px 12px;
+   335	      border-bottom: 1px solid #e5e7eb;
+   336	    }
+   337	    .step-item:last-child { border-bottom: none; }
+   338	    .step-item::after { display: none; }
+   339	    .step-num {
+   340	      width: 48px; height: 48px;
+   341	      font-size: 18px;
+   342	      flex-shrink: 0;
+   343	      margin: 0;
+   344	    }
+   345	    .step-item h4 { font-size: 15px; margin-bottom: 3px; color: #1a1a2e; line-height: 1.4; }
+   346	    .step-item p { font-size: 14px; color: #6b7280; line-height: 1.6; }
+   347	    .step-time { margin-top: 4px; font-size: 11px; }
+   348	
+   349	    /* TESTIMONIALS 사진 비율 */
+   350	    .testimonial-header-grid { grid-template-columns: 1fr !important; }
+   351	    .testimonial-header-grid > div:first-child { order: 2; }
+   352	    .testimonial-header-grid > div:last-child { order: 1; }
+   353	    .testimonial-header-img {
+   354	      width: 100% !important;
+   355	      height: 220px !important;
+   356	      object-fit: cover !important;
+   357	      object-position: center top !important;
+   358	      border-radius: 16px !important;
+   359	    }
+   360	
+   361	    /* 섹션 타이틀 모바일 — 가독성 개선 */
+   362	    .section-title { font-size: 24px; letter-spacing: -0.3px; line-height: 1.3; }
+   363	    .section-sub { font-size: 15px; line-height: 1.75; }
+   364	    .hero h1 { font-size: 28px; letter-spacing: -0.5px; line-height: 1.3; }
+   365	    .hero p { font-size: 15px; line-height: 1.7; }
+   366	    .btn-primary { padding: 13px 28px; font-size: 15px; }
+   367	    .btn-outline { padding: 11px 24px; font-size: 14px; }
+   368	    .cta-section h2 { font-size: 24px; line-height: 1.3; }
+   369	    .cta-section p { font-size: 15px; line-height: 1.7; }
+   370	    
+   371	    /* 퀵 접근 카드 모바일 - 1열로 */
+   372	    section[style*="background:#ffffff"] div[style*="grid-template-columns:repeat"] {
+   373	      grid-template-columns: 1fr !important;
+   374	      gap: 12px !important;
+   375	    }
+   376	
+   377	    /* 본문 텍스트 모바일 가독성 */
+   378	    .feature-content p { font-size: 15px; line-height: 1.75; }
+   379	    .disease-features h4 { font-size: 16px; }
+   380	    .dfi-text strong { font-size: 14px; }
+   381	    .dfi-text span { font-size: 13px; line-height: 1.65; }
+   382	    .chart-title { font-size: 15px; }
+   383	    .pain-card h3 { font-size: 16px; }
+   384	    .pain-card p { font-size: 14px; line-height: 1.7; }
+   385	
+   386	    /* 차트 모바일 높이 조정 */
+   387	    .chart-wrapper { height: 220px; }
+   388	    
+   389	    /* 아코디언 모바일 최적화 — 가독성 개선 */
+   390	    .accordion-header { padding: 16px 18px; }
+   391	    .accordion-title { font-size: 15px; line-height: 1.5; }
+   392	    .accordion-body { padding: 0 18px 18px; font-size: 14px; line-height: 1.75; }
+   393	    
+   394	    /* 응급 리스트 모바일 최적화 — 가독성 개선 */
+   395	    .emergency-icon { width: 42px; height: 42px; font-size: 18px; }
+   396	    .emergency-text strong { font-size: 14px; line-height: 1.5; }
+   397	    .emergency-text span { font-size: 13px; line-height: 1.65; }
+   398	  }
+   399	
+   400	  /* REVEAL */
+   401	  .reveal { opacity: 0; transform: translateY(40px); transition: all 0.7s ease; }
+   402	  .reveal.visible { opacity: 1; transform: translateY(0); }
+   403	
+   404	  /* 폰트 크기 조절 버튼 */
+   405	  .font-ctrl {
+   406	    display: flex; align-items: center; gap: 4px;
+   407	    background: rgba(255,255,255,0.06); border-radius: 50px; padding: 4px 6px;
+   408	  }
+   409	  .font-btn {
+   410	    width: 28px; height: 28px; border-radius: 50%; border: none;
+   411	    background: transparent; color: var(--text-sub); cursor: pointer;
+   412	    font-weight: 900; font-family: inherit; transition: all 0.2s;
+   413	    display: flex; align-items: center; justify-content: center;
+   414	  }
+   415	  .font-btn:hover { background: rgba(255,255,255,0.12); color: white; }
+   416	  .font-level { font-size: 11px; color: var(--text-sub); min-width: 16px; text-align: center; }
+   417	
+   418	  /* TTS 버튼 */
+   419	  .tts-btn {
+   420	    background: rgba(91,110,245,0.12); border: 1px solid rgba(91,110,245,0.3);
+   421	    color: #a5b0ff; border-radius: 50px; padding: 6px 14px;
+   422	    font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+   423	    display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+   424	  }
+   425	  .tts-btn:hover { background: rgba(91,110,245,0.22); }
+   426	  .tts-btn.speaking { background: rgba(239,68,68,0.15); border-color: rgba(239,68,68,0.3); color: #fca5a5; }
+   427	</style>
+   428	</head>
+   429	<body>
+   430	
+   431	<nav>
+   432	  <a href="index.html" class="nav-logo" style="display:flex; align-items:center; gap:10px; text-decoration:none;">
+   433	    <div style="width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg,#667eea,#764ba2); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:white;">N</div>
+   434	    <span style="font-size:20px; font-weight:900; color:white; letter-spacing:2px;">NUVIN</span>
+   435	  </a>
+   436	  <div class="nav-links">
+   437	    <a href="#pain">문제 인식</a>
+   438	    <a href="#features">핵심 기능</a>
+   439	    <a href="#how">이용 방법</a>
+   440	    <a href="#disease">질환별 지원</a>
+   441	    <!-- 접근성 컨트롤 -->
+   442	    <div class="font-ctrl" title="글자 크기 조절">
+   443	      <button class="font-btn" onclick="changeFontSize(-1)" title="글자 작게">A-</button>
+   444	      <span class="font-level" id="fontLevel">중</span>
+   445	      <button class="font-btn" onclick="changeFontSize(1)" title="글자 크게">A+</button>
+   446	    </div>
+   447	    <button class="tts-btn" id="ttsBtn" onclick="toggleTTS()" title="화면 내용 음성으로 읽기">
+   448	      <i class="fas fa-volume-up"></i> <span id="ttsBtnLabel">읽어주기</span>
+   449	    </button>
+   450	    <a href="index.html" class="nav-cta">무료로 시작하기</a>
+   451	  </div>
+   452	  <!-- 모바일 접근성 버튼 -->
+   453	  <div style="display:flex; align-items:center; gap:8px;" class="md:hidden">
+   454	    <div class="font-ctrl">
+   455	      <button class="font-btn" onclick="changeFontSize(-1)">A-</button>
+   456	      <button class="font-btn" onclick="changeFontSize(1)">A+</button>
+   457	    </div>
+   458	    <button class="tts-btn" onclick="toggleTTS()" style="padding:6px 10px;">
+   459	      <i class="fas fa-volume-up"></i>
+   460	    </button>
+   461	  </div>
+   462	</nav>
+   463	
+   464	<!-- HERO -->
+   465	<section class="hero">
+   466	  <div style="position:relative; z-index:1;">
+   467	    <div class="hero-badge"><span class="dot"></span> 지금 무료 사용 가능 · 앱 설치 불필요</div>
+   468	    <h1>간병의 무게,<br><span class="highlight">혼자 지지 않아도 됩니다</span></h1>
+   469	    <p>암·뇌질환·대사질환 보호자를 위한 맞춤 정보, 선배 멘토, 커뮤니티까지<br>누빈이 당신의 곁에서 함께합니다.</p>
+   470	    <div class="hero-buttons">
+   471	      <a href="index.html" class="btn-primary"><i class="fas fa-play-circle"></i> 지금 무료 시작하기</a>
+   472	      <a href="#features" class="btn-outline"><i class="fas fa-chevron-down"></i> 더 알아보기</a>
+   473	    </div>
+   474	    <!-- 실제 인원 소셜 프루프 -->
+   475	    <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:28px; opacity:0.85;">
+   476	      <div style="display:flex; margin-right:4px;">
+   477	        <div style="width:32px;height:32px;border-radius:50%;background:#7c3aed;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;margin-right:-8px;">김</div>
+   478	        <div style="width:32px;height:32px;border-radius:50%;background:#db2777;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;margin-right:-8px;">이</div>
+   479	        <div style="width:32px;height:32px;border-radius:50%;background:#2563eb;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;margin-right:-8px;">박</div>
+   480	        <div style="width:32px;height:32px;border-radius:50%;background:#059669;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:white;">최</div>
+   481	      </div>
+   482	      <p style="font-size:13px;color:rgba(255,255,255,0.7);"><span id="heroMemberCount" style="color:white;font-weight:800;">200+</span>명의 보호자가 함께하고 있어요</p>
+   483	    </div>
+   484	  </div>
+   485	</section>
+   486	
+   487	<!-- STATS -->
+   488	<div class="stats-bar">
+   489	  <div class="stats-grid">
+   490	    <div class="stat-item"><span class="num" id="ldMemberCount">200+</span><div class="label">함께하는 보호자</div></div>
+   491	    <div class="stat-item"><span class="num">3가지</span><div class="label">주요 질환 지원</div></div>
+   492	    <div class="stat-item"><span class="num">30초</span><div class="label">가입 소요 시간</div></div>
+   493	    <div class="stat-item"><span class="num">100%</span><div class="label">무료 서비스</div></div>
+   494	  </div>
+   495	</div>
+   496	
+   497	<!-- PHOTO SECTION -->
+   498	<section class="photo-section">
+   499	  <div class="photo-wrap">
+   500	    <div class="photo-img-box reveal">
+   501	      <img src="images/care-photo.jpg" alt="간병사와 어르신이 함께 웃는 따뜻한 케어 장면" loading="lazy"/>
+   502	      <div class="photo-badge">💛 함께하는 돌봄</div>
+   503	    </div>
+   504	    <div class="photo-text reveal">
+   505	      <div class="section-tag" style="background:rgba(0,201,167,0.12); color:#5eecd4; border-color:rgba(0,201,167,0.3);">누빈이 꿈꾸는 간병</div>
+   506	      <h2>혼자가 아닌,<br><span style="background:linear-gradient(135deg,#5B6EF5,#FF6B8A); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">함께하는 케어</span></h2>
+   507	      <p>가족이 아프면 보호자도 함께 무너집니다.<br>누빈은 그 무게를 나눌 수 있도록<br>정보·사람·커뮤니티를 모두 연결합니다.</p>
+   508	      <div class="photo-quote">
+   509	        "처음엔 무엇을 어떻게 해야 할지 전혀 몰랐어요.<br>누군가 곁에서 알려줬으면 했는데, 이제는 그게 가능해졌어요."
+   510	      </div>
+   511	      <div class="photo-chips">
+   512	        <span class="photo-chip">✅ 완전 무료</span>
+   513	        <span class="photo-chip">🤝 1:1 멘토 연결</span>
+   514	        <span class="photo-chip">💬 익명 커뮤니티</span>
+   515	        <span class="photo-chip">📋 맞춤 가이드</span>
+   516	      </div>
+   517	    </div>
+   518	  </div>
+   519	</section>
+   520	
+   521	<!-- PAIN POINTS -->
+   522	<section id="pain" class="pain-section">
+   523	  <div class="section-inner">
+   524	    <div class="reveal" style="text-align:center; margin-bottom:20px;">
+   525	      <div class="section-tag">보호자의 현실</div>
+   526	      <h2 class="section-title">혼자 감당하기엔<br>너무 많고, 너무 어렵습니다</h2>
+   527	      <p class="section-sub" style="margin:0 auto;">갑작스럽게 찾아온 가족의 중증 질환. 어디서부터 시작해야 할지, 무엇을 해야 할지 아무도 알려주지 않습니다.</p>
+   528	    </div>
+   529	    <div class="pain-grid">
+   530	      <div class="pain-card reveal"><span class="pain-emoji">😰</span><h3>정보 과부하</h3><p>검색할수록 넘치는 정보, 하지만 우리 환자에게 맞는 정보인지 알 수가 없어요. 믿을 수 있는 출처도 찾기 어렵고, 의학 용어는 낯설기만 합니다.</p></div>
+   531	      <div class="pain-card reveal"><span class="pain-emoji">💸</span><h3>치료비 부담</h3><p>지원금은 있다는데 어떻게 신청해야 하는지 모르겠어요. 복잡한 서류, 기관마다 다른 절차, 기한을 놓치면 받을 수 없다는 불안감.</p></div>
+   532	      <div class="pain-card reveal"><span class="pain-emoji">😔</span><h3>감정적 고립감</h3><p>주변에 같은 상황인 사람이 없어 공감받기 어렵습니다. "힘들다"고 말해도 누구도 정확히 이해하지 못하는 외로움.</p></div>
+   533	      <div class="pain-card reveal"><span class="pain-emoji">🌙</span><h3>보호자 번아웃</h3><p>24시간 환자 곁에 있어야 한다는 압박감, 나 자신을 돌볼 시간도 여유도 없다는 자책감. 보호자도 무너질 수 있습니다.</p></div>
+   534	      <div class="pain-card reveal"><span class="pain-emoji">🏥</span><h3>병원 소통 어려움</h3><p>의사에게 물어봐야 할 것들이 있는데, 짧은 진료 시간에 다 묻지 못하고 나옵니다. 뭘 질문해야 하는지조차 모르겠어요.</p></div>
+   535	      <div class="pain-card reveal"><span class="pain-emoji">📅</span><h3>일정 관리 혼란</h3><p>복약 시간, 검사 예약, 재활 일정, 영양 관리... 챙겨야 할 것이 너무 많아 머리가 하얘집니다.</p></div>
+   536	    </div>
+   537	  </div>
+   538	</section>
+   539	
+   540	<!-- 서비스 현황 알림 배너 -->
+   541	<div style="background:linear-gradient(90deg,rgba(91,110,245,0.15),rgba(0,201,167,0.12)); border-top:1px solid rgba(91,110,245,0.3); border-bottom:1px solid rgba(0,201,167,0.2); padding:14px 24px; text-align:center;">
+   542	  <p style="font-size:13px; color:#a5b4fc; font-weight:600; margin:0;">🚀 <strong style="color:white;">서비스 베타 운영 중</strong> · 가이드북·멘토링·커뮤니티 모두 무료 · <a href="community.html" style="color:#5eecd4; text-decoration:underline;">커뮤니티 바로가기</a> · <a href="community.html#sos" style="color:#fca5a5; text-decoration:underline;">🆘 SOS 긴급질문</a></p>
+   543	</div>
+   544	
+   545	<!-- FEATURES -->
+   546	<section id="features" style="background: var(--bg-dark);">
+   547	  <div class="section-inner">
+   548	    <div class="reveal" style="text-align:center; margin-bottom:20px;">
+   549	      <div class="section-tag">핵심 기능</div>
+   550	      <h2 class="section-title">누빈이 제공하는<br>4가지 솔루션</h2>
+   551	    </div>
+   552	    <div class="feature-list">
+   553	      <div class="feature-item reveal">
+   554	        <div class="feature-visual">
+   555	          <span class="feature-icon-big">📚</span>
+   556	          <div class="feature-mockup">
+   557	            <div class="mock-row"><span class="mock-dot" style="background:#5B6EF5"></span><span class="mock-label">항암 치료 이해하기</span><span class="mock-val">1장</span></div>
+   558	            <div class="mock-row"><span class="mock-dot" style="background:#FF6B8A"></span><span class="mock-label">부작용 대처 방법</span><span class="mock-val">2장</span></div>
+   559	            <div class="mock-row"><span class="mock-dot" style="background:#00C9A7"></span><span class="mock-label">지원금 신청 가이드</span><span class="mock-val">3장</span></div>
+   560	            <div class="mock-row"><span class="mock-dot" style="background:#F59E0B"></span><span class="mock-label">보호자 자기 돌봄</span><span class="mock-val">4장</span></div>
+   561	          </div>
+   562	        </div>
+   563	        <div class="feature-content">
+   564	          <span class="tag" style="background:rgba(91,110,245,0.15); color:#a5b0ff;">① 가이드북</span>
+   565	          <h3>질환별 맞춤<br>가이드북 제공</h3>
+   566	          <p>암·뇌질환·대사질환 보호자를 위해 전문가가 직접 작성한 단계별 가이드입니다. "이것만 알면 된다"는 핵심만 담았습니다.</p>
+   567	          <div class="feature-pills">
+   568	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 전문의 감수</span>
+   569	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 질환별 맞춤</span>
+   570	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 쉬운 언어</span>
+   571	          </div>
+   572	        </div>
+   573	      </div>
+   574	      <div class="feature-item reverse reveal">
+   575	        <div class="feature-visual">
+   576	          <span class="feature-icon-big">🤝</span>
+   577	          <div class="feature-mockup">
+   578	            <div class="mock-row"><span class="mock-dot" style="background:#5B6EF5"></span><span class="mock-label">김○○ 멘토 (암 4년)</span><span class="mock-val" style="color:var(--accent)">매칭중</span></div>
+   579	            <div class="mock-row"><span class="mock-dot" style="background:#FF6B8A"></span><span class="mock-label">이○○ 멘토 (뇌질환 2년)</span><span class="mock-val">대기중</span></div>
+   580	            <div class="mock-row"><span class="mock-dot" style="background:#00C9A7"></span><span class="mock-label">박○○ 멘토 (대사질환 6년)</span><span class="mock-val">대기중</span></div>
+   581	          </div>
+   582	        </div>
+   583	        <div class="feature-content">
+   584	          <span class="tag" style="background:rgba(255,107,138,0.15); color:#ff9bb0;">② 1:1 멘토링</span>
+   585	          <h3>같은 길을 걸어온<br>선배 보호자와 연결</h3>
+   586	          <p>직접 간병을 경험한 선배 보호자 멘토들이 함께합니다. 병원 추천부터 감정 공감까지, 살아있는 경험에서 나온 진짜 도움을 받아보세요.</p>
+   587	          <div class="feature-pills">
+   588	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 질환 일치 매칭</span>
+   589	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 1:1 대화</span>
+   590	            <span class="pill"><i class="fas fa-shield-alt" style="color:#fbbf24"></i> 멘토 자격 검증</span>
+   591	          </div>
+   592	        </div>
+   593	      </div>
+   594	      <div class="feature-item reveal">
+   595	        <div class="feature-visual">
+   596	          <span class="feature-icon-big">💬</span>
+   597	          <div class="feature-mockup">
+   598	            <div class="mock-row"><span class="mock-dot" style="background:#5B6EF5"></span><span class="mock-label">항암치료 중 식사 거부...</span><span class="mock-val">댓글 12</span></div>
+   599	            <div class="mock-row"><span class="mock-dot" style="background:#FF6B8A"></span><span class="mock-label">뇌졸중 재활병원 추천</span><span class="mock-val">댓글 8</span></div>
+   600	            <div class="mock-row"><span class="mock-dot" style="background:#00C9A7"></span><span class="mock-label">저도 처음엔 무서웠는데...</span><span class="mock-val">좋아요 34</span></div>
+   601	          </div>
+   602	        </div>
+   603	        <div class="feature-content">
+   604	          <span class="tag" style="background:rgba(0,201,167,0.15); color:#5eecd4;">③ 커뮤니티</span>
+   605	          <h3>당신의 이야기를<br>들어줄 사람이 있습니다</h3>
+   606	          <p>같은 상황의 보호자들이 모인 공간입니다. 정보를 나누고, 위로받고, 혼자가 아님을 느껴보세요.</p>
+   607	          <div class="feature-pills">
+   608	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 질환별 게시판</span>
+   609	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 익명 참여</span>
+   610	          </div>
+   611	        </div>
+   612	      </div>
+   613	      <div class="feature-item reverse reveal">
+   614	        <div class="feature-visual">
+   615	          <span class="feature-icon-big">📊</span>
+   616	          <div class="feature-mockup">
+   617	            <div class="mock-row"><span class="mock-dot" style="background:var(--accent)"></span><span class="mock-label">오늘의 복약 체크</span><span class="mock-val" style="color:var(--accent)">✓ 완료</span></div>
+   618	            <div class="mock-row"><span class="mock-dot" style="background:#F59E0B"></span><span class="mock-label">식사량 기록</span><span class="mock-val" style="color:#F59E0B">기록 필요</span></div>
+   619	            <div class="mock-row"><span class="mock-dot" style="background:#5B6EF5"></span><span class="mock-label">다음 외래 예약</span><span class="mock-val">4월 14일</span></div>
+   620	          </div>
+   621	        </div>
+   622	        <div class="feature-content">
+   623	          <span class="tag" style="background:rgba(245,158,11,0.15); color:#fbbf24;">④ 간병 대시보드</span>
+   624	          <h3>오늘 해야 할 일을<br>한눈에 관리하세요</h3>
+   625	          <p>복약, 식사, 재활, 병원 일정까지. 머릿속에 담아두던 모든 것을 정리하고 놓치는 게 없도록 알림까지 도와드립니다.</p>
+   626	          <div class="feature-pills">
+   627	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 체크리스트</span>
+   628	            <span class="pill"><i class="fas fa-check" style="color:var(--accent)"></i> 일정 관리</span>
+   629	          </div>
+   630	        </div>
+   631	      </div>
+   632	    </div>
+   633	  </div>
+   634	</section>
+   635	
+   636	<!-- 실제 기능 빠른 접근 카드 -->
+   637	<section style="background:#ffffff; padding:60px 24px;">
+   638	  <div class="section-inner">
+   639	    <div class="reveal" style="text-align:center; margin-bottom:32px;">
+   640	      <div class="section-tag" style="background:rgba(0,201,167,0.1); color:#059669; border:none;">지금 바로 사용하기</div>
+   641	      <h2 class="section-title" style="font-size:clamp(22px,4vw,36px); color:#1a1a2e;">모든 기능이<br>이미 준비되어 있습니다</h2>
+   642	    </div>
+   643	    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px; max-width:900px; margin:0 auto;">
+   644	      <a href="index.html" class="reveal" style="background:#ffffff; border:2px solid #e5e7eb; border-radius:20px; padding:24px; text-decoration:none; display:block; transition:all 0.3s; box-shadow:0 4px 12px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(91,110,245,0.15)'; this.style.borderColor='#667eea';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'; this.style.borderColor='#e5e7eb';">
+   645	        <div style="font-size:28px; margin-bottom:12px;">📝</div>
+   646	        <h4 style="font-size:15px; font-weight:800; color:#1a1a2e; margin-bottom:6px;">무료 가입하기</h4>
+   647	        <p style="font-size:12px; color:#6b7280;">30초 · 앱 설치 불필요</p>
+   648	        <span style="font-size:12px; color:#667eea; font-weight:700;">→ 지금 시작</span>
+   649	      </a>
+   650	      <a href="community.html" class="reveal" style="background:#ffffff; border:2px solid #e5e7eb; border-radius:20px; padding:24px; text-decoration:none; display:block; transition:all 0.3s; box-shadow:0 4px 12px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(0,201,167,0.15)'; this.style.borderColor='#00C9A7';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'; this.style.borderColor='#e5e7eb';">
+   651	        <div style="font-size:28px; margin-bottom:12px;">💬</div>
+   652	        <h4 style="font-size:15px; font-weight:800; color:#1a1a2e; margin-bottom:6px;">커뮤니티</h4>
+   653	        <p style="font-size:12px; color:#6b7280;">보호자들과 소통</p>
+   654	        <span style="font-size:12px; color:#059669; font-weight:700;">→ 바로가기</span>
+   655	      </a>
+   656	      <a href="mentors.html" class="reveal" style="background:#ffffff; border:2px solid #e5e7eb; border-radius:20px; padding:24px; text-decoration:none; display:block; transition:all 0.3s; box-shadow:0 4px 12px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(255,107,138,0.15)'; this.style.borderColor='#FF6B8A';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'; this.style.borderColor='#e5e7eb';">
+   657	        <div style="font-size:28px; margin-bottom:12px;">🤝</div>
+   658	        <h4 style="font-size:15px; font-weight:800; color:#1a1a2e; margin-bottom:6px;">멘토 연결</h4>
+   659	        <p style="font-size:12px; color:#6b7280;">선배 보호자와 1:1</p>
+   660	        <span style="font-size:12px; color:#FF6B8A; font-weight:700;">→ 바로가기</span>
+   661	      </a>
+   662	      <a href="dashboard.html" class="reveal" style="background:#ffffff; border:2px solid #e5e7eb; border-radius:20px; padding:24px; text-decoration:none; display:block; transition:all 0.3s; box-shadow:0 4px 12px rgba(0,0,0,0.05);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(245,158,11,0.15)'; this.style.borderColor='#fbbf24';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.05)'; this.style.borderColor='#e5e7eb';">
+   663	        <div style="font-size:28px; margin-bottom:12px;">📊</div>
+   664	        <h4 style="font-size:15px; font-weight:800; color:#1a1a2e; margin-bottom:6px;">간병 대시보드</h4>
+   665	        <p style="font-size:12px; color:#6b7280;">복약·일정 관리</p>
+   666	        <span style="font-size:12px; color:#f59e0b; font-weight:700;">→ 바로가기</span>
+   667	      </a>
+   668	      <a href="community.html#sos" class="reveal" style="background:linear-gradient(135deg,#fef2f2,#fee2e2); border:2px solid #fca5a5; border-radius:20px; padding:24px; text-decoration:none; display:block; transition:all 0.3s; box-shadow:0 4px 12px rgba(239,68,68,0.1);" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 8px 24px rgba(239,68,68,0.2)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(239,68,68,0.1)';">
+   669	        <div style="font-size:28px; margin-bottom:12px;">🆘</div>
+   670	        <h4 style="font-size:15px; font-weight:800; color:#dc2626; margin-bottom:6px;">SOS 긴급질문</h4>
+   671	        <p style="font-size:12px; color:#991b1b;">응급 상황 즉시 도움</p>
+   672	        <span style="font-size:12px; color:#dc2626; font-weight:700;">→ 긴급 도움</span>
+   673	      </a>
+   674	    </div>
+   675	  </div>
+   676	</section>
+   677	
+   678	<!-- MENTOR TRUST SECTION -->
+   679	<section style="background: linear-gradient(135deg,#0d0f1e,#1a0f2e); padding: 80px 24px;">
+   680	  <div class="section-inner">
+   681	    <div class="reveal" style="text-align:center; margin-bottom:48px;">
+   682	      <div class="section-tag" style="background:rgba(251,191,36,0.12); color:#fbbf24; border-color:rgba(251,191,36,0.3);">🛡️ 멘토 안전 시스템</div>
+   683	      <h2 class="section-title" style="font-size:clamp(20px,3vw,32px);">"이 멘토가 진짜 경험자인가요?"<br>당연한 걱정, 누빈이 해결합니다</h2>
+   684	      <p class="section-sub" style="margin:0 auto;">건강보조식품 판매, 보험 권유 등 불순한 목적의 접근을 원천 차단하는 3단계 검증 시스템을 운영합니다.</p>
+   685	    </div>
+   686	    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; max-width:860px; margin:0 auto;">
+   687	      <div class="reveal" style="background:#151728; border:1px solid rgba(251,191,36,0.2); border-radius:16px; padding:22px;">
+   688	        <div style="width:40px;height:40px;border-radius:12px;background:rgba(251,191,36,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;">📋</div>
+   689	        <h4 style="font-size:14px;font-weight:700;color:white;margin-bottom:6px;">1단계 — 자기 선언 동의</h4>
+   690	        <p style="font-size:12px;color:#9ea8c4;line-height:1.75;">멘토 신청 시 "본인이 직접 간병을 경험한 보호자임을 확인하며, 판매·홍보 목적 활동 시 즉시 퇴출됨에 동의합니다"에 서명합니다.</p>
+   691	      </div>
+   692	      <div class="reveal" style="background:#151728; border:1px solid rgba(91,110,245,0.2); border-radius:16px; padding:22px;">
+   693	        <div style="width:40px;height:40px;border-radius:12px;background:rgba(91,110,245,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;">🔍</div>
+   694	        <h4 style="font-size:14px;font-weight:700;color:white;margin-bottom:6px;">2단계 — 관리자 검토</h4>
+   695	        <p style="font-size:12px;color:#9ea8c4;line-height:1.75;">모든 멘토 신청은 누빈 운영팀이 직접 검토합니다. 질환 경험 내용의 구체성·일관성을 확인하여 승인 여부를 결정합니다.</p>
+   696	      </div>
+   697	      <div class="reveal" style="background:#151728; border:1px solid rgba(0,201,167,0.2); border-radius:16px; padding:22px;">
+   698	        <div style="width:40px;height:40px;border-radius:12px;background:rgba(0,201,167,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;">🚨</div>
+   699	        <h4 style="font-size:14px;font-weight:700;color:white;margin-bottom:6px;">3단계 — 실시간 신고 시스템</h4>
+   700	        <p style="font-size:12px;color:#9ea8c4;line-height:1.75;">대화 중 판매 권유, 외부 유도 등 부적절한 행동 즉시 신고 가능. 신고 접수 즉시 해당 멘토 활동 정지 후 조사합니다.</p>
+   701	      </div>
+   702	    </div>
+   703	    <div class="reveal" style="text-align:center; margin-top:32px; padding:20px; background:rgba(0,201,167,0.06); border:1px solid rgba(0,201,167,0.2); border-radius:16px; max-width:640px; margin-left:auto; margin-right:auto; margin-top:32px;">
+   704	      <p style="font-size:14px;color:#5eecd4;font-weight:700;">✅ 누빈의 약속</p>
+   705	      <p style="font-size:13px;color:#9ea8c4;margin-top:6px;line-height:1.7;">누빈은 어떠한 제품 판매나 광고 수익 없이 운영됩니다. 멘토는 무보수 자원봉사자이며, 보호자의 신뢰를 최우선 가치로 삼습니다.</p>
+   706	    </div>
+   707	  </div>
+   708	</section>
+   709	
+   710	<!-- HOW IT WORKS -->
+   711	<section id="how" class="how-section">
+   712	  <div class="section-inner">
+   713	    <div class="reveal" style="text-align:center;">
+   714	      <div class="section-tag" style="background:rgba(91,110,245,0.12); color:#667eea;">이용 방법</div>
+   715	      <h2 class="section-title" style="color:#1a1a2e;">30초면 충분합니다</h2>
+   716	      <p class="section-sub" style="margin: 0 auto 20px; color:#6b7280;">복잡한 가입 절차 없이, 앱 설치도 없이. 지금 바로 시작하세요.</p>
+   717	    </div>
+   718	    <div class="steps-wrapper reveal">
+   719	      <div class="step-item"><div class="step-num">1</div><h4>질환 선택</h4><p>환자의 주요 질환을<br>선택합니다</p><span class="step-time">5초</span></div>
+   720	      <div class="step-item"><div class="step-num">2</div><h4>보호자 정보</h4><p>이름, 이메일만<br>입력합니다</p><span class="step-time">15초</span></div>
+   721	      <div class="step-item"><div class="step-num">3</div><h4>맞춤 가이드 수령</h4><p>즉시 가이드북과<br>멘토를 연결받습니다</p><span class="step-time">즉시</span></div>
+   722	      <div class="step-item"><div class="step-num">4</div><h4>커뮤니티 참여</h4><p>동일 질환 보호자들과<br>연결됩니다</p><span class="step-time">영구 무료</span></div>
+   723	    </div>
+   724	  </div>
+   725	</section>
+   726	
+   727	<!-- DISEASE TABS -->
+   728	<section id="disease" style="background: var(--bg-dark);">
+   729	  <div class="section-inner">
+   730	    <div class="reveal" style="text-align:center; margin-bottom:20px;">
+   731	      <div class="section-tag">질환별 지원</div>
+   732	      <h2 class="section-title">어떤 질환이든<br>맞춤 지원합니다</h2>
+   733	    </div>
+   734	    <div class="disease-tabs reveal">
+   735	      <button class="dtab active" onclick="switchDisease('cancer', this)">🎗️ 암</button>
+   736	      <button class="dtab" onclick="switchDisease('brain', this)">🧠 뇌질환</button>
+   737	      <button class="dtab" onclick="switchDisease('metabolic', this)">💊 대사질환</button>
+   738	    </div>
+   739	    <div id="panel-cancer" class="disease-panel active">
+   740	      <div class="disease-content-grid">
+   741	        <div class="disease-icon-box"><span class="disease-icon">🎗️</span><div class="disease-name">암 보호자</div><div class="disease-count">전체 가입자의 55% · 가장 많은 지원 커뮤니티</div></div>
+   742	        <div class="disease-features">
+   743	          <h4>암 보호자를 위한 특별 지원</h4>
+   744	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(91,110,245,0.15)">📋</div><div class="dfi-text"><strong>항암 치료 단계별 가이드</strong><span>수술 전·후, 항암·방사선 치료, 회복기 단계별 안내</span></div></div>
+   745	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(255,107,138,0.15)">💰</div><div class="dfi-text"><strong>암 환자 지원금 통합 가이드</strong><span>건강보험 산정특례, 암 환자 의료비 지원사업 등</span></div></div>
+   746	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(0,201,167,0.15)">🥗</div><div class="dfi-text"><strong>항암 중 식이요법 관리</strong><span>식사 거부 대처법, 항암 중 추천 음식</span></div></div>
+   747	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(245,158,11,0.15)">🤝</div><div class="dfi-text"><strong>항암 경험 멘토 매칭</strong><span>같은 암 종류를 경험한 선배 보호자 연결</span></div></div>
+   748	        </div>
+   749	      </div>
+   750	
+   751	      <!-- 치료비 vs 지원금 차트 -->
+   752	      <div class="chart-container">
+   753	        <div class="chart-title">💰 암 치료비 vs 실제 지원 가능 금액 비교</div>
+   754	        <div class="chart-wrapper">
+   755	          <canvas id="cancerSupportChart"></canvas>
+   756	        </div>
+   757	        <p style="font-size:12px; color:var(--text-sub); margin-top:16px; line-height:1.6;">
+   758	          * 평균 치료비는 항암 치료 1년 기준 (건강보험 적용 후)<br>
+   759	          * 지원금은 산정특례 + 의료비 지원사업 + 긴급 복지 지원 합산
+   760	        </p>
+   761	      </div>
+   762	
+   763	      <!-- 항암 중 식단 관리 팁 -->
+   764	      <div style="margin-top:28px;">
+   765	        <h4 style="font-size:15px; font-weight:700; margin-bottom:16px;">🥗 항암 중 식단 관리 핵심 팁</h4>
+   766	        <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(0,201,167,0.15)">1️⃣</div><div class="dfi-text"><strong>소량씩 자주 먹기</strong><span>한 번에 많이 먹지 말고 3~4시간 간격으로 소량 섭취</span></div></div>
+   767	        <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(0,201,167,0.15)">2️⃣</div><div class="dfi-text"><strong>고단백 음식 우선</strong><span>계란, 두부, 닭가슴살 등 부드러운 단백질 식품</span></div></div>
+   768	        <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(0,201,167,0.15)">3️⃣</div><div class="dfi-text"><strong>입맛 없을 때 대처법</strong><span>차가운 음식, 신맛 첨가, 향신료 사용으로 입맛 돋우기</span></div></div>
+   769	      </div>
+   770	
+   771	      <!-- 멘토 연결 CTA -->
+   772	      <div style="text-align:center; margin-top:32px;">
+   773	        <a href="mentors.html" class="mentor-cta-btn">
+   774	          <span>🤝</span>
+   775	          <span>항암 경험 멘토 만나보기</span>
+   776	        </a>
+   777	      </div>
+   778	    </div>
+   779	    <div id="panel-brain" class="disease-panel">
+   780	      <div class="disease-content-grid">
+   781	        <div class="disease-icon-box"><span class="disease-icon">🧠</span><div class="disease-name">뇌질환 보호자</div><div class="disease-count">재활 정보 중심</div></div>
+   782	        <div class="disease-features">
+   783	          <h4>뇌질환 보호자를 위한 특별 지원</h4>
+   784	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(91,110,245,0.15)">🏥</div><div class="dfi-text"><strong>재활 병원 선택 가이드</strong><span>급성기·아급성기·만성기 단계별 재활병원 선택법</span></div></div>
+   785	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(255,107,138,0.15)">🧩</div><div class="dfi-text"><strong>인지·언어·운동 재활 가이드</strong><span>집에서 할 수 있는 재활 운동, 언어치료 방법</span></div></div>
+   786	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(0,201,167,0.15)">⚠️</div><div class="dfi-text"><strong>응급상황 대처 매뉴얼</strong><span>재발 징후, 낙상 예방, 흡인성 폐렴 예방</span></div></div>
+   787	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(245,158,11,0.15)">📞</div><div class="dfi-text"><strong>뇌질환 전문 멘토 연결</strong><span>뇌졸중·치매·파킨슨 경험 선배 보호자 매칭</span></div></div>
+   788	        </div>
+   789	      </div>
+   790	
+   791	      <!-- 재활 팁 아코디언 -->
+   792	      <div style="margin-top:32px;">
+   793	        <h4 style="font-size:15px; font-weight:700; margin-bottom:16px;">🧩 집에서 할 수 있는 재활 운동 가이드</h4>
+   794	        <div class="accordion-item" onclick="toggleAccordion(this)">
+   795	          <div class="accordion-header">
+   796	            <div class="accordion-header-text">
+   797	              <span class="accordion-icon">🏃</span>
+   798	              <span class="accordion-title">운동 재활 — 근력과 균형 회복</span>
+   799	            </div>
+   800	            <span class="accordion-arrow">▼</span>
+   801	          </div>
+   802	          <div class="accordion-content">
+   803	            <div class="accordion-body">
+   804	              <ul>
+   805	                <li><strong>의자 앉았다 일어서기:</strong> 하루 3회, 10~15회 반복 (허벅지 근력 강화)</li>
+   806	                <li><strong>벽 짚고 종아리 스트레칭:</strong> 30초씩 3세트 (낙상 예방)</li>
+   807	                <li><strong>침대에서 다리 올리기:</strong> 누워서 한쪽 다리씩 10초 유지, 10회 반복</li>
+   808	                <li><strong>⚠️ 주의:</strong> 어지럼증 있으면 즉시 중단, 보호자 곁에서 실시</li>
+   809	              </ul>
+   810	            </div>
+   811	          </div>
+   812	        </div>
+   813	        <div class="accordion-item" onclick="toggleAccordion(this)">
+   814	          <div class="accordion-header">
+   815	            <div class="accordion-header-text">
+   816	              <span class="accordion-icon">🗣️</span>
+   817	              <span class="accordion-title">언어 재활 — 의사소통 능력 회복</span>
+   818	            </div>
+   819	            <span class="accordion-arrow">▼</span>
+   820	          </div>
+   821	          <div class="accordion-content">
+   822	            <div class="accordion-body">
+   823	              <ul>
+   824	                <li><strong>발음 연습:</strong> "가나다라..." 천천히 또박또박 3분씩 하루 3회</li>
+   825	                <li><strong>이름 대기 게임:</strong> 사물 사진 보며 이름 말하기 (식탁, 컵, 신발 등)</li>
+   826	                <li><strong>짧은 문장 따라 하기:</strong> "오늘 날씨가 좋아요" 같은 일상 문장</li>
+   827	                <li><strong>⚠️ 주의:</strong> 서두르지 말고, 틀려도 격려하며 반복</li>
+   828	              </ul>
+   829	            </div>
+   830	          </div>
+   831	        </div>
+   832	        <div class="accordion-item" onclick="toggleAccordion(this)">
+   833	          <div class="accordion-header">
+   834	            <div class="accordion-header-text">
+   835	              <span class="accordion-icon">🧠</span>
+   836	              <span class="accordion-title">인지 재활 — 기억력과 집중력 향상</span>
+   837	            </div>
+   838	            <span class="accordion-arrow">▼</span>
+   839	          </div>
+   840	          <div class="accordion-content">
+   841	            <div class="accordion-body">
+   842	              <ul>
+   843	                <li><strong>간단한 계산:</strong> 10+5=? 20-7=? 수준의 암산 10문제씩</li>
+   844	                <li><strong>가족 이름 기억하기:</strong> 사진 보며 이름·관계 말하기</li>
+   845	                <li><strong>오늘 일과 떠올리기:</strong> 아침·점심·저녁 뭐 먹었는지 회상</li>
+   846	                <li><strong>⚠️ 주의:</strong> 좌절하지 않도록 쉬운 수준부터 시작</li>
+   847	              </ul>
+   848	            </div>
+   849	          </div>
+   850	        </div>
+   851	      </div>
+   852	
+   853	      <!-- 응급 대응 매뉴얼 -->
+   854	      <div style="margin-top:32px;">
+   855	        <h4 style="font-size:15px; font-weight:700; margin-bottom:16px;">⚠️ 응급상황 즉시 대응 매뉴얼</h4>
+   856	        <div class="emergency-list">
+   857	          <div class="emergency-item">
+   858	            <div class="emergency-icon" style="background:rgba(239,68,68,0.15); color:#ef4444;">🚨</div>
+   859	            <div class="emergency-text">
+   860	              <strong>재발 의심 증상 (즉시 119)</strong>
+   861	              <span>갑작스러운 한쪽 마비, 말이 어눌해짐, 심한 두통, 의식 저하</span>
+   862	            </div>
+   863	          </div>
+   864	          <div class="emergency-item">
+   865	            <div class="emergency-icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">⚡</div>
+   866	            <div class="emergency-text">
+   867	              <strong>낙상 예방 체크리스트</strong>
+   868	              <span>미끄럼 방지 매트, 화장실 손잡이, 야간 조명, 신발 뒤꿈치 고정형</span>
+   869	            </div>
+   870	          </div>
+   871	          <div class="emergency-item">
+   872	            <div class="emergency-icon" style="background:rgba(59,130,246,0.15); color:#3b82f6;">💧</div>
+   873	            <div class="emergency-text">
+   874	              <strong>흡인성 폐렴 예방</strong>
+   875	              <span>식사 시 상체 30도 이상 세우기, 물은 조금씩, 식후 30분 눕지 않기</span>
+   876	            </div>
+   877	          </div>
+   878	        </div>
+   879	      </div>
+   880	
+   881	      <!-- 멘토 연결 CTA -->
+   882	      <div style="text-align:center; margin-top:32px;">
+   883	        <a href="mentors.html" class="mentor-cta-btn">
+   884	          <span>📞</span>
+   885	          <span>뇌질환 전문 멘토 연결</span>
+   886	        </a>
+   887	      </div>
+   888	    </div>
+   889	    <div id="panel-metabolic" class="disease-panel">
+   890	      <div class="disease-content-grid">
+   891	        <div class="disease-icon-box"><span class="disease-icon">💊</span><div class="disease-name">대사질환 보호자</div><div class="disease-count">장기 관리 중심</div></div>
+   892	        <div class="disease-features">
+   893	          <h4>대사질환 보호자를 위한 특별 지원</h4>
+   894	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(91,110,245,0.15)">🍱</div><div class="dfi-text"><strong>식이요법 & 혈당 관리 가이드</strong><span>당뇨·고혈압·신장질환별 맞춤 식단 안내</span></div></div>
+   895	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(255,107,138,0.15)">💉</div><div class="dfi-text"><strong>복약 관리 & 인슐린 주사 가이드</strong><span>복약 일정 관리, 인슐린 주사법, 저혈당 대처</span></div></div>
+   896	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(0,201,167,0.15)">🏃</div><div class="dfi-text"><strong>운동요법 & 생활습관 개선</strong><span>안전한 운동 강도, 생활습관 개선 체크리스트</span></div></div>
+   897	          <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(245,158,11,0.15)">📊</div><div class="dfi-text"><strong>장기 관리 대시보드 연동</strong><span>혈당·혈압 기록, 목표 관리, 추세 분석</span></div></div>
+   898	        </div>
+   899	      </div>
+   900	
+   901	      <!-- 혈당 추이 라인 차트 -->
+   902	      <div class="chart-container">
+   903	        <div class="chart-title">📊 최근 1주일 혈당 추이 (예시 데이터)</div>
+   904	        <div class="chart-wrapper">
+   905	          <canvas id="glucoseChart"></canvas>
+   906	        </div>
+   907	        <p style="font-size:12px; color:var(--text-sub); margin-top:16px; line-height:1.6;">
+   908	          * 목표: 공복 혈당 100mg/dL 이하 유지<br>
+   909	          * 실제 데이터는 <a href="dashboard.html" style="color:var(--primary); text-decoration:underline;">대시보드</a>에서 기록하고 관리하세요
+   910	        </p>
+   911	      </div>
+   912	
+   913	      <!-- 당뇨 식단 관리 가이드 -->
+   914	      <div style="margin-top:32px;">
+   915	        <h4 style="font-size:15px; font-weight:700; margin-bottom:16px;">🍱 당뇨 환자 식단 관리 핵심 원칙</h4>
+   916	        <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(91,110,245,0.15)">1️⃣</div><div class="dfi-text"><strong>탄수화물 적정량 유지</strong><span>한 끼 밥 2/3 공기 (현미밥 추천), 빵·면류 줄이기</span></div></div>
+   917	        <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(91,110,245,0.15)">2️⃣</div><div class="dfi-text"><strong>단백질 충분히 섭취</strong><span>생선, 두부, 계란, 살코기 — 매 끼니 손바닥 크기</span></div></div>
+   918	        <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(91,110,245,0.15)">3️⃣</div><div class="dfi-text"><strong>채소 먼저 먹기</strong><span>식사 시작 시 나물·샐러드부터 — 혈당 급상승 방지</span></div></div>
+   919	        <div class="disease-feature-item"><div class="dfi-icon" style="background:rgba(91,110,245,0.15)">4️⃣</div><div class="dfi-text"><strong>간식은 저혈당 대비용</strong><span>견과류 소량, 당 떨어질 때만 사탕 1~2개</span></div></div>
+   920	      </div>
+   921	
+   922	      <!-- 저혈당 응급 대처 -->
+   923	      <div style="margin-top:32px;">
+   924	        <h4 style="font-size:15px; font-weight:700; margin-bottom:16px;">⚠️ 저혈당 쇼크 응급 대처법</h4>
+   925	        <div class="emergency-list">
+   926	          <div class="emergency-item">
+   927	            <div class="emergency-icon" style="background:rgba(239,68,68,0.15); color:#ef4444;">🚨</div>
+   928	            <div class="emergency-text">
+   929	              <strong>저혈당 증상 (70mg/dL 이하)</strong>
+   930	              <span>식은땀, 떨림, 어지럼증, 불안감, 두근거림</span>
+   931	            </div>
+   932	          </div>
+   933	          <div class="emergency-item">
+   934	            <div class="emergency-icon" style="background:rgba(245,158,11,0.15); color:#f59e0b;">🍬</div>
+   935	            <div class="emergency-text">
+   936	              <strong>즉시 조치 (15분 내)</strong>
+   937	              <span>사탕 3개 또는 주스 반 컵 섭취 → 15분 후 재측정</span>
+   938	            </div>
+   939	          </div>
+   940	          <div class="emergency-item">
+   941	            <div class="emergency-icon" style="background:rgba(59,130,246,0.15); color:#3b82f6;">📞</div>
+   942	            <div class="emergency-text">
+   943	              <strong>의식 없으면 즉시 119</strong>
+   944	              <span>억지로 먹이지 말고, 옆으로 눕힌 뒤 응급실 이송</span>
+   945	            </div>
+   946	          </div>
+   947	        </div>
+   948	      </div>
+   949	
+   950	      <!-- 멘토 연결 CTA -->
+   951	      <div style="text-align:center; margin-top:32px;">
+   952	        <a href="mentors.html" class="mentor-cta-btn">
+   953	          <span>📊</span>
+   954	          <span>당뇨 관리 경험 멘토 연결</span>
+   955	        </a>
+   956	      </div>
+   957	    </div>
+   958	  </div>
+   959	</section>
+   960	
+   961	<!-- TESTIMONIALS -->
+   962	<section class="pain-section">
+   963	  <div class="section-inner">
+   964	    <!-- 이미지 + 헤드라인 나란히 -->
+   965	    <div class="reveal testimonial-header-grid" style="display:grid; grid-template-columns:1fr 1.6fr; gap:48px; align-items:center; margin-bottom:60px;">
+   966	      <div style="position:relative; border-radius:24px; overflow:hidden; box-shadow:0 20px 60px rgba(0,0,0,0.45);">
+   967	        <img src="images/care-photo.jpg"
+   968	             alt="간병사와 어르신이 함께 웃는 따뜻한 케어 장면"
+   969	             loading="lazy"
+   970	             class="testimonial-header-img"
+   971	             style="width:100%; height:320px; object-fit:cover; object-position:center 20%; display:block;"/>
+   972	        <div style="position:absolute; inset:0; background:linear-gradient(180deg,transparent 40%,rgba(10,12,27,0.65) 100%);"></div>
+   973	        <div style="position:absolute; bottom:18px; left:18px; display:flex; align-items:center; gap:8px;">
+   974	          <span style="background:rgba(0,201,167,0.9); width:10px; height:10px; border-radius:50%; display:inline-block; animation: pulse 2s infinite;"></span>
+   975	          <span style="font-size:12px; color:white; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,0.5);">함께하면 덜 힘듭니다</span>
+   976	        </div>
+   977	      </div>
+   978	      <div>
+   979	        <div class="section-tag">초기 베타 참여자 목소리</div>
+   980	        <h2 class="section-title" style="margin-bottom:16px;">간병 중인 보호자들이<br>이런 서비스를 원했습니다</h2>
+   981	        <p class="section-sub" style="font-size:14px; color:#6b7280;">※ 아래는 서비스 기획 단계에서 수집한<br>예비 사용자 인터뷰 내용을 재구성한 것입니다.</p>
+   982	      </div>
+   983	    </div>
+   984	    <!-- 모바일: 텍스트 헤더 통합 -->
+   985	    <!-- 이미지A — 인터뷰 카드 아래 따뜻한 마무리 이미지 -->
+   986	    <div class="testimonials-grid">
+   987	      <div class="testimonial-card reveal">
+   988	        <div class="stars" style="color:#fbbf24; font-size:13px; margin-bottom:8px;">인터뷰 참여자 A</div>
+   989	        <p class="testimonial-text">"위암 진단 후 어떻게 해야 할지 몰라서 무작정 검색만 했어요. 질환별로 정리된 가이드가 있었으면 처음부터 '이렇게 하면 되겠다'는 생각이 들었을 것 같아요."</p>
+   990	        <div class="testimonial-author">
+   991	          <div class="author-avatar" style="background: linear-gradient(135deg, #5B6EF5, #8B5CF6);">김</div>
+   992	          <div><div class="author-name">예비 사용자 인터뷰</div><div class="author-info">위암 보호자 · 딸 (40대)</div></div>
+   993	        </div>
+   994	      </div>
+   995	      <div class="testimonial-card reveal">
+   996	        <div class="stars" style="color:#fbbf24; font-size:13px; margin-bottom:8px;">인터뷰 참여자 B</div>
+   997	        <p class="testimonial-text">"재활병원 선택할 때 누군가 직접 경험한 분이 알려주셨으면 좋겠다고 생각했어요. 의사 선생님한테는 물어보기 어려운 현실적인 것들이 너무 많았거든요."</p>
+   998	        <div class="testimonial-author">
+   999	          <div class="author-avatar" style="background: linear-gradient(135deg, #FF6B8A, #F59E0B);">박</div>
+  1000	          <div><div class="author-name">예비 사용자 인터뷰</div><div class="author-info">뇌졸중 보호자 · 배우자 (50대)</div></div>
