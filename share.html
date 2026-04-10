@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <title>누빈 시작 가이드 — NUVIN 소비자 안내</title>
+  <meta name="description" content="누빈 서비스 이용 방법 5단계 시작 가이드 — 무료 가입부터 멘토 매칭, 병원 검색까지"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand: #5B5BD6; --brand2: #8B5CF6;
+      --brand-g: linear-gradient(135deg,#5B5BD6,#8B5CF6);
+      --green: #10B981; --orange: #F59E0B;
+      --text1: #0F0F1A; --text2: #374151; --text3: #6B7280; --text4: #9CA3AF;
+      --bg: #F8F7FF; --bg2: #fff; --border: #E5E7EB; --border2: #EDE9FE;
+      --radius: 14px; --shadow: 0 2px 12px rgba(91,91,214,0.10);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg); color: var(--text1);
+      min-height: 100vh; padding-bottom: 40px;
+    }
+
+    /* HERO */
+    .hero {
+      background: var(--brand-g);
+      padding: 48px 20px 36px;
+      text-align: center; color: #fff;
+    }
+    .hero-logo {
+      width: 64px; height: 64px; border-radius: 18px;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 900;
+      margin: 0 auto 16px;
+    }
+    .hero h1 { font-size: 24px; font-weight: 900; margin-bottom: 8px; }
+    .hero p  { font-size: 14px; opacity: 0.88; line-height: 1.7; margin-bottom: 20px; }
+    .hero-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; color: var(--brand); font-weight: 900;
+      font-size: 15px; padding: 12px 28px; border-radius: 28px;
+      text-decoration: none; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+
+    /* INTRO STEPS */
+    .steps-wrap { padding: 28px 16px 0; }
+    .steps-title {
+      font-size: 18px; font-weight: 900; text-align: center;
+      margin-bottom: 24px; color: var(--text1);
+    }
+    .step-card {
+      background: #fff; border-radius: var(--radius);
+      border: 1px solid var(--border2); padding: 18px;
+      margin-bottom: 14px; box-shadow: var(--shadow);
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--brand-g); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 900; flex-shrink: 0;
+    }
+    .step-body { flex: 1; }
+    .step-title { font-size: 15px; font-weight: 900; margin-bottom: 5px; }
+    .step-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+    .step-action {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--bg); color: var(--brand); font-size: 12px; font-weight: 700;
+      padding: 5px 12px; border-radius: 10px; margin-top: 10px;
+      text-decoration: none; cursor: pointer; border: none;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .step-action:active { background: #EDE9FE; }
+
+    /* SERVICE GRID */
+    .service-section { padding: 28px 16px 0; }
+    .service-title {
+      font-size: 18px; font-weight: 900; margin-bottom: 16px;
+      text-align: center;
+    }
+    .service-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
+    }
+    .svc-card {
+      background: #fff; border-radius: var(--radius); padding: 16px 14px;
+      border: 1px solid var(--border2); box-shadow: var(--shadow);
+      cursor: pointer; text-decoration: none; color: var(--text1);
+      display: flex; flex-direction: column; gap: 8px;
+      transition: transform 0.12s;
+    }
+    .svc-card:active { transform: scale(0.98); }
+    .svc-ico { font-size: 28px; }
+    .svc-name { font-size: 14px; font-weight: 900; }
+    .svc-desc { font-size: 12px; color: var(--text3); line-height: 1.5; }
+    .svc-badge {
+      display: inline-block; font-size: 10px; font-weight: 700;
+      background: #EDE9FE; color: #5B21B6; padding: 2px 7px; border-radius: 8px;
+    }
+
+    /* FAQ */
+    .faq-section { padding: 28px 16px 0; }
+    .faq-title { font-size: 18px; font-weight: 900; margin-bottom: 14px; text-align: center; }
+    .faq-item {
+      background: #fff; border-radius: var(--radius);
+      border: 1px solid var(--border2); margin-bottom: 10px; overflow: hidden;
+    }
+    .faq-q {
+      padding: 14px 16px; font-size: 14px; font-weight: 800;
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer;
+    }
+    .faq-a {
+      padding: 0 16px; font-size: 13px; color: var(--text2);
+      line-height: 1.7; max-height: 0; overflow: hidden;
+      transition: max-height 0.3s, padding 0.3s;
+    }
+    .faq-a.open { max-height: 300px; padding: 0 16px 14px; }
+    .faq-icon { color: var(--brand); transition: transform 0.2s; }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+    /* SHARE SECTION */
+    .share-section {
+      margin: 28px 16px 0; background: var(--brand-g);
+      border-radius: var(--radius); padding: 20px; color: #fff; text-align: center;
+    }
+    .share-section h3 { font-size: 16px; font-weight: 900; margin-bottom: 6px; }
+    .share-section p { font-size: 13px; opacity: 0.85; margin-bottom: 16px; }
+    .share-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .sh-btn {
+      background: rgba(255,255,255,0.22); color: #fff; border: none;
+      border-radius: 20px; padding: 9px 18px; font-size: 13px; font-weight: 700;
+      cursor: pointer; font-family: 'Noto Sans KR', sans-serif;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sh-btn:active { background: rgba(255,255,255,0.35); }
+
+    /* BOTTOM CTA */
+    .bottom-cta {
+      margin: 28px 16px 0; text-align: center;
+    }
+    .btn-start {
+      display: block; background: var(--brand-g); color: #fff;
+      padding: 16px; border-radius: 14px; font-size: 16px; font-weight: 900;
+      text-decoration: none; text-align: center; margin-bottom: 10px;
+      box-shadow: 0 4px 18px rgba(91,91,214,0.35);
+    }
+    .btn-home {
+      display: block; background: #fff; color: var(--brand);
+      padding: 13px; border-radius: 14px; font-size: 14px; font-weight: 700;
+      text-decoration: none; text-align: center;
+      border: 1.5px solid var(--brand);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(15,15,26,0.88); color: #fff; padding: 10px 20px;
+      border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 999;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-logo">N</div>
+  <h1>💜 누빈 시작 가이드</h1>
+  <p>간병 보호자를 위한 토탈 케어 플랫폼<br/>5단계로 시작하는 무료 서비스 안내</p>
+  <a href="index.html?register=1" class="hero-cta">
+    <i class="fas fa-heart"></i> 지금 무료로 시작하기
+  </a>
+</div>
+
+<!-- STEPS -->
+<div class="steps-wrap">
+  <div class="steps-title">🚀 5분 만에 시작하는 누빈</div>
+
+  <div class="step-card">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <div class="step-title">무료 회원 가입 (30초)</div>
+      <div class="step-desc">이름·이메일만 입력하면 완료! 앱 설치 없이 바로 사용할 수 있습니다. 개인정보는 안전하게 암호화되어 보호됩니다.</div>
+      <a href="index.html?register=1" class="step-action">
+        <i class="fas fa-user-plus"></i> 가입하기
+      </a>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <div class="step-title">질환·상황 설정</div>
+      <div class="step-desc">암(종류·병기), 뇌질환, 대사질환 중 해당 상황을 선택하면 맞춤형 정보를 제공받을 수 있습니다. 언제든지 변경 가능합니다.</div>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <div class="step-title">전문 가이드북 받기</div>
+      <div class="step-desc">암·뇌질환·대사질환별 맞춤 간병 가이드북을 무료로 받을 수 있습니다. 의료진이 검토한 신뢰할 수 있는 정보입니다.</div>
+      <a href="guidebook.html" class="step-action">
+        <i class="fas fa-book-open"></i> 가이드북 미리보기
+      </a>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <div class="step-title">선배 멘토와 1:1 연결</div>
+      <div class="step-desc">같은 경험을 한 선배 보호자 340명+ 중 나에게 맞는 멘토와 연결됩니다. 평균 4시간 이내 매칭, 비대면 상담 가능합니다.</div>
+      <a href="mentors.html" target="_blank" class="step-action">
+        <i class="fas fa-hands-helping"></i> 멘토 보기
+      </a>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <div class="step-title">병원 검색 & 커뮤니티 참여</div>
+      <div class="step-desc">320개+ 파트너 병원을 실시간으로 검색하고, 4,200명 간병 가족 커뮤니티에서 정보를 나눠보세요. 누빈 메신저로 병원과 직접 소통도 가능합니다.</div>
+      <a href="nuvin2-home.html" class="step-action">
+        <i class="fas fa-hospital"></i> 병원 검색
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICE GRID -->
+<div class="service-section">
+  <div class="service-title">📱 주요 서비스</div>
+  <div class="service-grid">
+    <a href="guidebook.html" class="svc-card">
+      <div class="svc-ico">📖</div>
+      <div class="svc-name">간병 가이드북</div>
+      <div class="svc-desc">암·뇌·대사질환 전문 정보</div>
+      <span class="svc-badge">회원 전용</span>
+    </a>
+    <a href="mentors.html" target="_blank" class="svc-card">
+      <div class="svc-ico">🤝</div>
+      <div class="svc-name">선배 멘토 매칭</div>
+      <div class="svc-desc">340명+ 경험자와 1:1 연결</div>
+      <span class="svc-badge">무료</span>
+    </a>
+    <a href="nuvin2-home.html" class="svc-card">
+      <div class="svc-ico">🏥</div>
+      <div class="svc-name">병원 찾기</div>
+      <div class="svc-desc">실시간 빈병상 검색</div>
+      <span class="svc-badge">320개+</span>
+    </a>
+    <a href="news.html" class="svc-card">
+      <div class="svc-ico">📰</div>
+      <div class="svc-name">뉴스·정보</div>
+      <div class="svc-desc">최신 의료 뉴스 큐레이션</div>
+      <span class="svc-badge">매일 업데이트</span>
+    </a>
+    <a href="my-workspace.html" class="svc-card">
+      <div class="svc-ico">🗂️</div>
+      <div class="svc-name">내 워크스페이스</div>
+      <div class="svc-desc">체크리스트·병원·멘토 관리</div>
+      <span class="svc-badge">개인화</span>
+    </a>
+    <a href="index.html" class="svc-card">
+      <div class="svc-ico">💬</div>
+      <div class="svc-name">누빈 메신저</div>
+      <div class="svc-desc">병원·멘토와 실시간 소통</div>
+      <span class="svc-badge">신규</span>
+    </a>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="faq-section">
+  <div class="faq-title">❓ 자주 묻는 질문</div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">
+      누빈은 완전 무료인가요?
+      <i class="fas fa-plus faq-icon"></i>
+    </div>
+    <div class="faq-a">
+      네! 가이드북 받기, 멘토 매칭, 병원 검색, 커뮤니티, 누빈 메신저 — 모든 기본 서비스는 100% 무료입니다. 앱 설치도 필요 없습니다.
+    </div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">
+      가입 후 가이드북은 어떻게 받나요?
+      <i class="fas fa-plus faq-icon"></i>
+    </div>
+    <div class="faq-a">
+      가입 완료 후 '마이누빈 → 가이드북 받기' 또는 하단 메뉴 '간병 가이드' 버튼을 클릭하면 바로 열람 가능합니다. PDF 다운로드도 지원합니다.
+    </div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">
+      멘토 매칭은 얼마나 걸리나요?
+      <i class="fas fa-plus faq-icon"></i>
+    </div>
+    <div class="faq-a">
+      평균 4시간 이내 매칭됩니다. 질환 유형, 지역, 병기 등을 기준으로 가장 적합한 선배 보호자를 연결해 드립니다. 야간·주말에는 최대 24시간이 걸릴 수 있습니다.
+    </div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">
+      개인정보는 안전한가요?
+      <i class="fas fa-plus faq-icon"></i>
+    </div>
+    <div class="faq-a">
+      누빈은 개인정보보호법 및 의료법을 준수합니다. 수집된 건강 정보는 맞춤 서비스 제공 목적으로만 사용되며, 암호화되어 보관됩니다. 언제든지 탈퇴·삭제 요청이 가능합니다.
+    </div>
+  </div>
+
+  <div class="faq-item" onclick="toggleFaq(this)">
+    <div class="faq-q">
+      병원 예약도 누빈에서 할 수 있나요?
+      <i class="fas fa-plus faq-icon"></i>
+    </div>
+    <div class="faq-a">
+      네, 파트너 병원 320개+ 중 빈 병상을 실시간으로 확인하고 예약 신청이 가능합니다. '누빈 메신저'를 통해 병원 담당자와 직접 소통할 수도 있습니다.
+    </div>
+  </div>
+</div>
+
+<!-- SHARE -->
+<div class="share-section">
+  <h3>💜 같은 어려움을 겪는 분께 알려주세요</h3>
+  <p>누빈을 필요로 하는 보호자 가족에게 공유해 주세요</p>
+  <div class="share-btns">
+    <button class="sh-btn" onclick="doShare()">
+      <i class="fas fa-share-alt"></i> 공유하기
+    </button>
+    <button class="sh-btn" onclick="copyLink()">
+      <i class="fas fa-link"></i> 링크 복사
+    </button>
+  </div>
+</div>
+
+<!-- BOTTOM CTA -->
+<div class="bottom-cta">
+  <a href="index.html?register=1" class="btn-start">
+    💜 무료로 시작하기 — 30초 완성
+  </a>
+  <a href="index.html" class="btn-home">
+    <i class="fas fa-home"></i> 메인 홈으로
+  </a>
+</div>
+
+<!-- TOAST -->
+<div id="shareToast" class="toast"></div>
+
+<script>
+function toggleFaq(el) {
+  el.classList.toggle('open');
+  el.querySelector('.faq-a').classList.toggle('open');
+}
+
+function doShare() {
+  const data = {
+    title: '💜 누빈 — 간병 보호자 토탈 케어 플랫폼',
+    text: '암·뇌질환·대사질환 보호자를 위한 무료 서비스! 가이드북·멘토·병원 검색을 한 곳에서.',
+    url: location.origin + '/index.html'
+  };
+  if (navigator.share) {
+    navigator.share(data);
+  } else {
+    copyLink();
+  }
+}
+
+function copyLink() {
+  const url = location.origin + '/index.html';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 링크가 복사되었습니다!'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = url; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); ta.remove();
+    showToast('🔗 링크가 복사되었습니다!');
+  }
+}
+
+function showToast(msg) {
+  const el = document.getElementById('shareToast');
+  el.textContent = msg; el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 2500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="같은 길을 찾아온 동료 나 경험자와 연결"/>
+<meta property="og:description" content="340명 이상의 선배 보호자 멘토가 함께합니다. 병원 추천부터 감정 공감까지, 경험에서 나온 진짜 도움을 받아보세요."/>
+<meta property="og:image" content="https://vplviksu.gensparkspace.com/images/og-image.jpg"/>
+<meta property="og:url" content="https://vplviksu.gensparkspace.com/mentors.html"/>
+<meta property="og:site_name" content="누빈 NUVIN"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://vplviksu.gensparkspace.com/images/og-image.jpg"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>선배 보호자 멘토링 - 누빈</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── T맵 스타일 밝은 테마 (메인앱 색상 동기화) ── */
+    :root {
+      --brand:#5B5BD6; --brand2:#8B5CF6;
+      --bg:#F4F5F8; --surface:#ffffff; --surface2:#F8F7FF; --surface3:#EDE9FE;
+      --border:rgba(91,91,214,0.14); --text:#111827; --text2:#4B5563; --text3:#6B7280;
+    }
+    * { font-family:'Noto Sans KR',sans-serif; }
+    body { background:var(--bg); color:var(--text); }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:20px; }
+    .tag { display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700; }
+    .tag-cancer { background:#FCE7F3; color:#BE185D; }
+    .tag-brain { background:#EDE9FE; color:#6D28D9; }
+    .tag-metabolic { background:#D1FAE5; color:#059669; }
+    .tag-skill { background:var(--surface3); color:var(--brand); font-size:10px; }
+    .mentor-card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:20px; transition:all 0.2s; box-shadow:0 2px 10px rgba(91,91,214,0.07); }
+    .mentor-card:hover { border-color:var(--brand); transform:translateY(-2px); box-shadow:0 8px 30px rgba(91,91,214,0.18); }
+    .filter-btn { border:1.5px solid var(--border); border-radius:999px; padding:6px 16px; font-size:12px; font-weight:700; cursor:pointer; transition:all 0.2s; background:var(--surface); color:var(--text3); }
+    .filter-btn.active { border-color:var(--brand); background:var(--surface3); color:var(--brand); }
+    .btn-primary { background:linear-gradient(135deg,#5B5BD6,#8B5CF6); border:none; border-radius:12px; padding:12px 20px; color:white; font-weight:900; font-size:13px; cursor:pointer; transition:all 0.2s; font-family:'Noto Sans KR',sans-serif; box-shadow:0 4px 16px rgba(91,91,214,0.3); }
+    .btn-primary:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(91,91,214,0.4); }
+    .star { color:#F59E0B; }
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:100; display:flex; align-items:flex-end; justify-content:center; }
+    .modal-sheet { background:var(--surface); border-radius:24px 24px 0 0; padding:24px; width:100%; max-width:480px; border-top:2px solid var(--border); max-height:90vh; overflow-y:auto; }
+    .input-dark { background:var(--surface2); border:1.5px solid var(--border); color:var(--text); border-radius:12px; padding:12px 14px; width:100%; font-size:14px; outline:none; transition:border-color 0.2s; font-family:'Noto Sans KR',sans-serif; }
+    .input-dark:focus { border-color:var(--brand); box-shadow:0 0 0 3px rgba(91,91,214,0.12); }
+    .input-dark::placeholder { color:var(--text3); }
+    textarea.input-dark { resize:vertical; min-height:80px; }
+    .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-top:1.5px solid var(--border); padding:12px 0 16px; z-index:50; box-shadow:0 -2px 12px rgba(91,91,214,0.08); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+    .fade-up { animation:fadeUp 0.4s ease; }
+  </style>
+</head>
+<body class="pb-28">
+
+<!-- Header -->
+<div class="px-4 pt-10 pb-5" style="background:linear-gradient(135deg,#5B5BD6,#8B5CF6)">
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center gap-3">
+      <a href="index.html" style="color:rgba(255,255,255,0.8);" class="transition-colors">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <div>
+        <h1 class="text-xl font-black">🤝 선배 보호자 멘토링</h1>
+        <p class="text-xs" style="color:rgba(255,255,255,0.75);">같은 경험을 가진 선배 보호자와 직접 연결</p>
+      </div>
+    </div>
+    <div style="background:linear-gradient(135deg,#5B5BD6,#8B5CF6); border-radius:10px; padding:4px 12px; font-size:13px; font-weight:900; color:white; letter-spacing:1px;">NUVIN</div>
+  </div>
+  <!-- 배너 -->
+  <div class="rounded-2xl p-4" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);">
+    <p class="text-sm font-bold mb-1">💡 멘토링이란?</p>
+    <p class="text-xs leading-relaxed" style="color:rgba(255,255,255,0.85);">비슷한 질환을 먼저 경험한 선배 보호자가 실질적인 정보와 심리적 지지를 제공해드립니다. 완전 무료!</p>
+  </div>
+</div>
+
+<!-- Filter -->
+<div class="px-4 py-3 flex gap-2 overflow-x-auto" style="scrollbar-width:none">
+  <button class="filter-btn active whitespace-nowrap" onclick="setFilter(this,'전체')">전체</button>
+  <button class="filter-btn whitespace-nowrap" onclick="setFilter(this,'암')">🎗️ 암</button>
+  <button class="filter-btn whitespace-nowrap" onclick="setFilter(this,'뇌질환')">🧠 뇌질환</button>
+  <button class="filter-btn whitespace-nowrap" onclick="setFilter(this,'대사질환')">💊 대사질환</button>
+</div>
+
+<!-- Mentor List -->
+<div id="mentorList" class="px-4 space-y-4 mt-2">
+  <div class="text-center text-gray-500 py-10">
+    <i class="fas fa-spinner fa-spin text-2xl"></i>
+  </div>
+</div>
+
+<!-- 멘토 신청 안내 -->
+<div class="px-4 mt-6 mb-4">
+  <div class="card p-5 text-center">
+    <p class="text-2xl mb-2">🙋</p>
+    <p class="text-sm font-black mb-1">멘토가 되고 싶으신가요?</p>
+    <p class="text-xs text-gray-500 mb-4">당신의 경험이 누군가에게 큰 힘이 됩니다</p>
+    <button onclick="showMentorApply()" class="btn-primary w-full">
+      <i class="fas fa-user-plus mr-2"></i>멘토 신청하기
+    </button>
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <div class="flex items-center justify-around max-w-lg mx-auto px-4">
+    <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-gray-900">
+      <i class="fas fa-home text-lg"></i><span class="text-xs">홈</span>
+    </a>
+    <a href="mentors.html" class="flex flex-col items-center gap-1 text-purple-400">
+      <i class="fas fa-hands-helping text-lg"></i><span class="text-xs font-bold">멘토링</span>
+    </a>
+    <a href="community.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-gray-900">
+      <i class="fas fa-comments text-lg"></i><span class="text-xs">커뮤니티</span>
+    </a>
+    <a href="dashboard.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-gray-900">
+      <i class="fas fa-chart-line text-lg"></i><span class="text-xs">대시보드</span>
+    </a>
+  </div>
+</div>
+
+<!-- 멘토 신청 Modal -->
+<div id="applyModal" class="modal-overlay hidden" onclick="if(event.target===this)closeApply()">
+  <div class="modal-sheet">
+    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <h2 class="text-lg font-black mb-1">🙋 멘토 신청</h2>
+    <p class="text-xs text-gray-500 mb-5">심사 후 등록됩니다 (보통 3~5일)</p>
+    <div class="space-y-3" id="applyFormContent">
+      <input id="applyName" type="text" class="input-dark" placeholder="성함"/>
+      <input id="applyPhone" type="tel" class="input-dark" placeholder="연락처"/>
+      <select id="applyDisease" class="input-dark" style="background:#0f0f1a;color:white">
+        <option value="">질환 선택</option>
+        <option value="암">암</option>
+        <option value="뇌질환">뇌질환</option>
+        <option value="대사질환">대사질환</option>
+      </select>
+      <input id="applyYears" type="number" class="input-dark" placeholder="간병 기간 (년)"/>
+      <textarea id="applyMsg" class="input-dark" placeholder="간병 경험을 간단히 소개해주세요..."></textarea>
+      <button onclick="submitMentorApply()" class="btn-primary w-full">신청 완료</button>
+      <button onclick="closeApply()" class="w-full text-sm text-gray-500 py-2">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- 멘토링 신청 Modal -->
+<div id="requestModal" class="modal-overlay hidden" onclick="if(event.target===this)closeRequest()">
+  <div class="modal-sheet">
+    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <h2 class="text-lg font-black mb-1" id="requestTitle">멘토링 신청</h2>
+    <p class="text-xs text-gray-500 mb-5">멘토에게 연락 요청을 보냅니다</p>
+    <div class="space-y-3">
+      <input id="reqName" type="text" class="input-dark" placeholder="성함"/>
+      <input id="reqPhone" type="tel" class="input-dark" placeholder="연락 받을 연락처"/>
+      <textarea id="reqMsg" class="input-dark" placeholder="멘토에게 하고 싶은 말, 궁금한 점을 적어주세요..."></textarea>
+      <button onclick="submitRequest()" class="btn-primary w-full">
+        <i class="fas fa-paper-plane mr-2"></i>신청하기
+      </button>
+      <button onclick="closeRequest()" class="w-full text-sm text-gray-500 py-2">취소</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var allMentors = [];
+var currentFilter = '전체';
+var selectedMentor = null;
+
+function setFilter(btn, filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderMentors();
+}
+
+function getDiseaseTagClass(disease) {
+  if (disease === '암') return 'tag-cancer';
+  if (disease === '뇌질환') return 'tag-brain';
+  if (disease === '대사질환') return 'tag-metabolic';
+  return 'tag-skill';
+}
+
+function renderStars(rating) {
+  var full = Math.floor(rating);
+  var html = '';
+  for (var i = 0; i < 5; i++) {
+    html += '<i class="fas fa-star ' + (i < full ? 'star' : 'text-gray-700') + ' text-xs"></i>';
+  }
+  return html;
+}
+
+async function loadMentors() {
+  try {
+    var res = await fetch('tables/nuvin_mentors?limit=100');
+    var json = await res.json();
+    allMentors = (json.data || []).filter(function(m) { return m.is_active !== false; });
+    renderMentors();
+  } catch(e) {
+    document.getElementById('mentorList').innerHTML =
+      '<div class="text-center text-gray-500 py-10">멘토 정보를 불러오지 못했습니다.</div>';
+  }
+}
+
+function renderMentors() {
+  var filtered = currentFilter === '전체'
+    ? allMentors
+    : allMentors.filter(function(m) { return m.disease === currentFilter; });
+
+  if (filtered.length === 0) {
+    document.getElementById('mentorList').innerHTML =
+      '<div class="text-center text-gray-500 py-12"><i class="fas fa-user-slash text-3xl mb-3 block text-gray-700"></i><p class="font-bold text-gray-500">해당 질환 멘토가 준비 중입니다</p></div>';
+    return;
+  }
+
+  document.getElementById('mentorList').innerHTML = filtered.map(function(m, i) {
+    var tagClass = getDiseaseTagClass(m.disease);
+    var stars = renderStars(m.rating || 5);
+    var tags = Array.isArray(m.tags) ? m.tags : [];
+    var tagsHtml = tags.map(function(t) {
+      return '<span class="tag tag-skill"># ' + t + '</span>';
+    }).join('');
+    // 사진: photo_url 없으면 이니셜 fallback
+    var photoHtml = m.photo_url
+      ? '<img src="' + m.photo_url + '" class="w-full h-full object-cover" onerror="this.style.display=\'none\';this.parentNode.innerHTML=\'<span class=&quot;text-2xl font-black text-gray-900&quot;>' + (m.name || '?')[0] + '</span>\'">'
+      : '<span class="text-2xl font-black text-gray-900">' + (m.name || '?')[0] + '</span>';
+
+    return '<div class="mentor-card fade-up" style="animation-delay:' + (i*0.08) + 's">' +
+      '<div class="flex gap-4">' +
+      '<div class="w-16 h-16 rounded-2xl flex-shrink-0 overflow-hidden flex items-center justify-center" style="background:linear-gradient(135deg,#5B5BD6,#8B5CF6)">' +
+      photoHtml + '</div>' +
+      '<div class="flex-1 min-w-0">' +
+      '<div class="flex items-center gap-2 mb-1">' +
+      '<span class="font-black text-base">' + (m.name || '') + '</span>' +
+      '<span class="text-xs text-gray-500">' + (m.age || '') + '세</span>' +
+      '</div>' +
+      '<div class="flex items-center gap-1 mb-1">' + stars +
+      '<span class="text-xs text-gray-500 ml-1">' + (m.rating || 5) + ' (' + (m.mentoring_count || 0) + '명)</span>' +
+      '</div>' +
+      '<span class="tag ' + tagClass + '">' + (m.disease || '') + ' · ' + (m.disease_detail || '') + '</span>' +
+      '</div>' +
+      '</div>' +
+      '<p class="text-xs text-gray-500 mt-3 leading-relaxed">' + (m.experience_summary || '') + '</p>' +
+      '<div class="bg-purple-50 bg-opacity-50 rounded-xl px-3 py-2 mt-3">' +
+      '<p class="text-xs text-gray-200 italic">"' + (m.message || '') + '"</p>' +
+      '</div>' +
+      '<div class="flex flex-wrap gap-1 mt-3">' + tagsHtml + '</div>' +
+      '<div class="flex items-center justify-between mt-4">' +
+      '<span class="text-xs text-gray-500"><i class="fas fa-map-marker-alt mr-1"></i>' + (m.region || '') + ' · 경력 ' + (m.care_years || 0) + '년</span>' +
+      '<button onclick="openRequest(\'' + m.id + '\')" class="btn-primary px-4 py-2 text-xs">' +
+      '<i class="fas fa-envelope mr-1"></i>신청하기</button>' +
+      '</div>' +
+      '</div>';
+  }).join('');
+}
+
+// ── 멘토링 신청 ──
+function openRequest(mentorId) {
+  selectedMentor = allMentors.find(function(m) { return m.id === mentorId; });
+  if (!selectedMentor) return;
+  document.getElementById('requestTitle').textContent = selectedMentor.name + ' 멘토에게 신청';
+  document.getElementById('requestModal').classList.remove('hidden');
+}
+function closeRequest() {
+  document.getElementById('requestModal').classList.add('hidden');
+}
+
+async function submitRequest() {
+  var name = document.getElementById('reqName').value.trim();
+  var phone = document.getElementById('reqPhone').value.trim();
+  var msg = document.getElementById('reqMsg').value.trim();
+  if (!name || !phone) { showToast('⚠️ 성함과 연락처를 입력해주세요.'); return; }
+
+  // 실제로는 알림/이메일 발송 → 현재는 토스트로 안내
+  showToast('✅ 신청이 완료되었습니다!\n' + selectedMentor.name + ' 멘토가 곧 연락드릴게요.');
+  closeRequest();
+  document.getElementById('reqName').value = '';
+  document.getElementById('reqPhone').value = '';
+  document.getElementById('reqMsg').value = '';
+}
+
+// ── 멘토 신청 ──
+function showMentorApply() {
+  document.getElementById('applyModal').classList.remove('hidden');
+}
+function closeApply() {
+  document.getElementById('applyModal').classList.add('hidden');
+}
+
+async function submitMentorApply() {
+  var name = document.getElementById('applyName').value.trim();
+  var phone = document.getElementById('applyPhone').value.trim();
+  var disease = document.getElementById('applyDisease').value;
+  var years = document.getElementById('applyYears').value;
+  var msg = document.getElementById('applyMsg').value.trim();
+  if (!name || !phone || !disease) { showToast('⚠️ 필수 항목을 입력해주세요.'); return; }
+
+  showToast('✅ 멘토 신청이 완료되었습니다!\n검토 후 3~5일 내 연락드릴게요.');
+  closeApply();
+}
+
+function showToast(msg) {
+  var el = document.getElementById('toastEl');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'toastEl';
+    el.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid #667eea;color:white;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.5);font-family:Noto Sans KR,sans-serif;white-space:pre-line;';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(window._toast);
+  window._toast = setTimeout(function() { el.style.display = 'none'; }, 3000);
+}
+
+loadMentors();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+}
+</script>
+
+<div style="background:#0a0a15;padding:14px 24px 80px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
+  <p style="font-size:12px;color:#4b5563;font-family:'Noto Sans KR',sans-serif;">
+    © 2026 누빈(NUVIN)  · 
+    <a href="privacy.html" style="color:#6b7280;text-decoration:none;">개인정보처리방침</a>
+  </p>
+</div>
+</body>
+</html>

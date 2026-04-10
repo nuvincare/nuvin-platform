@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>국내 서버 이전 가이드 — 누빈 NUVIN</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Noto Sans KR',sans-serif; background:#0f0f1a; color:#e5e7eb; line-height:1.8; }
+
+.header {
+  background: linear-gradient(135deg,#1a1a2e,#16213e);
+  padding: 40px 24px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.header-inner { max-width: 900px; margin: 0 auto; }
+.back-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  color:#9ca3af; text-decoration:none; font-size:14px;
+  margin-bottom:20px; transition:color 0.2s;
+}
+.back-btn:hover { color:white; }
+.header h1 { font-size:28px; font-weight:900; color:white; margin-bottom:8px; }
+.header p { font-size:14px; color:#9ca3af; }
+.badge-row { display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.badge {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:50px;
+  font-size:12px; font-weight:700;
+}
+.badge-purple { background:rgba(102,126,234,0.15); border:1px solid rgba(102,126,234,0.3); color:#a78bfa; }
+.badge-green  { background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#6ee7b7; }
+.badge-yellow { background:rgba(245,158,11,0.12); border:1px solid rgba(245,158,11,0.3); color:#fbbf24; }
+
+.content { max-width:900px; margin:0 auto; padding:40px 24px 80px; }
+
+/* TABS */
+.tabs { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:40px; }
+.tab-btn {
+  padding:10px 20px; border-radius:50px; border:none; cursor:pointer;
+  font-size:14px; font-weight:700; font-family:inherit;
+  background:rgba(255,255,255,0.06); color:#9ca3af; transition:all 0.2s;
+}
+.tab-btn.active { background:linear-gradient(135deg,#667eea,#764ba2); color:white; }
+.tab-btn:hover:not(.active) { background:rgba(255,255,255,0.1); color:white; }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* CARDS */
+.card {
+  background:#1a1a2e; border:1px solid rgba(255,255,255,0.08);
+  border-radius:20px; padding:28px; margin-bottom:24px;
+}
+.card-title {
+  display:flex; align-items:center; gap:12px;
+  font-size:18px; font-weight:900; color:white;
+  margin-bottom:20px; padding-bottom:16px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.card-icon {
+  width:40px; height:40px; border-radius:12px;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  display:flex; align-items:center; justify-content:center;
+  color:white; font-size:18px; flex-shrink:0;
+}
+.card p { font-size:14px; color:#d1d5db; margin-bottom:12px; line-height:1.9; }
+.card ul, .card ol { padding-left:20px; }
+.card li { font-size:14px; color:#d1d5db; margin-bottom:8px; line-height:1.8; }
+
+/* STEP */
+.step-list { display:flex; flex-direction:column; gap:0; }
+.step-item {
+  display:flex; gap:0; position:relative;
+}
+.step-item:not(:last-child)::after {
+  content:''; position:absolute;
+  left:19px; top:40px; width:2px;
+  height:calc(100% - 8px);
+  background:rgba(102,126,234,0.3);
+}
+.step-num {
+  width:40px; height:40px; border-radius:50%;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:white; font-size:15px; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; margin-right:20px; margin-top:4px;
+  position:relative; z-index:1;
+}
+.step-body { flex:1; padding-bottom:28px; }
+.step-body h4 { font-size:16px; font-weight:800; color:white; margin-bottom:8px; }
+.step-body p { font-size:14px; color:#d1d5db; line-height:1.8; }
+.step-body ul { padding-left:18px; margin-top:8px; }
+.step-body li { font-size:13px; color:#9ca3af; margin-bottom:4px; }
+
+/* CODE */
+.code-block {
+  background:#0d0d1a; border:1px solid rgba(102,126,234,0.25);
+  border-radius:12px; padding:16px 20px; margin:12px 0;
+  font-family:'Courier New',monospace; font-size:13px;
+  color:#a5f3fc; overflow-x:auto; position:relative;
+}
+.code-block .comment { color:#4b5563; }
+.code-tag { 
+  display:inline-block; background:rgba(102,126,234,0.15);
+  border-radius:4px; padding:2px 8px; font-size:12px;
+  color:#a78bfa; font-weight:700; margin-bottom:8px;
+}
+
+/* COMPARISON TABLE */
+.compare-table { width:100%; border-collapse:collapse; margin:16px 0; font-size:13px; }
+.compare-table th {
+  padding:12px 16px; text-align:left; font-weight:800;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.compare-table th:first-child { background:rgba(102,126,234,0.1); color:#a78bfa; }
+.compare-table th.col-pwa { background:rgba(16,185,129,0.1); color:#6ee7b7; }
+.compare-table th.col-app { background:rgba(245,158,11,0.1); color:#fbbf24; }
+.compare-table td {
+  padding:12px 16px; color:#d1d5db;
+  border:1px solid rgba(255,255,255,0.06);
+  vertical-align:top;
+}
+.compare-table tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+.good { color:#6ee7b7; font-weight:700; }
+.bad  { color:#f87171; font-weight:700; }
+.mid  { color:#fbbf24; font-weight:700; }
+
+/* HIGHLIGHT */
+.hl-box {
+  border-radius:12px; padding:16px 20px; margin:12px 0;
+}
+.hl-green  { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.25); }
+.hl-yellow { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.25); }
+.hl-purple { background:rgba(102,126,234,0.08); border:1px solid rgba(102,126,234,0.25); }
+.hl-red    { background:rgba(239,68,68,0.08); border-left:3px solid #ef4444; border-radius:0 8px 8px 0; }
+.hl-box p { font-size:13px; margin:0; line-height:1.7; }
+.hl-box .hl-title { font-weight:800; margin-bottom:4px; }
+
+/* DB FIELD TABLE */
+.db-table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0; }
+.db-table th {
+  background:rgba(102,126,234,0.15); color:#a78bfa;
+  padding:10px 14px; text-align:left; font-weight:700;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.db-table td {
+  padding:10px 14px; color:#d1d5db;
+  border:1px solid rgba(255,255,255,0.06);
+}
+.db-table tr:nth-child(even) td { background:rgba(255,255,255,0.02); }
+.type-tag {
+  display:inline-block; background:rgba(96,165,250,0.15);
+  color:#93c5fd; border-radius:4px; padding:2px 8px;
+  font-size:11px; font-weight:700;
+}
+.type-tag.sensitive { background:rgba(239,68,68,0.15); color:#fca5a5; }
+.type-tag.optional  { background:rgba(107,114,128,0.2); color:#9ca3af; }
+
+/* FOOTER */
+.guide-footer {
+  background:#0a0a15; border-top:1px solid rgba(255,255,255,0.06);
+  padding:32px 24px; text-align:center;
+}
+.guide-footer p { font-size:13px; color:#4b5563; }
+.guide-footer a { color:#6b7280; text-decoration:none; margin:0 8px; }
+
+/* RECOMMEND BOX */
+.recommend {
+  background:linear-gradient(135deg,rgba(102,126,234,0.12),rgba(118,75,162,0.12));
+  border:2px solid rgba(102,126,234,0.3);
+  border-radius:20px; padding:28px; text-align:center; margin-bottom:32px;
+}
+.recommend h3 { font-size:20px; font-weight:900; color:white; margin-bottom:12px; }
+.recommend p  { font-size:14px; color:#d1d5db; max-width:600px; margin:0 auto; }
+
+@media(max-width:640px) {
+  .header h1 { font-size:22px; }
+  .tabs { gap:6px; }
+  .tab-btn { padding:8px 14px; font-size:13px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> 메인으로</a>
+    <h1>🗄️ 누빈 운영 기술 가이드</h1>
+    <p>국내 서버 이전 · PWA vs 앱패키징 비교 · DB 구조 분석</p>
+    <div class="badge-row">
+      <span class="badge badge-purple"><i class="fas fa-server"></i> 서버 이전</span>
+      <span class="badge badge-green"><i class="fas fa-mobile-alt"></i> PWA / 앱</span>
+      <span class="badge badge-yellow"><i class="fas fa-database"></i> DB 구조</span>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 탭 네비 -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-server', this)">🗄️ 국내 서버 이전</button>
+    <button class="tab-btn" onclick="switchTab('tab-pwa', this)">📱 PWA vs 앱패키징</button>
+    <button class="tab-btn" onclick="switchTab('tab-db', this)">🔍 DB 구조 분석</button>
+  </div>
+
+  <!-- ====================================================== -->
+  <!-- TAB 1: 국내 서버 이전 -->
+  <!-- ====================================================== -->
+  <div id="tab-server" class="tab-content active">
+
+    <div class="hl-box hl-yellow" style="margin-bottom:28px;">
+      <p class="hl-title" style="color:#fbbf24;">⚠️ 왜 국내 서버가 필요한가요?</p>
+      <p style="color:#fde68a;">현재 누빈 데이터는 <strong>Genspark Inc.(미국)</strong> 서버에 저장됩니다. 질환명 등 민감정보는 「개인정보 보호법」 제17조·제18조에 따라 국내 서버 또는 보호 조치 후 이전이 권장됩니다. 서비스 본격화 전 국내 클라우드로 이전하면 법적 안정성이 높아집니다.</p>
+    </div>
+
+    <!-- 국내 클라우드 선택 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-cloud"></i></div>
+        국내 클라우드 서비스 비교
+      </div>
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>서비스</th>
+            <th class="col-pwa">추천 플랜</th>
+            <th>월 비용(소규모)</th>
+            <th>특징</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AWS 서울 (ap-northeast-2)</strong></td>
+            <td>RDS MySQL + EC2 또는 Lambda</td>
+            <td>약 3~8만원</td>
+            <td class="good">가장 안정적, 글로벌 표준</td>
+          </tr>
+          <tr>
+            <td><strong>NCP (네이버 클라우드)</strong></td>
+            <td>Cloud DB for MySQL + Server</td>
+            <td>약 3~6만원</td>
+            <td class="good">국내 지원 우수, 한국어 문서</td>
+          </tr>
+          <tr>
+            <td><strong>KT Cloud</strong></td>
+            <td>Object Storage + VM</td>
+            <td>약 2~5만원</td>
+            <td class="mid">KT 인프라 기반, 중소기업 친화</td>
+          </tr>
+          <tr>
+            <td><strong>Cafe24 호스팅</strong></td>
+            <td>MySQL + 웹호스팅</td>
+            <td>약 1~3만원</td>
+            <td class="mid">가장 간단, 기능 제한 있음</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="hl-box hl-green" style="margin-top:12px;">
+        <p class="hl-title" style="color:#6ee7b7;">✅ 누빈 초기 단계 추천: <strong>NCP (네이버 클라우드)</strong></p>
+        <p style="color:#a7f3d0;">한국어 지원이 좋고, 스타트업 크레딧 프로그램 신청 가능(최대 3백만원). MySQL + 웹서버 세트로 간단히 시작 가능.</p>
+      </div>
+    </div>
+
+    <!-- 이전 단계별 가이드 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-route"></i></div>
+        단계별 이전 계획 (4주 로드맵)
+      </div>
+      <div class="step-list">
+
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>준비 단계 (1주차) — 데이터 내보내기</h4>
+            <p>현재 Genspark Tables API에서 모든 데이터를 JSON으로 내보냅니다.</p>
+            <div class="code-block">
+              <div class="code-tag">JavaScript (브라우저 콘솔)</div>
+// 관리자 페이지 콘솔에서 실행
+fetch('tables/nuvin_users?limit=9999')
+  .then(r => r.json())
+  .then(d => {
+    const blob = new Blob([JSON.stringify(d.data, null, 2)], {type:'application/json'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'nuvin_users_backup.json';
+    a.click();
+  });
+            </div>
+            <ul>
+              <li>백업 파일을 안전한 곳에 보관</li>
+              <li>민감정보 포함이므로 암호화 압축 권장 (7-Zip AES-256)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>서버 준비 (1~2주차) — NCP 또는 AWS 설정</h4>
+            <p>국내 클라우드에 서버와 DB를 생성합니다.</p>
+            <ul>
+              <li>NCP: <strong>Console → Cloud DB for MySQL → 생성</strong> 클릭, 서울 리전 선택</li>
+              <li>DB명: <code>nuvin_db</code> / 사용자: <code>nuvin_admin</code></li>
+              <li>방화벽에서 포트 3306은 서버 내부만 허용 (외부 차단)</li>
+              <li>백엔드 API 서버: Node.js Express 또는 Python FastAPI 추천</li>
+            </ul>
+            <div class="code-block">
+              <div class="code-tag">MySQL — 테이블 생성 SQL</div>
+CREATE TABLE nuvin_users (
+  id            VARCHAR(36) PRIMARY KEY,
+  name          VARCHAR(100) NOT NULL,
+  email         VARCHAR(200),
+  phone         VARCHAR(20),
+  primary_disease VARCHAR(50),     <span class="comment">-- 'cancer'|'brain'|'metabolic'</span>
+  cancer_type   VARCHAR(100),
+  brain_type    VARCHAR(100),
+  metabolic_type VARCHAR(100),
+  main_issues   JSON,              <span class="comment">-- 배열 저장</span>
+  step_completed INT DEFAULT 0,
+  agree_medical  TINYINT(1) DEFAULT 0,
+  agree_sensitive TINYINT(1) DEFAULT 0,
+  agree_marketing TINYINT(1) DEFAULT 0,
+  login_type    VARCHAR(20),
+  created_at    DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at    DATETIME ON UPDATE CURRENT_TIMESTAMP
+);
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>데이터 마이그레이션 (2~3주차) — 데이터 이전</h4>
+            <p>백업한 JSON을 MySQL에 삽입합니다.</p>
+            <div class="code-block">
+              <div class="code-tag">Node.js — JSON → MySQL 삽입 스크립트</div>
+const mysql = require('mysql2/promise');
+const data  = require('./nuvin_users_backup.json');
+
+const conn = await mysql.createConnection({
+  host: 'your-ncp-db-host',
+  user: 'nuvin_admin',
+  password: 'YOUR_DB_PW',
+  database: 'nuvin_db'
+});
+
+for (const user of data) {
+  await conn.execute(
+    `INSERT INTO nuvin_users
+     (id,name,email,phone,primary_disease,main_issues,
+      agree_medical,agree_sensitive,agree_marketing,created_at)
+     VALUES (?,?,?,?,?,?,?,?,?,?)`,
+    [user.id, user.name, user.email, user.phone||null,
+     user.primary_disease, JSON.stringify(user.main_issues||[]),
+     user.agree_medical?1:0, user.agree_sensitive?1:0,
+     user.agree_marketing?1:0,
+     new Date(user.created_at).toISOString().slice(0,19).replace('T',' ')]
+  );
+}
+console.log('✅ 마이그레이션 완료!');
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h4>API 교체 (3~4주차) — Genspark API → 자체 API</h4>
+            <p>누빈 프론트엔드의 <code>fetch('tables/nuvin_users'...)</code>를 자체 API로 교체합니다.</p>
+            <div class="code-block">
+              <div class="code-tag">변경 전 (Genspark)</div>
+fetch('tables/nuvin_users', { method:'POST', ... })
+            </div>
+            <div class="code-block">
+              <div class="code-tag">변경 후 (자체 서버)</div>
+fetch('https://api.nuvin.kr/users', { method:'POST', ... })
+            </div>
+            <ul>
+              <li>CORS 설정 필수: <code>Access-Control-Allow-Origin: https://nuvin.kr</code></li>
+              <li>HTTPS 인증서 발급: Let's Encrypt 무료 SSL 적용</li>
+              <li>모든 API 엔드포인트를 환경 변수로 관리 추천</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <h4>보안 강화 (4주차 이후)</h4>
+            <ul>
+              <li>민감정보(질환명) AES-256 컬럼 암호화 적용</li>
+              <li>DB 접근 로그 CloudTrail/Activity 기록 활성화</li>
+              <li>정기 자동 백업 설정 (매일 새벽 3시)</li>
+              <li>개인정보 처리 위탁 계약서 작성 (NCP 또는 AWS와)</li>
+            </ul>
+          </div>
+        </div>
+
+      </div><!-- /step-list -->
+    </div>
+
+    <!-- 비용 요약 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-won-sign"></i></div>
+        예상 비용 (초기 단계 기준)
+      </div>
+      <table class="db-table">
+        <thead><tr><th>항목</th><th>서비스</th><th>월 비용</th></tr></thead>
+        <tbody>
+          <tr><td>백엔드 API 서버</td><td>NCP Micro 서버 (1vCPU, 1GB)</td><td>약 12,000원</td></tr>
+          <tr><td>MySQL DB</td><td>NCP Cloud DB for MySQL (소형)</td><td>약 20,000원</td></tr>
+          <tr><td>도메인/SSL</td><td>nuvin.kr (연 2~3만원) + Let's Encrypt(무료)</td><td>약 2,500원</td></tr>
+          <tr><td>트래픽</td><td>초기 소규모 (10GB 이하)</td><td>약 0~5,000원</td></tr>
+          <tr><td colspan="2"><strong>총 합계 (초기)</strong></td><td><strong style="color:#6ee7b7;">약 3~4만원/월</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /tab-server -->
+
+  <!-- ====================================================== -->
+  <!-- TAB 2: PWA vs 앱패키징 -->
+  <!-- ====================================================== -->
+  <div id="tab-pwa" class="tab-content">
+
+    <div class="recommend">
+      <h3>🏆 누빈에게 추천하는 방식은?</h3>
+      <p>현재 단계에서는 <strong style="color:#a78bfa;">PWA (Progressive Web App)</strong>를 강력 추천합니다. 앱스토어 없이 바로 아이콘 설치가 가능하고 개발 비용이 거의 없습니다.</p>
+    </div>
+
+    <!-- 비교표 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+        PWA vs 앱패키징 상세 비교
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th>항목</th>
+              <th class="col-pwa">📱 PWA (추천)</th>
+              <th class="col-app">📦 앱패키징 (TWA/Capacitor)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>설치 방법</td>
+              <td class="good">브라우저에서 바로 설치<br/>(홈 화면에 추가)</td>
+              <td class="mid">앱스토어 (구글플레이, 앱스토어)<br/>등록 및 심사 필요</td>
+            </tr>
+            <tr>
+              <td>개발 비용</td>
+              <td class="good">거의 0원<br/>(현재 코드에 설정만 추가)</td>
+              <td class="bad">100~300만원 이상<br/>(앱 개발자 필요)</td>
+            </tr>
+            <tr>
+              <td>출시 기간</td>
+              <td class="good">당일 ~ 1일</td>
+              <td class="bad">2~4주 (심사 포함)</td>
+            </tr>
+            <tr>
+              <td>업데이트</td>
+              <td class="good">서버 파일만 교체 → 즉시 반영</td>
+              <td class="bad">앱스토어 재심사 (1~3일)</td>
+            </tr>
+            <tr>
+              <td>아이콘 표시</td>
+              <td class="good">✅ 홈 화면에 앱처럼 표시</td>
+              <td class="good">✅ 앱스토어 아이콘 표시</td>
+            </tr>
+            <tr>
+              <td>오프라인 지원</td>
+              <td class="mid">Service Worker로 부분 지원</td>
+              <td class="good">완전한 오프라인 지원 가능</td>
+            </tr>
+            <tr>
+              <td>푸시 알림</td>
+              <td class="mid">Android O, iOS 16.4+ 지원</td>
+              <td class="good">완전 지원</td>
+            </tr>
+            <tr>
+              <td>카메라/GPS</td>
+              <td class="mid">브라우저 권한으로 가능</td>
+              <td class="good">네이티브 수준 접근</td>
+            </tr>
+            <tr>
+              <td>앱스토어 노출</td>
+              <td class="bad">없음</td>
+              <td class="good">앱스토어 검색 노출</td>
+            </tr>
+            <tr>
+              <td>누빈 적합도</td>
+              <td><strong style="color:#6ee7b7; font-size:16px;">★★★★★</strong></td>
+              <td><strong style="color:#fbbf24; font-size:16px;">★★★☆☆</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PWA 적용 방법 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-bolt"></i></div>
+        누빈 PWA 즉시 적용 방법 (3단계)
+      </div>
+      <div class="step-list">
+
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h4>manifest.json 생성 (아이콘·앱 이름 설정)</h4>
+            <p>이미 이 프로젝트에 <code>manifest.json</code>과 아이콘이 추가되어 있습니다. ✅</p>
+            <div class="code-block">
+              <div class="code-tag">manifest.json 핵심 내용</div>
+{
+  "name": "누빈 NUVIN — 간병보호자 케어 플랫폼",
+  "short_name": "누빈",
+  "start_url": "/index.html",
+  "display": "standalone",   <span class="comment">← 앱처럼 표시(주소창 숨김)</span>
+  "theme_color": "#667eea",
+  "background_color": "#0f0f1a",
+  "icons": [
+    { "src": "images/icon-192.png", "sizes": "192x192" },
+    { "src": "images/icon-512.png", "sizes": "512x512" }
+  ]
+}
+            </div>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h4>Service Worker 등록 (오프라인 지원)</h4>
+            <p><code>service-worker.js</code>가 이 프로젝트에 포함되어 있습니다. ✅</p>
+            <ul>
+              <li>오프라인 상태에서도 캐시된 페이지 열람 가능</li>
+              <li>접속 속도 향상 (캐시 활용)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h4>사용자가 설치하는 방법</h4>
+            <p><strong>Android (크롬):</strong></p>
+            <ul>
+              <li>누빈 사이트 접속 → 하단에 "<strong>홈 화면에 추가</strong>" 배너 자동 표시</li>
+              <li>또는 브라우저 우상단 ⋮ → "홈 화면에 추가" 탭</li>
+              <li>설치 후 홈 화면에 누빈 아이콘이 앱처럼 표시됨</li>
+            </ul>
+            <p style="margin-top:8px;"><strong>iPhone (iOS 사파리):</strong></p>
+            <ul>
+              <li>사파리로 접속 → 하단 공유 버튼(□↑) → "홈 화면에 추가"</li>
+              <li>iOS 16.4 이상에서 푸시 알림도 지원</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 앱패키징이 필요한 시점 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon" style="background:linear-gradient(135deg,#f59e0b,#ef4444);"><i class="fas fa-store"></i></div>
+        앱패키징이 필요해지는 시점
+      </div>
+      <ul>
+        <li>📊 <strong>월간 활성 사용자 1,000명 이상</strong> — 앱스토어 노출로 추가 성장 필요 시</li>
+        <li>💬 <strong>카카오/네이버 실제 소셜 로그인</strong> 연동 시 (SDK 네이티브 버전 필요)</li>
+        <li>🔔 <strong>iOS 16.4 이전 iPhone 사용자에게 푸시 알림</strong> 필요 시</li>
+        <li>📁 <strong>로컬 파일 저장</strong> (가이드북 PDF 저장 등) 기능 추가 시</li>
+        <li>🏥 <strong>의료기관 연동 API</strong> 또는 EMR 시스템 연동 시</li>
+      </ul>
+      <div class="hl-box hl-purple" style="margin-top:12px;">
+        <p class="hl-title" style="color:#c4b5fd;">📌 앱패키징 추천 시점</p>
+        <p style="color:#ddd6fe;">사용자 1,000명 달성 → PWA 유지, 앱스토어 등록을 위해 TWA(Trusted Web Activity) 방식으로 기존 웹을 그대로 앱화하면 추가 개발 없이 플레이스토어 등록 가능.</p>
+      </div>
+    </div>
+
+  </div><!-- /tab-pwa -->
+
+  <!-- ====================================================== -->
+  <!-- TAB 3: DB 구조 분석 -->
+  <!-- ====================================================== -->
+  <div id="tab-db" class="tab-content">
+
+    <div class="hl-box hl-green" style="margin-bottom:28px;">
+      <p class="hl-title" style="color:#6ee7b7;">✅ DB 이전 용이성 평가: <strong>매우 쉬움</strong></p>
+      <p style="color:#a7f3d0;">현재 누빈 DB는 단일 테이블(nuvin_users) 구조이며, 모든 필드가 표준 데이터 타입으로 구성되어 있어 어떤 관계형 DB(MySQL, PostgreSQL)나 NoSQL(MongoDB, Firestore)로도 손쉽게 이전 가능합니다.</p>
+    </div>
+
+    <!-- 현재 DB 구조 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-table"></i></div>
+        현재 누빈 DB 구조 (nuvin_users 테이블)
+      </div>
+      <table class="db-table">
+        <thead>
+          <tr><th>필드명</th><th>타입</th><th>설명</th><th>민감도</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>id</td><td><span class="type-tag">UUID</span></td><td>고유 식별자 (자동 생성)</td><td>—</td></tr>
+          <tr><td>name</td><td><span class="type-tag">text</span></td><td>이용자 이름</td><td><span style="color:#fca5a5;">개인정보</span></td></tr>
+          <tr><td>email</td><td><span class="type-tag">text</span></td><td>이메일 주소</td><td><span style="color:#fca5a5;">개인정보</span></td></tr>
+          <tr><td>phone</td><td><span class="type-tag optional">text(선택)</span></td><td>휴대전화 번호</td><td><span style="color:#fca5a5;">개인정보</span></td></tr>
+          <tr><td>primary_disease</td><td><span class="type-tag">text</span></td><td>주 관심 질환 (cancer/brain/metabolic)</td><td><span style="color:#f87171;font-weight:700;">민감정보</span></td></tr>
+          <tr><td>cancer_type</td><td><span class="type-tag optional">text</span></td><td>암 세부 종류</td><td><span style="color:#f87171;font-weight:700;">민감정보</span></td></tr>
+          <tr><td>brain_type</td><td><span class="type-tag optional">text</span></td><td>뇌질환 세부 종류</td><td><span style="color:#f87171;font-weight:700;">민감정보</span></td></tr>
+          <tr><td>metabolic_type</td><td><span class="type-tag optional">text</span></td><td>대사질환 세부 종류</td><td><span style="color:#f87171;font-weight:700;">민감정보</span></td></tr>
+          <tr><td>main_issues</td><td><span class="type-tag">array</span></td><td>주요 고충 목록 (배열)</td><td><span style="color:#fbbf24;">일반</span></td></tr>
+          <tr><td>step_completed</td><td><span class="type-tag">number</span></td><td>가입 단계 완료 여부</td><td>—</td></tr>
+          <tr><td>agree_medical</td><td><span class="type-tag">bool</span></td><td>의료 면책 동의 여부</td><td>—</td></tr>
+          <tr><td>agree_sensitive</td><td><span class="type-tag">bool</span></td><td>민감정보 수집 동의</td><td>—</td></tr>
+          <tr><td>agree_marketing</td><td><span class="type-tag optional">bool</span></td><td>마케팅 수신 동의</td><td>—</td></tr>
+          <tr><td>login_type</td><td><span class="type-tag optional">text</span></td><td>가입 경로 (kakao/naver/email)</td><td>—</td></tr>
+          <tr><td>created_at</td><td><span class="type-tag">datetime</span></td><td>가입 일시 (자동)</td><td>—</td></tr>
+          <tr><td>updated_at</td><td><span class="type-tag">datetime</span></td><td>최종 수정 일시 (자동)</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 이전 호환성 평가 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-check-circle"></i></div>
+        DB 이전 호환성 평가
+      </div>
+      <div class="step-list">
+        <div class="step-item">
+          <div class="step-num" style="background:linear-gradient(135deg,#10b981,#059669);">✓</div>
+          <div class="step-body">
+            <h4>단일 테이블 → 복잡도 낮음</h4>
+            <p>현재 <code>nuvin_users</code> 테이블 하나만 존재하여 조인이나 외래키 이슈 없이 단순 데이터 복사(INSERT)만으로 이전 완료 가능합니다.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num" style="background:linear-gradient(135deg,#10b981,#059669);">✓</div>
+          <div class="step-body">
+            <h4>REST API 방식 → 교체 용이</h4>
+            <p>프론트엔드에서 <code>fetch('tables/nuvin_users')</code> 패턴이 일관되게 사용되므로, 엔드포인트 URL만 변경하면 코드 수정이 최소화됩니다.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num" style="background:linear-gradient(135deg,#10b981,#059669);">✓</div>
+          <div class="step-body">
+            <h4>JSON 내보내기 지원</h4>
+            <p>Genspark Tables API가 JSON 형태로 데이터를 반환하여 별도 변환 없이 이전 스크립트에 직접 사용 가능합니다.</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <div class="step-num" style="background:linear-gradient(135deg,#f59e0b,#d97706);">!</div>
+          <div class="step-body">
+            <h4>main_issues 배열 필드 주의</h4>
+            <p>MySQL에서는 <code>JSON</code> 타입 컬럼으로 저장하면 됩니다. PostgreSQL은 <code>JSONB</code> 타입 사용. MongoDB는 그대로 배열로 저장 가능합니다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 향후 DB 확장 설계 -->
+    <div class="card">
+      <div class="card-title">
+        <div class="card-icon"><i class="fas fa-sitemap"></i></div>
+        향후 DB 확장 설계 제안
+      </div>
+      <p style="font-size:14px; color:#d1d5db; margin-bottom:16px;">서비스 성장에 따라 아래 테이블을 추가하면 됩니다:</p>
+      <table class="db-table">
+        <thead><tr><th>테이블</th><th>주요 필드</th><th>추가 시점</th></tr></thead>
+        <tbody>
+          <tr><td>mentors</td><td>id, user_id, disease_type, experience_years, bio</td><td>멘토 기능 오픈 시</td></tr>
+          <tr><td>matching</td><td>id, caregiver_id, mentor_id, status, created_at</td><td>멘토 매칭 오픈 시</td></tr>
+          <tr><td>community_posts</td><td>id, author_id, content, likes, disease_tag</td><td>커뮤니티 확장 시</td></tr>
+          <tr><td>notifications</td><td>id, user_id, type, message, is_read</td><td>알림 기능 추가 시</td></tr>
+          <tr><td>guides</td><td>id, disease, title, content, version</td><td>가이드북 DB화 시</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div><!-- /tab-db -->
+
+</div><!-- /content -->
+
+<!-- FOOTER -->
+<div class="guide-footer">
+  <p>© 2026 누빈(NUVIN). All rights reserved.</p>
+  <p style="margin-top:8px;">
+    <a href="index.html">메인</a>
+    <a href="privacy.html">개인정보처리방침</a>
+    <a href="admin.html">관리자</a>
+  </p>
+</div>
+
+<script>
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

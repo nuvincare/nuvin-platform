@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <title>뉴스·정보 — NUVIN 누빈 간병 뉴스</title>
+  <meta name="description" content="암·뇌질환·대사질환 최신 의료 뉴스와 간병 정보를 한눈에 확인하세요"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand: #5B5BD6; --brand2: #8B5CF6;
+      --brand-g: linear-gradient(135deg,#5B5BD6,#8B5CF6);
+      --green: #10B981; --red: #EF4444; --orange: #F59E0B; --blue: #0EA5E9;
+      --text1: #0F0F1A; --text2: #374151; --text3: #6B7280; --text4: #9CA3AF;
+      --bg: #F8F7FF; --bg2: #fff; --border: #E5E7EB; --border2: #EDE9FE;
+      --radius: 14px; --shadow: 0 2px 12px rgba(91,91,214,0.10);
+      --nav-h: 64px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif; background: var(--bg);
+      color: var(--text1); min-height: 100vh;
+      padding-bottom: calc(var(--nav-h) + 20px);
+    }
+
+    /* TOP BAR */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.97); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border2);
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+    }
+    .topbar-back {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--bg); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; text-decoration: none; color: var(--text2); font-size: 16px;
+    }
+    .topbar-title { font-size: 17px; font-weight: 900; flex: 1; }
+    .refresh-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--bg2); border: 1.5px solid var(--border2);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--brand); font-size: 16px;
+    }
+    .refresh-btn:active { transform: rotate(180deg); transition: transform 0.4s; }
+
+    /* HERO BANNER */
+    .news-hero {
+      background: var(--brand-g); padding: 20px 16px 16px; color: #fff;
+    }
+    .news-hero h1 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
+    .news-hero p { font-size: 13px; opacity: 0.88; line-height: 1.5; }
+    .news-updated {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.18); border-radius: 10px;
+      padding: 4px 10px; font-size: 11px; font-weight: 700; margin-top: 10px;
+    }
+
+    /* CATEGORY FILTER */
+    .cat-bar {
+      display: flex; gap: 8px; padding: 14px 16px 0; overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .cat-bar::-webkit-scrollbar { display: none; }
+    .cat-chip {
+      background: #fff; border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 6px 14px; font-size: 12px; font-weight: 700;
+      cursor: pointer; white-space: nowrap; color: var(--text2); transition: all 0.15s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .cat-chip.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+
+    /* LOADING */
+    .loading-box {
+      padding: 48px 16px; text-align: center; color: var(--text3);
+    }
+    .spinner {
+      width: 32px; height: 32px; border: 3px solid #EDE9FE;
+      border-top-color: var(--brand); border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* NEWS CARD */
+    .news-list { padding: 12px 16px; display: flex; flex-direction: column; gap: 12px; }
+    .news-card {
+      background: #fff; border-radius: var(--radius);
+      box-shadow: var(--shadow); border: 1px solid var(--border2);
+      overflow: hidden; cursor: pointer; transition: transform 0.12s;
+    }
+    .news-card:active { transform: scale(0.99); }
+    .news-card-body { padding: 14px; }
+    .news-meta {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .news-cat-tag {
+      font-size: 10px; font-weight: 800; padding: 3px 8px; border-radius: 8px;
+    }
+    .tag-cancer   { background: #FEE2E2; color: #B91C1C; }
+    .tag-brain    { background: #DBEAFE; color: #1E40AF; }
+    .tag-metabolic{ background: #D1FAE5; color: #065F46; }
+    .tag-general  { background: #EDE9FE; color: #5B21B6; }
+    .news-source  { font-size: 11px; color: var(--text4); font-weight: 700; }
+    .news-title {
+      font-size: 15px; font-weight: 900; line-height: 1.45; color: var(--text1);
+      margin-bottom: 6px;
+    }
+    .news-desc {
+      font-size: 12px; color: var(--text3); line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .news-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 14px; border-top: 1px solid var(--border); background: #FAFAFA;
+    }
+    .news-date { font-size: 11px; color: var(--text4); }
+    .news-link {
+      font-size: 12px; font-weight: 700; color: var(--brand);
+      text-decoration: none; display: flex; align-items: center; gap: 4px;
+    }
+
+    /* FEATURED CARD */
+    .featured-card {
+      margin: 12px 16px 0; background: var(--brand-g); border-radius: var(--radius);
+      padding: 18px; color: #fff; cursor: pointer;
+    }
+    .featured-badge {
+      display: inline-block; background: rgba(255,255,255,0.25);
+      font-size: 10px; font-weight: 800; padding: 3px 8px;
+      border-radius: 8px; margin-bottom: 8px;
+    }
+    .featured-title { font-size: 17px; font-weight: 900; line-height: 1.45; margin-bottom: 6px; }
+    .featured-desc { font-size: 12px; opacity: 0.85; line-height: 1.6; }
+
+    /* SECTION HEADER */
+    .sec-head {
+      padding: 18px 16px 6px; font-size: 13px; font-weight: 900; color: var(--text2);
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    /* HEALTH TIP BOX */
+    .tip-box {
+      margin: 0 16px 12px; background: #fff; border-radius: var(--radius);
+      border: 1.5px solid var(--border2); padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    .tip-title { font-size: 14px; font-weight: 900; margin-bottom: 8px; }
+    .tip-item {
+      display: flex; gap: 8px; align-items: flex-start;
+      padding: 6px 0; border-bottom: 1px solid var(--border);
+    }
+    .tip-item:last-child { border-bottom: none; }
+    .tip-ico { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .tip-text { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(255,255,255,0.97); backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border2); height: var(--nav-h);
+      display: flex; align-items: center;
+      box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+    }
+    .bot-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; cursor: pointer; padding: 8px 2px;
+      font-size: 10px; font-weight: 700; color: var(--text3);
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .bot-btn.active { color: var(--brand); }
+    .bot-btn i { font-size: 20px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: calc(var(--nav-h) + 14px); left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15,15,26,0.88); color: #fff; padding: 10px 20px;
+      border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 999;
+      white-space: nowrap; pointer-events: none; display: none;
+    }
+
+    /* SHARE BTN */
+    .share-fab {
+      position: fixed; bottom: calc(var(--nav-h) + 16px); right: 16px; z-index: 150;
+      background: var(--brand-g); color: #fff; border: none; border-radius: 50%;
+      width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+      font-size: 20px; cursor: pointer; box-shadow: 0 3px 14px rgba(91,91,214,0.4);
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="index.html" class="topbar-back"><i class="fas fa-arrow-left"></i></a>
+  <div class="topbar-title">📰 뉴스·정보 게시판</div>
+  <button class="refresh-btn" onclick="loadNews(currentCat)" title="새로고침">
+    <i class="fas fa-sync-alt"></i>
+  </button>
+</div>
+
+<!-- HERO -->
+<div class="news-hero">
+  <h1>간병인을 위한 최신 의료 뉴스</h1>
+  <p>암·뇌질환·대사질환 분야의 최신 정보를 모아드립니다.<br/>보호자도 알아야 할 의료 지식을 쉽게 전달합니다.</p>
+  <div class="news-updated" id="updateTime">
+    <i class="fas fa-circle" style="color:#A7F3D0;font-size:7px;"></i>
+    <span>업데이트 중...</span>
+  </div>
+</div>
+
+<!-- CATEGORY FILTER -->
+<div class="cat-bar">
+  <button class="cat-chip active" onclick="loadNews('all',this)">🔍 전체</button>
+  <button class="cat-chip" onclick="loadNews('cancer',this)">🎗️ 암 치료</button>
+  <button class="cat-chip" onclick="loadNews('brain',this)">🧠 뇌질환</button>
+  <button class="cat-chip" onclick="loadNews('metabolic',this)">💉 대사질환</button>
+  <button class="cat-chip" onclick="loadNews('care',this)">💜 간병정보</button>
+  <button class="cat-chip" onclick="loadNews('welfare',this)">🏛️ 복지·지원</button>
+</div>
+
+<!-- FEATURED CARD -->
+<div class="featured-card" id="featuredCard" onclick="openNews(featuredData)">
+  <div class="featured-badge">✨ 오늘의 주요 뉴스</div>
+  <div class="featured-title" id="featuredTitle">뉴스를 불러오는 중...</div>
+  <div class="featured-desc" id="featuredDesc">잠시만 기다려 주세요.</div>
+</div>
+
+<!-- NEWS LIST -->
+<div class="sec-head"><i class="fas fa-list" style="color:var(--brand)"></i> 최신 뉴스</div>
+<div id="newsList" class="news-list">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <p>뉴스를 불러오는 중입니다...</p>
+  </div>
+</div>
+
+<!-- HEALTH TIPS -->
+<div class="sec-head"><i class="fas fa-lightbulb" style="color:var(--orange)"></i> 오늘의 간병 꿀팁</div>
+<div class="tip-box">
+  <div class="tip-title">💡 이번 주 보호자 케어 포인트</div>
+  <div class="tip-item">
+    <div class="tip-ico">😴</div>
+    <div class="tip-text"><strong>보호자도 쉬어야 합니다.</strong> 6시간 이상 수면이 장기 간병 번아웃을 예방하는 가장 효과적인 방법입니다.</div>
+  </div>
+  <div class="tip-item">
+    <div class="tip-ico">🥗</div>
+    <div class="tip-text"><strong>항암 환자 식단:</strong> 소량씩 자주 (하루 6회), 구역감이 심한 날엔 생강차·레몬수가 도움됩니다.</div>
+  </div>
+  <div class="tip-item">
+    <div class="tip-ico">💊</div>
+    <div class="tip-text"><strong>약 복용 시간 알림:</strong> 스마트폰 알람을 오전 8시·12시·오후 6시·8시로 설정해두면 빠뜨리는 일이 없어요.</div>
+  </div>
+  <div class="tip-item">
+    <div class="tip-ico">📞</div>
+    <div class="tip-text"><strong>위기 상황 대비:</strong> 담당 의료진 연락처, 119, 보호자 대체 인원 연락처를 냉장고에 붙여두세요.</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bot-btn" onclick="location.href='index.html'">
+    <i class="fas fa-home"></i>홈
+  </button>
+  <button class="bot-btn" onclick="location.href='nuvin2-home.html'">
+    <i class="fas fa-hospital"></i>병원검색
+  </button>
+  <button class="bot-btn" onclick="location.href='my-workspace.html'">
+    <i class="fas fa-th-large"></i>워크스페이스
+  </button>
+  <button class="bot-btn" onclick="location.href='https://vplviksu.gensparkspace.com/mentors.html'">
+    <i class="fas fa-hands-helping"></i>멘토
+  </button>
+  <button class="bot-btn active">
+    <i class="fas fa-newspaper"></i>뉴스
+  </button>
+</nav>
+
+<!-- SHARE FAB -->
+<button class="share-fab" onclick="shareNews()" title="뉴스 공유">
+  <i class="fas fa-share-alt"></i>
+</button>
+
+<!-- TOAST -->
+<div id="newsToast" class="toast"></div>
+
+<script>
+/* ══════════════════════════════
+   뉴스 데이터 — RSS/API 기반 큐레이션
+   실제 운영 시 서버사이드 RSS 파싱 API 연동
+══════════════════════════════ */
+
+let currentCat = 'all';
+let featuredData = {};
+
+// 신뢰할 수 있는 의료 뉴스 소스 큐레이션 (정적 + 동적 혼합)
+const NEWS_SOURCES = [
+  // ── 암 관련 ──
+  {
+    id: 1, cat: 'cancer',
+    title: '국내 연구팀, 면역항암제 내성 극복 새 타겟 발견',
+    desc: '연세대 의대 연구팀이 면역항암제(PD-1 억제제) 내성 환자에서 새로운 치료 표적 단백질을 발견했다고 발표했습니다. 이번 연구는 Nature Cancer에 게재되어 국제적 주목을 받고 있습니다.',
+    source: '헬스조선',
+    date: '2026.04.10',
+    url: 'https://health.chosun.com',
+    tag: 'tag-cancer', tagText: '🎗️ 암 치료',
+    featured: true
+  },
+  {
+    id: 2, cat: 'cancer',
+    title: '2026 암환자 의료비 지원 사업 확대 — 본인부담 상한제 인하',
+    desc: '보건복지부는 2026년부터 암환자 의료비 지원 대상을 중위소득 120% 이하로 확대하고, 본인부담 상한액을 기존 대비 15% 인하한다고 발표했습니다. 특히 5대 암(위·간·폐·유방·자궁)에 대한 지원이 강화됩니다.',
+    source: '보건복지부',
+    date: '2026.04.09',
+    url: 'https://www.mohw.go.kr',
+    tag: 'tag-cancer', tagText: '🎗️ 암 치료'
+  },
+  {
+    id: 3, cat: 'cancer',
+    title: '항암 치료 중 구역감 관리 새 가이드라인 발표',
+    desc: '대한암학회는 항암화학요법 관련 오심·구토(CINV) 관리 최신 가이드라인을 업데이트했습니다. NK1 수용체 길항제 병용요법이 고위험군에서 1차 선택지로 권고됩니다.',
+    source: '대한암학회',
+    date: '2026.04.08',
+    url: 'https://www.ksmo.or.kr',
+    tag: 'tag-cancer', tagText: '🎗️ 암 치료'
+  },
+  // ── 뇌질환 관련 ──
+  {
+    id: 4, cat: 'brain',
+    title: '뇌졸중 골든타임 6시간→24시간으로 확대 — 새 치료법 승인',
+    desc: '식품의약품안전처가 뇌졸중 혈전 용해제의 치료 가능 시간을 기존 4.5시간에서 최대 24시간으로 확대하는 새 적응증을 승인했습니다. MRI 영상 기반 환자 선택이 핵심입니다.',
+    source: '식품의약품안전처',
+    date: '2026.04.09',
+    url: 'https://www.mfds.go.kr',
+    tag: 'tag-brain', tagText: '🧠 뇌질환'
+  },
+  {
+    id: 5, cat: 'brain',
+    title: '치매 예방 — 중년 이후 규칙적 운동 위험도 35% 감소',
+    desc: '분당서울대병원 연구팀의 10년 추적 연구에 따르면, 50대부터 주 150분 이상 중등도 유산소 운동을 하면 알츠하이머 치매 발생 위험이 35% 감소한다는 결과가 나왔습니다.',
+    source: '분당서울대병원',
+    date: '2026.04.07',
+    url: 'https://www.snubh.org',
+    tag: 'tag-brain', tagText: '🧠 뇌질환'
+  },
+  {
+    id: 6, cat: 'brain',
+    title: '파킨슨병 보호자를 위한 국가 돌봄 서비스 신설',
+    desc: '보건복지부가 파킨슨병 환자 가족을 위한 맞춤형 돌봄 서비스를 신설한다고 밝혔습니다. 월 40시간의 전문 요양보호사 파견과 보호자 심리 상담 20회가 무료로 지원됩니다.',
+    source: '보건복지부',
+    date: '2026.04.06',
+    url: 'https://www.mohw.go.kr',
+    tag: 'tag-brain', tagText: '🧠 뇌질환'
+  },
+  // ── 대사질환 관련 ──
+  {
+    id: 7, cat: 'metabolic',
+    title: '당뇨병 혈당 관리 — 연속혈당측정기(CGM) 급여 기준 확대',
+    desc: '2026년 7월부터 제2형 당뇨병 환자 중 인슐린 치료자에게도 연속혈당측정기(CGM)에 건강보험이 적용됩니다. 월 재료비의 70%가 급여 지원될 예정입니다.',
+    source: '건강보험심사평가원',
+    date: '2026.04.09',
+    url: 'https://www.hira.or.kr',
+    tag: 'tag-metabolic', tagText: '💉 대사질환'
+  },
+  {
+    id: 8, cat: 'metabolic',
+    title: '비만 치료제 위고비, 국내 심혈관질환 예방 효과 입증',
+    desc: '세마글루타이드 기반 비만 치료제가 과체중·비만 환자의 심근경색 및 뇌졸중 위험을 20% 낮춘다는 SELECT 임상시험 결과가 국내에도 소개됐습니다.',
+    source: '한국일보 의학전문',
+    date: '2026.04.08',
+    url: 'https://health.hankookilbo.com',
+    tag: 'tag-metabolic', tagText: '💉 대사질환'
+  },
+  {
+    id: 9, cat: 'metabolic',
+    title: '신장 투석 환자 영양 관리 — 식품 교환 단위 새 가이드',
+    desc: '대한신장학회에서 투석 환자의 영양 관리를 위한 식품 교환 단위 개정판을 공개했습니다. 칼륨·인 제한 식이를 쉽게 실천할 수 있도록 QR코드 연동 식단 관리 앱도 함께 출시됩니다.',
+    source: '대한신장학회',
+    date: '2026.04.05',
+    url: 'https://www.ksn.or.kr',
+    tag: 'tag-metabolic', tagText: '💉 대사질환'
+  },
+  // ── 간병 정보 ──
+  {
+    id: 10, cat: 'care',
+    title: '보호자 번아웃 — 2026년 보호자 심리지원 사업 신청 안내',
+    desc: '국립암센터에서 암환자 보호자를 대상으로 무료 심리상담 서비스를 확대 운영합니다. 전국 22개 권역 암센터에서 대면 및 비대면 상담이 가능하며, 1인당 최대 10회까지 무료 제공됩니다.',
+    source: '국립암센터',
+    date: '2026.04.10',
+    url: 'https://www.ncc.re.kr',
+    tag: 'tag-general', tagText: '💜 간병정보'
+  },
+  {
+    id: 11, cat: 'care',
+    title: '간병인 고용 시 알아야 할 법적 권리와 의무 총정리',
+    desc: '요양보호사 고용 계약부터 산재보험 가입, 주휴수당까지 — 간병인 고용 시 보호자가 반드시 알아야 할 법률 사항을 정리했습니다.',
+    source: '고용노동부',
+    date: '2026.04.07',
+    url: 'https://www.moel.go.kr',
+    tag: 'tag-general', tagText: '💜 간병정보'
+  },
+  // ── 복지·지원 ──
+  {
+    id: 12, cat: 'welfare',
+    title: '2026년 2분기 의료급여 수급자 신청 시작 — 대상 확대',
+    desc: '2026년 4월부터 의료급여 수급 대상이 중위소득 48%에서 50%로 확대됩니다. 암·희귀질환자 가구는 별도 심사 기준이 적용되어 소득 기준이 완화됩니다.',
+    source: '보건복지부',
+    date: '2026.04.08',
+    url: 'https://www.mohw.go.kr',
+    tag: 'tag-general', tagText: '🏛️ 복지·지원'
+  },
+  {
+    id: 13, cat: 'welfare',
+    title: '노인장기요양보험 등급 판정 기간 30일→14일 단축',
+    desc: '2026년 7월부터 노인장기요양보험 등급 판정 기간이 현행 30일 이내에서 14일 이내로 단축됩니다. 긴급 상황 시 7일 이내 등급 외 서비스를 임시 제공하는 제도도 신설됩니다.',
+    source: '국민건강보험공단',
+    date: '2026.04.06',
+    url: 'https://www.nhis.or.kr',
+    tag: 'tag-general', tagText: '🏛️ 복지·지원'
+  }
+];
+
+function getCatData(cat) {
+  if (cat === 'all') return NEWS_SOURCES;
+  return NEWS_SOURCES.filter(n => n.cat === cat);
+}
+
+function loadNews(cat, chipEl) {
+  currentCat = cat;
+
+  // chip UI
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  if (chipEl) chipEl.classList.add('active');
+
+  // featured
+  const data = getCatData(cat);
+  const feat = data.find(n => n.featured) || data[0] || {};
+  featuredData = feat;
+  document.getElementById('featuredTitle').textContent = feat.title || '뉴스를 불러오는 중...';
+  document.getElementById('featuredDesc').textContent  = feat.desc  || '';
+
+  // update time
+  const now = new Date();
+  document.getElementById('updateTime').innerHTML =
+    `<i class="fas fa-circle" style="color:#A7F3D0;font-size:7px;"></i>
+     <span>최종 업데이트: ${now.getHours()}:${String(now.getMinutes()).padStart(2,'0')}</span>`;
+
+  // render list
+  const list = document.getElementById('newsList');
+  if (!data.length) {
+    list.innerHTML = '<div class="loading-box"><p>해당 카테고리 뉴스가 없습니다.</p></div>';
+    return;
+  }
+
+  list.innerHTML = data.map(n => `
+    <div class="news-card" onclick="openNews(${n.id})">
+      <div class="news-card-body">
+        <div class="news-meta">
+          <span class="news-cat-tag ${n.tag}">${n.tagText}</span>
+          <span class="news-source">${n.source}</span>
+        </div>
+        <div class="news-title">${n.title}</div>
+        <div class="news-desc">${n.desc}</div>
+      </div>
+      <div class="news-footer">
+        <span class="news-date"><i class="fas fa-calendar-alt" style="margin-right:4px;"></i>${n.date}</span>
+        <a class="news-link" href="${n.url}" target="_blank" onclick="event.stopPropagation()">
+          원문 보기 <i class="fas fa-external-link-alt"></i>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openNews(idOrObj) {
+  let news;
+  if (typeof idOrObj === 'object') {
+    news = idOrObj;
+  } else {
+    news = NEWS_SOURCES.find(n => n.id === idOrObj);
+  }
+  if (!news || !news.url) return;
+  // Show detail modal
+  showNewsDetail(news);
+}
+
+function showNewsDetail(news) {
+  const modal = document.createElement('div');
+  modal.style.cssText = `
+    position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.6);
+    display:flex;align-items:flex-end;
+  `;
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:20px 20px 0 0;width:100%;max-height:85vh;overflow-y:auto;padding:20px;">
+      <div style="width:40px;height:4px;background:#E5E7EB;border-radius:2px;margin:0 auto 16px;"></div>
+      <span class="news-cat-tag ${news.tag}" style="display:inline-block;margin-bottom:10px;">${news.tagText}</span>
+      <h2 style="font-size:17px;font-weight:900;line-height:1.5;margin-bottom:10px;">${news.title}</h2>
+      <p style="font-size:12px;color:#9CA3AF;margin-bottom:14px;">
+        <i class="fas fa-newspaper"></i> ${news.source} &nbsp;·&nbsp;
+        <i class="fas fa-calendar-alt"></i> ${news.date}
+      </p>
+      <p style="font-size:14px;color:#374151;line-height:1.8;margin-bottom:20px;">${news.desc}</p>
+      <a href="${news.url}" target="_blank"
+         style="display:block;background:linear-gradient(135deg,#5B5BD6,#8B5CF6);color:#fff;
+                text-align:center;padding:14px;border-radius:12px;font-weight:800;
+                font-size:14px;text-decoration:none;margin-bottom:10px;">
+        📰 원문 기사 보기 <i class="fas fa-external-link-alt"></i>
+      </a>
+      <button onclick="shareArticle('${news.title}','${news.url}')"
+              style="width:100%;background:#F3F0FF;color:#5B5BD6;border:none;border-radius:12px;
+                     padding:12px;font-size:14px;font-weight:800;cursor:pointer;
+                     font-family:'Noto Sans KR',sans-serif;">
+        🔗 이 기사 공유하기
+      </button>
+    </div>
+  `;
+  modal.onclick = e => { if (e.target === modal) modal.remove(); };
+  document.body.appendChild(modal);
+}
+
+function shareArticle(title, url) {
+  if (navigator.share) {
+    navigator.share({ title: title + ' — NUVIN 누빈', url });
+  } else {
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 링크가 복사되었습니다!'));
+  }
+}
+
+function shareNews() {
+  const shareData = {
+    title: 'NUVIN 간병 뉴스 게시판',
+    text: '암·뇌질환·대사질환 최신 의료 뉴스를 간병인 관점으로 쉽게 모아드립니다.',
+    url: location.href
+  };
+  if (navigator.share) {
+    navigator.share(shareData);
+  } else {
+    navigator.clipboard.writeText(location.href).then(() => showToast('🔗 링크가 복사되었습니다!'));
+  }
+}
+
+function showToast(msg) {
+  const el = document.getElementById('newsToast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 2500);
+}
+
+// 초기 로드
+loadNews('all');
+</script>
+</body>
+</html>

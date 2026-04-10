@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>간병 대시보드 - 누빈</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── T맵 스타일 밝은 테마 (메인앱 색상 동기화) ── */
+    :root {
+      --brand:#5B5BD6; --brand2:#8B5CF6;
+      --bg:#F4F5F8; --surface:#ffffff; --surface2:#F8F7FF; --surface3:#EDE9FE;
+      --border:rgba(91,91,214,0.14); --text:#111827; --text2:#4B5563; --text3:#6B7280;
+      --green:#10B981; --grad:linear-gradient(135deg,#5B5BD6,#8B5CF6);
+    }
+    * { font-family:'Noto Sans KR',sans-serif; }
+    body { background:var(--bg); color:var(--text); }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:20px; box-shadow:0 2px 12px rgba(91,91,214,0.08); }
+    .card-sm { background:var(--surface2); border-radius:14px; padding:14px; }
+    .check-item { background:var(--surface2); border-radius:12px; padding:12px 14px; display:flex; align-items:center; gap:12px; cursor:pointer; transition:all 0.2s; border:1.5px solid var(--border); }
+    .check-item.done { border-color:#10B981; background:rgba(16,185,129,0.06); }
+    .check-item.done p { text-decoration:line-through; color:var(--text3); }
+    .check-circle { width:24px; height:24px; border-radius:50%; border:2px solid rgba(91,91,214,0.25); flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:all 0.2s; }
+    .check-item.done .check-circle { background:#10B981; border-color:#10B981; }
+    .mood-btn { border:2px solid var(--border); border-radius:14px; padding:10px; text-align:center; cursor:pointer; transition:all 0.2s; background:var(--surface2); flex:1; }
+    .mood-btn.selected { border-color:var(--brand); background:var(--surface3); }
+    .input-dark { background:var(--surface2); border:1.5px solid var(--border); color:var(--text); border-radius:12px; padding:10px 14px; width:100%; font-size:13px; outline:none; transition:border-color 0.2s; font-family:'Noto Sans KR',sans-serif; }
+    .input-dark:focus { border-color:var(--brand); box-shadow:0 0 0 3px rgba(91,91,214,0.1); }
+    .input-dark::placeholder { color:var(--text3); }
+    .btn-primary { background:var(--grad); border:none; border-radius:12px; padding:12px 20px; color:white; font-weight:900; font-size:13px; cursor:pointer; transition:all 0.2s; font-family:'Noto Sans KR',sans-serif; display:flex; align-items:center; gap:8px; justify-content:center; box-shadow:0 4px 16px rgba(91,91,214,0.3); }
+    .btn-primary:hover { transform:translateY(-1px); box-shadow:0 6px 20px rgba(91,91,214,0.4); }
+    .prog-bar { height:8px; border-radius:999px; background:var(--surface3); overflow:hidden; }
+    .prog-fill { height:100%; border-radius:999px; transition:width 0.8s ease; }
+    .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:var(--surface); border-top:1.5px solid var(--border); padding:12px 0 16px; z-index:50; box-shadow:0 -2px 12px rgba(91,91,214,0.08); }
+    .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:100; display:flex; align-items:flex-end; justify-content:center; }
+    .modal-sheet { background:var(--surface); border-radius:24px 24px 0 0; padding:24px; width:100%; max-width:480px; border-top:2px solid var(--border); }
+  </style>
+</head>
+<body class="pb-28">
+
+<!-- Header -->
+<div class="px-4 pt-10 pb-5" style="background:linear-gradient(135deg,#5B5BD6,#8B5CF6)">
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-3">
+      <a href="index.html" style="color:rgba(255,255,255,0.8);"><i class="fas fa-arrow-left"></i></a>
+      <div>
+        <h1 class="text-xl font-black">📊 맞춤형 간병 대시보드</h1>
+        <p class="text-xs" style="color:rgba(255,255,255,0.75);" id="todayDate"></p>
+      </div>
+    </div>
+    <div style="background:linear-gradient(135deg,#5B5BD6,#8B5CF6); border-radius:10px; padding:4px 12px; font-size:13px; font-weight:900; color:white; letter-spacing:1px;">NUVIN</div>
+  </div>
+  <!-- 환자 이름 설정 -->
+  <div class="flex items-center gap-2 mt-2">
+    <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
+      style="background:linear-gradient(135deg,#f093fb,#f5576c)">🧡</div>
+    <div>
+      <p class="text-sm font-black" id="patientNameDisplay">환자 이름 설정하기</p>
+      <button onclick="showPatientEdit()" style="font-size:12px;color:rgba(255,255,255,0.85);background:none;border:none;cursor:pointer;">설정 변경 →</button>
+    </div>
+  </div>
+</div>
+
+<div class="px-4 mt-5 space-y-4 max-w-lg mx-auto">
+
+  <!-- 오늘의 체크리스트 -->
+  <div class="card">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-black text-sm flex items-center gap-2"><i class="fas fa-tasks text-purple-400"></i> 오늘의 체크리스트</h2>
+      <div class="text-xs text-gray-500"><span id="doneCount">0</span>/<span id="totalCount">0</span> 완료</div>
+    </div>
+    <!-- 진행바 -->
+    <div class="prog-bar mb-4">
+      <div class="prog-fill" id="progressBar" style="width:0%;background:linear-gradient(135deg,#43e97b,#38f9d7)"></div>
+    </div>
+    <!-- 체크 항목들 -->
+    <div id="checkList" class="space-y-2"></div>
+    <!-- 항목 추가 -->
+    <div class="flex gap-2 mt-3">
+      <input id="newCheckItem" type="text" class="input-dark flex-1 text-xs" placeholder="새 항목 추가 (예: 혈압 측정)"/>
+      <button onclick="addCheckItem()" class="bg-purple-700 text-white text-xs px-3 py-2 rounded-xl font-bold hover:bg-purple-600 transition-colors whitespace-nowrap">추가</button>
+    </div>
+  </div>
+
+  <!-- 컨디션 기록 -->
+  <div class="card">
+    <h2 class="font-black text-sm flex items-center gap-2 mb-4"><i class="fas fa-heart text-pink-400"></i> 오늘 컨디션 기록</h2>
+    <!-- 환자 컨디션 -->
+    <p class="text-xs text-gray-500 font-bold mb-2">🧡 환자 컨디션</p>
+    <div class="flex gap-2 mb-4" id="patientMoodBtns">
+      <button class="mood-btn" onclick="selectMood('patient','😫')" data-val="😫"><div class="text-2xl">😫</div><div class="text-xs mt-1">힘들어요</div></button>
+      <button class="mood-btn" onclick="selectMood('patient','😐')" data-val="😐"><div class="text-2xl">😐</div><div class="text-xs mt-1">보통이에요</div></button>
+      <button class="mood-btn" onclick="selectMood('patient','😊')" data-val="😊"><div class="text-2xl">😊</div><div class="text-xs mt-1">괜찮아요</div></button>
+      <button class="mood-btn" onclick="selectMood('patient','😄')" data-val="😄"><div class="text-2xl">😄</div><div class="text-xs mt-1">좋아요</div></button>
+    </div>
+    <!-- 보호자 컨디션 -->
+    <p class="text-xs text-gray-500 font-bold mb-2">💙 보호자 컨디션 (나의 상태)</p>
+    <div class="flex gap-2" id="caregiverMoodBtns">
+      <button class="mood-btn" onclick="selectMood('caregiver','😫')" data-val="😫"><div class="text-2xl">😫</div><div class="text-xs mt-1">힘들어요</div></button>
+      <button class="mood-btn" onclick="selectMood('caregiver','😐')" data-val="😐"><div class="text-2xl">😐</div><div class="text-xs mt-1">보통이에요</div></button>
+      <button class="mood-btn" onclick="selectMood('caregiver','😊')" data-val="😊"><div class="text-2xl">😊</div><div class="text-xs mt-1">괜찮아요</div></button>
+      <button class="mood-btn" onclick="selectMood('caregiver','😄')" data-val="😄"><div class="text-2xl">😄</div><div class="text-xs mt-1">좋아요</div></button>
+    </div>
+  </div>
+
+  <!-- 오늘의 메모 -->
+  <div class="card">
+    <h2 class="font-black text-sm flex items-center gap-2 mb-3"><i class="fas fa-sticky-note text-yellow-400"></i> 오늘의 메모</h2>
+    <textarea id="memoInput" class="input-dark" rows="3" placeholder="오늘 특이사항, 의사 소견, 전달 메시지 등을 메모하세요..."></textarea>
+    <button onclick="saveMemo()" class="btn-primary mt-3 w-full text-sm">
+      <i class="fas fa-save"></i> 저장
+    </button>
+  </div>
+
+  <!-- 투약 기록 -->
+  <div class="card">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="font-black text-sm flex items-center gap-2"><i class="fas fa-pills text-blue-400"></i> 투약 관리</h2>
+      <button onclick="showMedModal()" class="text-xs text-purple-400 font-bold hover:text-purple-300">+ 추가</button>
+    </div>
+    <div id="medList" class="space-y-2">
+      <p class="text-xs text-gray-600 text-center py-2">투약 목록을 추가해보세요</p>
+    </div>
+  </div>
+
+  <!-- 주간 컨디션 기록 -->
+  <div class="card">
+    <h2 class="font-black text-sm flex items-center gap-2 mb-4"><i class="fas fa-calendar-week text-green-400"></i> 최근 7일 기록</h2>
+    <div id="weekRecord" class="grid grid-cols-7 gap-1"></div>
+    <div class="flex items-center justify-center gap-4 mt-3">
+      <div class="flex items-center gap-1.5 text-xs text-gray-500"><div class="w-3 h-3 rounded-full" style="background:#43e97b"></div>좋음</div>
+      <div class="flex items-center gap-1.5 text-xs text-gray-500"><div class="w-3 h-3 rounded-full" style="background:#fbbf24"></div>보통</div>
+      <div class="flex items-center gap-1.5 text-xs text-gray-500"><div class="w-3 h-3 rounded-full" style="background:#f5576c"></div>힘듦</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <div class="flex items-center justify-around max-w-lg mx-auto px-4">
+    <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white"><i class="fas fa-home text-lg"></i><span class="text-xs">홈</span></a>
+    <a href="mentors.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white"><i class="fas fa-hands-helping text-lg"></i><span class="text-xs">멘토링</span></a>
+    <a href="community.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white"><i class="fas fa-comments text-lg"></i><span class="text-xs">커뮤니티</span></a>
+    <a href="dashboard.html" class="flex flex-col items-center gap-1 text-purple-400"><i class="fas fa-chart-line text-lg"></i><span class="text-xs font-bold">대시보드</span></a>
+  </div>
+</div>
+
+<!-- 환자 이름 설정 Modal -->
+<div id="patientModal" class="modal-overlay hidden" onclick="if(event.target===this)closePatientEdit()">
+  <div class="modal-sheet">
+    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <h2 class="text-lg font-black mb-4">👤 환자 정보 설정</h2>
+    <div class="space-y-3">
+      <input id="patientNameInput" type="text" class="input-dark" placeholder="환자 성함 (예: 아버지, 어머니, 홍길동)"/>
+      <input id="patientDiseaseInput" type="text" class="input-dark" placeholder="질환명 (예: 유방암 2기, 뇌경색)"/>
+      <button onclick="savePatientInfo()" class="btn-primary w-full">저장</button>
+      <button onclick="closePatientEdit()" class="w-full text-sm text-gray-500 py-2">취소</button>
+    </div>
+  </div>
+</div>
+
+<!-- 투약 추가 Modal -->
+<div id="medModal" class="modal-overlay hidden" onclick="if(event.target===this)closeMedModal()">
+  <div class="modal-sheet">
+    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <h2 class="text-lg font-black mb-4">💊 투약 추가</h2>
+    <div class="space-y-3">
+      <input id="medName" type="text" class="input-dark" placeholder="약 이름 (예: 타이레놀)"/>
+      <input id="medTime" type="text" class="input-dark" placeholder="복용 시간 (예: 아침 7시, 점심 12시)"/>
+      <input id="medDose" type="text" class="input-dark" placeholder="용량 (예: 1정, 500mg)"/>
+      <button onclick="addMed()" class="btn-primary w-full">추가</button>
+      <button onclick="closeMedModal()" class="w-full text-sm text-gray-500 py-2">취소</button>
+    </div>
+  </div>
+</div>
+
+<script>
+var TODAY = new Date().toISOString().slice(0,10);
+var dashData = JSON.parse(localStorage.getItem('nuvin_dash_' + TODAY) || '{}');
+var allData = JSON.parse(localStorage.getItem('nuvin_dash_all') || '{}');
+
+// ── 날짜 표시 ──
+document.getElementById('todayDate').textContent =
+  new Date().toLocaleDateString('ko-KR', {year:'numeric', month:'long', day:'numeric', weekday:'long'});
+
+// ── 환자 정보 ──
+function loadPatientInfo() {
+  var info = JSON.parse(localStorage.getItem('nuvin_patient') || '{}');
+  if (info.name) {
+    document.getElementById('patientNameDisplay').textContent = info.name + (info.disease ? ' · ' + info.disease : '');
+  }
+}
+function showPatientEdit() { document.getElementById('patientModal').classList.remove('hidden'); }
+function closePatientEdit() { document.getElementById('patientModal').classList.add('hidden'); }
+function savePatientInfo() {
+  var name = document.getElementById('patientNameInput').value.trim();
+  var disease = document.getElementById('patientDiseaseInput').value.trim();
+  if (!name) { alert('환자 성함을 입력하세요.'); return; }
+  localStorage.setItem('nuvin_patient', JSON.stringify({name:name, disease:disease}));
+  document.getElementById('patientNameDisplay').textContent = name + (disease ? ' · ' + disease : '');
+  closePatientEdit();
+  showToast('✅ 저장되었습니다!');
+}
+
+// ── 체크리스트 ──
+var defaultChecks = [
+  {id:'c1', text:'아침 투약', done:false},
+  {id:'c2', text:'점심 투약', done:false},
+  {id:'c3', text:'저녁 투약', done:false},
+  {id:'c4', text:'혈압/혈당 측정', done:false},
+  {id:'c5', text:'수분 섭취 확인', done:false},
+  {id:'c6', text:'체온 측정', done:false}
+];
+var checks = dashData.checks || JSON.parse(JSON.stringify(defaultChecks));
+
+function renderChecks() {
+  var done = checks.filter(function(c) { return c.done; }).length;
+  document.getElementById('doneCount').textContent = done;
+  document.getElementById('totalCount').textContent = checks.length;
+  var pct = checks.length > 0 ? Math.round(done/checks.length*100) : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  document.getElementById('checkList').innerHTML = checks.map(function(c) {
+    return '<div class="check-item ' + (c.done ? 'done' : '') + '" onclick="toggleCheck(\'' + c.id + '\')">' +
+      '<div class="check-circle">' + (c.done ? '<i class="fas fa-check text-xs text-white" style="font-size:10px"></i>' : '') + '</div>' +
+      '<p class="text-sm flex-1">' + c.text + '</p>' +
+      '<button onclick="event.stopPropagation();removeCheck(\'' + c.id + '\')" class="text-gray-600 hover:text-red-400 transition-colors text-xs"><i class="fas fa-times"></i></button>' +
+      '</div>';
+  }).join('');
+}
+
+function toggleCheck(id) {
+  var c = checks.find(function(x) { return x.id === id; });
+  if (c) { c.done = !c.done; saveDash(); renderChecks(); }
+}
+function removeCheck(id) {
+  checks = checks.filter(function(x) { return x.id !== id; });
+  saveDash(); renderChecks();
+}
+function addCheckItem() {
+  var input = document.getElementById('newCheckItem');
+  var text = input.value.trim();
+  if (!text) return;
+  checks.push({ id: 'c' + Date.now(), text: text, done: false });
+  input.value = '';
+  saveDash(); renderChecks();
+}
+
+// ── 컨디션 ──
+var patientMood = dashData.patientMood || '';
+var caregiverMood = dashData.caregiverMood || '';
+
+function selectMood(type, val) {
+  if (type === 'patient') {
+    patientMood = val;
+    document.querySelectorAll('#patientMoodBtns .mood-btn').forEach(function(b) {
+      b.classList.toggle('selected', b.dataset.val === val);
+    });
+  } else {
+    caregiverMood = val;
+    document.querySelectorAll('#caregiverMoodBtns .mood-btn').forEach(function(b) {
+      b.classList.toggle('selected', b.dataset.val === val);
+    });
+  }
+  saveDash();
+  renderWeek();
+}
+
+function loadMoods() {
+  if (patientMood) {
+    document.querySelectorAll('#patientMoodBtns .mood-btn').forEach(function(b) {
+      b.classList.toggle('selected', b.dataset.val === patientMood);
+    });
+  }
+  if (caregiverMood) {
+    document.querySelectorAll('#caregiverMoodBtns .mood-btn').forEach(function(b) {
+      b.classList.toggle('selected', b.dataset.val === caregiverMood);
+    });
+  }
+}
+
+// ── 메모 ──
+function loadMemo() {
+  if (dashData.memo) document.getElementById('memoInput').value = dashData.memo;
+}
+function saveMemo() {
+  dashData.memo = document.getElementById('memoInput').value;
+  saveDash();
+  showToast('✅ 메모가 저장되었습니다!');
+}
+
+// ── 투약 ──
+var meds = JSON.parse(localStorage.getItem('nuvin_meds') || '[]');
+
+function renderMeds() {
+  if (meds.length === 0) {
+    document.getElementById('medList').innerHTML = '<p class="text-xs text-gray-600 text-center py-2">투약 목록을 추가해보세요</p>';
+    return;
+  }
+  document.getElementById('medList').innerHTML = meds.map(function(m, i) {
+    var doneKey = 'med_' + i + '_' + TODAY;
+    var isDone = localStorage.getItem(doneKey) === '1';
+    return '<div class="check-item ' + (isDone ? 'done' : '') + '" onclick="toggleMed(' + i + ')">' +
+      '<div class="check-circle">' + (isDone ? '<i class="fas fa-check text-xs text-white" style="font-size:10px"></i>' : '') + '</div>' +
+      '<div class="flex-1">' +
+      '<p class="text-sm font-bold">' + m.name + '</p>' +
+      '<p class="text-xs text-gray-500">' + m.time + ' · ' + m.dose + '</p>' +
+      '</div>' +
+      '<button onclick="event.stopPropagation();removeMed(' + i + ')" class="text-gray-600 hover:text-red-400 text-xs"><i class="fas fa-times"></i></button>' +
+      '</div>';
+  }).join('');
+}
+
+function toggleMed(i) {
+  var key = 'med_' + i + '_' + TODAY;
+  localStorage.setItem(key, localStorage.getItem(key) === '1' ? '0' : '1');
+  renderMeds();
+}
+function removeMed(i) { meds.splice(i,1); localStorage.setItem('nuvin_meds', JSON.stringify(meds)); renderMeds(); }
+function showMedModal() { document.getElementById('medModal').classList.remove('hidden'); }
+function closeMedModal() { document.getElementById('medModal').classList.add('hidden'); }
+function addMed() {
+  var name = document.getElementById('medName').value.trim();
+  var time = document.getElementById('medTime').value.trim();
+  var dose = document.getElementById('medDose').value.trim();
+  if (!name) { alert('약 이름을 입력하세요.'); return; }
+  meds.push({name:name, time:time||'미정', dose:dose||'-'});
+  localStorage.setItem('nuvin_meds', JSON.stringify(meds));
+  document.getElementById('medName').value = '';
+  document.getElementById('medTime').value = '';
+  document.getElementById('medDose').value = '';
+  closeMedModal();
+  renderMeds();
+  showToast('✅ 투약이 추가되었습니다!');
+}
+
+// ── 주간 기록 ──
+function renderWeek() {
+  var days = ['일','월','화','수','목','금','토'];
+  var html = '';
+  for (var i = 6; i >= 0; i--) {
+    var d = new Date(); d.setDate(d.getDate()-i);
+    var key = d.toISOString().slice(0,10);
+    var dayData = JSON.parse(localStorage.getItem('nuvin_dash_' + key) || '{}');
+    var mood = dayData.caregiverMood || '';
+    var color = '#2a2a45';
+    if (mood === '😄' || mood === '😊') color = '#43e97b';
+    else if (mood === '😐') color = '#fbbf24';
+    else if (mood === '😫') color = '#f5576c';
+    var isToday = key === TODAY;
+    html += '<div class="text-center">' +
+      '<div class="text-xs text-gray-500 mb-1">' + days[d.getDay()] + '</div>' +
+      '<div class="w-full aspect-square rounded-xl flex items-center justify-center text-base ' + (isToday ? 'ring-2 ring-purple-500' : '') + '" style="background:' + color + '">' +
+      (mood || (isToday ? '<span class="text-gray-600 text-xs">오늘</span>' : '')) +
+      '</div>' +
+      '</div>';
+  }
+  document.getElementById('weekRecord').innerHTML = html;
+}
+
+// ── 데이터 저장 ──
+function saveDash() {
+  dashData.checks = checks;
+  dashData.patientMood = patientMood;
+  dashData.caregiverMood = caregiverMood;
+  localStorage.setItem('nuvin_dash_' + TODAY, JSON.stringify(dashData));
+}
+
+// ── Toast ──
+function showToast(msg) {
+  var el = document.getElementById('toastEl');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'toastEl';
+    el.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid #667eea;color:white;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.5);font-family:Noto Sans KR,sans-serif;';
+    document.body.appendChild(el);
+  }
+  el.textContent = msg;
+  el.style.display = 'block';
+  clearTimeout(window._toast);
+  window._toast = setTimeout(function() { el.style.display = 'none'; }, 2500);
+}
+
+// ── 초기화 ──
+loadPatientInfo();
+renderChecks();
+loadMoods();
+loadMemo();
+renderMeds();
+renderWeek();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+}
+</script>
+
+<div style="background:#0a0a15;padding:14px 24px 80px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
+  <p style="font-size:12px;color:#4b5563;font-family:'Noto Sans KR',sans-serif;">
+    © 2026 누빈(NUVIN)  · 
+    <a href="privacy.html" style="color:#6b7280;text-decoration:none;">개인정보처리방침</a>
+  </p>
+</div>
+</body>
+</html>

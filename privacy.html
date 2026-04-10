@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>개인정보처리방침 — 누빈 NUVIN</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#667eea"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="누빈"/>
+<link rel="apple-touch-icon" href="images/icon-192.png"/>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Noto Sans KR',sans-serif; background:#0f0f1a; color:#e5e7eb; line-height:1.8; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg,#1a1a2e,#16213e);
+    padding: 40px 24px 32px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .header-inner { max-width: 800px; margin: 0 auto; }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: #9ca3af; text-decoration: none; font-size: 14px;
+    margin-bottom: 20px; transition: color 0.2s;
+  }
+  .back-btn:hover { color: white; }
+  .header h1 { font-size: 26px; font-weight: 900; color: white; margin-bottom: 8px; }
+  .header-meta { font-size: 13px; color: #6b7280; }
+  .header-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(102,126,234,0.15); border: 1px solid rgba(102,126,234,0.3);
+    color: #a78bfa; padding: 6px 14px; border-radius: 50px;
+    font-size: 12px; font-weight: 700; margin-top: 12px;
+  }
+
+  /* CONTENT */
+  .content { max-width: 800px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* TOC */
+  .toc {
+    background: #1a1a2e; border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 24px; margin-bottom: 40px;
+  }
+  .toc h3 { font-size: 14px; font-weight: 800; color: #a78bfa; margin-bottom: 16px; }
+  .toc ol { padding-left: 20px; }
+  .toc li { margin-bottom: 8px; }
+  .toc a { color: #9ca3af; text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .toc a:hover { color: #a78bfa; }
+
+  /* SECTION */
+  .section { margin-bottom: 48px; }
+  .section-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; border-radius: 8px;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color: white; font-size: 13px; font-weight: 900;
+    margin-right: 10px; flex-shrink: 0;
+  }
+  .section h2 {
+    display: flex; align-items: center;
+    font-size: 18px; font-weight: 900; color: white;
+    margin-bottom: 20px; padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .section p { font-size: 14px; color: #d1d5db; margin-bottom: 12px; line-height: 1.9; }
+  .section ul, .section ol { padding-left: 20px; margin-bottom: 16px; }
+  .section li { font-size: 14px; color: #d1d5db; margin-bottom: 8px; line-height: 1.8; }
+
+  /* TABLE */
+  .info-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .info-table th {
+    background: rgba(102,126,234,0.15); color: #a78bfa;
+    padding: 12px 16px; text-align: left; font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+  .info-table td {
+    padding: 12px 16px; color: #d1d5db;
+    border: 1px solid rgba(255,255,255,0.06);
+    vertical-align: top;
+  }
+  .info-table tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* HIGHLIGHT BOX */
+  .highlight-box {
+    background: rgba(102,126,234,0.08);
+    border: 1px solid rgba(102,126,234,0.25);
+    border-radius: 12px; padding: 16px 20px; margin: 16px 0;
+  }
+  .highlight-box.warning {
+    background: rgba(245,158,11,0.08);
+    border-color: rgba(245,158,11,0.25);
+  }
+  .highlight-box.success {
+    background: rgba(0,201,107,0.08);
+    border-color: rgba(0,201,107,0.25);
+  }
+  .highlight-box p { margin: 0; font-size: 13px; }
+
+  /* IMPORTANT */
+  .important {
+    background: rgba(239,68,68,0.08);
+    border-left: 3px solid #ef4444;
+    padding: 12px 16px; border-radius: 0 8px 8px 0;
+    margin: 16px 0; font-size: 13px; color: #fca5a5;
+  }
+
+  /* CONTACT */
+  .contact-card {
+    background: #1a1a2e; border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px; padding: 24px; margin-top: 16px;
+  }
+  .contact-card h4 { font-size: 15px; font-weight: 800; color: white; margin-bottom: 16px; }
+  .contact-row { display: flex; gap: 12px; margin-bottom: 10px; font-size: 14px; }
+  .contact-label { color: #6b7280; width: 90px; flex-shrink: 0; }
+  .contact-value { color: #d1d5db; }
+
+  /* FOOTER */
+  .privacy-footer {
+    background: #0a0a15; border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 24px; text-align: center;
+  }
+  .privacy-footer p { font-size: 13px; color: #4b5563; }
+  .privacy-footer a { color: #6b7280; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> 메인으로</a>
+    <h1>🛡️ 개인정보처리방침</h1>
+    <p class="header-meta">시행일: 2026년 4월 7일 &nbsp;|&nbsp; 최종 수정: 2026년 4월 7일</p>
+    <div class="header-badge"><i class="fas fa-shield-alt"></i> 개인정보보호법 준수</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- 서문 -->
+  <div class="highlight-box" style="margin-bottom:32px;">
+    <p style="color:#c4b5fd; font-weight:700; margin-bottom:6px;">누빈(NUVIN) 개인정보처리방침</p>
+    <p style="color:#d1d5db;">누빈(이하 "회사")은 「개인정보 보호법」, 「정보통신망 이용촉진 및 정보보호 등에 관한 법률」 등 관련 법령을 준수하며, 이용자의 개인정보를 소중히 보호합니다. 본 방침은 회사가 수집하는 개인정보의 항목, 이용 목적, 보유 기간 및 이용자의 권리에 대해 안내합니다.</p>
+  </div>
+
+  <!-- 목차 -->
+  <div class="toc">
+    <h3><i class="fas fa-list mr-2"></i>목차</h3>
+    <ol>
+      <li><a href="#s1">수집하는 개인정보 항목</a></li>
+      <li><a href="#s2">개인정보 수집 및 이용 목적</a></li>
+      <li><a href="#s3">민감정보(건강·질환 정보) 처리</a></li>
+      <li><a href="#s4">개인정보 보유 및 이용 기간</a></li>
+      <li><a href="#s5">개인정보 제3자 제공</a></li>
+      <li><a href="#s6">개인정보 처리 위탁</a></li>
+      <li><a href="#s7">개인정보의 파기</a></li>
+      <li><a href="#s8">이용자의 권리와 행사 방법</a></li>
+      <li><a href="#s9">개인정보 보호를 위한 기술적·관리적 조치</a></li>
+      <li><a href="#s10">개인정보 보호책임자</a></li>
+      <li><a href="#s11">권익침해 구제 방법</a></li>
+      <li><a href="#s12">방침 변경 고지</a></li>
+    </ol>
+  </div>
+
+  <!-- 제1조 -->
+  <div class="section" id="s1">
+    <h2><span class="section-num">1</span>수집하는 개인정보 항목</h2>
+    <p>회사는 서비스 제공을 위해 아래와 같은 개인정보를 수집합니다.</p>
+    <table class="info-table">
+      <thead>
+        <tr><th>구분</th><th>수집 항목</th><th>수집 방법</th><th>필수/선택</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>기본 정보</td><td>이름, 이메일 주소</td><td>가입 양식 직접 입력</td><td>필수</td></tr>
+        <tr><td>연락처</td><td>휴대전화 번호</td><td>가입 양식 직접 입력</td><td>선택</td></tr>
+        <tr><td>민감정보</td><td>관심 질환명(암·뇌질환·대사질환), 세부 증상 및 고충</td><td>가입 양식 직접 입력</td><td>필수(별도 동의)</td></tr>
+        <tr><td>마케팅</td><td>이메일, 휴대전화 번호</td><td>마케팅 동의 시</td><td>선택</td></tr>
+        <tr><td>자동 수집</td><td>접속 IP, 브라우저 종류, 방문 일시, 서비스 이용 기록</td><td>시스템 자동 수집</td><td>—</td></tr>
+      </tbody>
+    </table>
+    <div class="important">⚠️ 만 14세 미만 아동의 개인정보는 수집하지 않습니다.</div>
+  </div>
+
+  <!-- 제2조 -->
+  <div class="section" id="s2">
+    <h2><span class="section-num">2</span>개인정보 수집 및 이용 목적</h2>
+    <table class="info-table">
+      <thead>
+        <tr><th>이용 목적</th><th>근거</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>회원 가입 및 서비스 제공</td><td>계약 이행</td></tr>
+        <tr><td>질환 맞춤형 가이드북·콘텐츠 제공</td><td>계약 이행 + 별도 동의(민감정보)</td></tr>
+        <tr><td>선배 보호자(멘토) 매칭</td><td>계약 이행 + 별도 동의(민감정보)</td></tr>
+        <tr><td>커뮤니티 서비스 운영</td><td>계약 이행</td></tr>
+        <tr><td>고객 문의 응대</td><td>계약 이행</td></tr>
+        <tr><td>서비스 개선 및 통계 분석</td><td>정당한 이익</td></tr>
+        <tr><td>마케팅·광고성 정보 발송</td><td>별도 동의(선택)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 제3조 -->
+  <div class="section" id="s3">
+    <h2><span class="section-num">3</span>민감정보(건강·질환 정보) 처리</h2>
+    <div class="highlight-box warning">
+      <p style="color:#fbbf24; font-weight:800; margin-bottom:6px;">⚠️ 민감정보 별도 고지</p>
+      <p style="color:#fde68a;">질환명, 증상, 고충 등 건강 관련 정보는 「개인정보 보호법」 제23조에 따른 민감정보로, 별도의 명시적 동의를 받아 수집합니다.</p>
+    </div>
+    <ul>
+      <li><strong>수집 항목:</strong> 관심 질환명(암·뇌질환·대사질환), 세부 병기, 주요 증상 및 고충</li>
+      <li><strong>이용 목적:</strong> 맞춤형 멘토 매칭, 맞춤형 가이드북 제공</li>
+      <li><strong>보유 기간:</strong> 회원 탈퇴 시 즉시 파기</li>
+      <li><strong>거부 권리:</strong> 동의를 거부하실 수 있으나, 맞춤형 서비스 이용이 제한될 수 있습니다.</li>
+    </ul>
+  </div>
+
+  <!-- 제4조 -->
+  <div class="section" id="s4">
+    <h2><span class="section-num">4</span>개인정보 보유 및 이용 기간</h2>
+    <table class="info-table">
+      <thead>
+        <tr><th>구분</th><th>보유 기간</th><th>근거</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>회원 정보</td><td>회원 탈퇴 시까지</td><td>계약 이행</td></tr>
+        <tr><td>민감정보(질환)</td><td>회원 탈퇴 시 즉시 파기</td><td>별도 동의</td></tr>
+        <tr><td>마케팅 수신 동의</td><td>동의 철회 시까지</td><td>별도 동의</td></tr>
+        <tr><td>전자상거래 기록</td><td>5년</td><td>전자상거래법</td></tr>
+        <tr><td>소비자 불만·분쟁 기록</td><td>3년</td><td>전자상거래법</td></tr>
+        <tr><td>접속 로그</td><td>3개월</td><td>통신비밀보호법</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 제5조 -->
+  <div class="section" id="s5">
+    <h2><span class="section-num">5</span>개인정보 제3자 제공</h2>
+    <div class="highlight-box success">
+      <p style="color:#6ee7b7; font-weight:800; margin-bottom:4px;">✅ 원칙: 제3자 제공 없음</p>
+      <p style="color:#a7f3d0;">회사는 이용자의 사전 동의 없이 개인정보를 외부에 제공하지 않습니다.</p>
+    </div>
+    <p>단, 아래의 경우 예외적으로 제공할 수 있습니다.</p>
+    <ul>
+      <li>이용자가 사전에 동의한 경우</li>
+      <li>법령에 근거하거나 수사기관이 법적 절차에 따라 요청하는 경우</li>
+      <li>이용자 또는 제3자의 생명·신체·재산에 급박한 위험이 있는 경우</li>
+    </ul>
+  </div>
+
+  <!-- 제6조 -->
+  <div class="section" id="s6">
+    <h2><span class="section-num">6</span>개인정보 처리 위탁</h2>
+    <p>회사는 서비스 제공을 위해 아래와 같이 개인정보 처리 업무를 위탁하고 있습니다.</p>
+    <table class="info-table">
+      <thead>
+        <tr><th>수탁업체</th><th>위탁 업무</th><th>보유 기간</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Genspark Inc.</td><td>서비스 인프라 및 데이터 저장</td><td>회원 탈퇴 시까지</td></tr>
+        <tr><td>이메일 발송 서비스</td><td>서비스 안내 이메일 발송</td><td>발송 완료 시까지</td></tr>
+      </tbody>
+    </table>
+    <div class="highlight-box warning">
+      <p style="color:#fbbf24; font-weight:700; margin-bottom:4px;">📌 국외 이전 고지</p>
+      <p style="color:#fde68a;">현재 데이터는 Genspark Inc.(미국)의 서버에 저장됩니다. 향후 국내 서버(AWS 서울 리전 등)로 이전을 검토 중입니다.</p>
+    </div>
+  </div>
+
+  <!-- 제7조 -->
+  <div class="section" id="s7">
+    <h2><span class="section-num">7</span>개인정보의 파기</h2>
+    <p>회사는 개인정보 보유 기간이 경과하거나 처리 목적이 달성된 경우 지체 없이 개인정보를 파기합니다.</p>
+    <ul>
+      <li><strong>전자적 파일:</strong> 복구 불가능한 방법으로 영구 삭제</li>
+      <li><strong>종이 문서:</strong> 분쇄기로 분쇄 또는 소각</li>
+      <li><strong>파기 기한:</strong> 보유 기간 만료 후 5일 이내</li>
+    </ul>
+  </div>
+
+  <!-- 제8조 -->
+  <div class="section" id="s8">
+    <h2><span class="section-num">8</span>이용자의 권리와 행사 방법</h2>
+    <p>이용자는 언제든지 아래 권리를 행사할 수 있습니다.</p>
+    <table class="info-table">
+      <thead>
+        <tr><th>권리</th><th>내용</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>📋 열람 요청</td><td>본인의 개인정보 처리 현황 확인</td></tr>
+        <tr><td>✏️ 정정·삭제 요청</td><td>잘못된 정보 수정 또는 삭제 요청</td></tr>
+        <tr><td>⏸️ 처리 정지 요청</td><td>개인정보 처리 일시 정지 요청</td></tr>
+        <tr><td>📢 동의 철회</td><td>마케팅 수신 동의 언제든지 철회 가능</td></tr>
+      </tbody>
+    </table>
+    <p>권리 행사는 이메일(<strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="78080a110e191b0138160d0e111656130a">[email&#160;protected]</a></strong>)로 요청하시면 10일 이내 처리합니다.</p>
+  </div>
+
+  <!-- 제9조 -->
+  <div class="section" id="s9">
+    <h2><span class="section-num">9</span>개인정보 보호를 위한 기술적·관리적 조치</h2>
+    <ul>
+      <li><strong>전송 암호화:</strong> HTTPS/TLS 프로토콜 적용으로 데이터 전송 구간 암호화</li>
+      <li><strong>접근 통제:</strong> 관리자 인증(비밀번호) 후에만 데이터 접근 가능</li>
+      <li><strong>최소 수집:</strong> 서비스에 필요한 최소한의 정보만 수집</li>
+      <li><strong>내부 관리:</strong> 개인정보 취급 직원 최소화 및 교육 실시</li>
+    </ul>
+    <div class="highlight-box warning">
+      <p style="color:#fbbf24; font-weight:700; margin-bottom:4px;">⚠️ 현재 보안 한계 및 개선 계획</p>
+      <p style="color:#fde68a;">현재 민감정보에 대한 DB 단위 암호화는 미적용 상태입니다. 서비스 본격화 전 국내 서버 이전 및 데이터 암호화 적용을 계획하고 있습니다.</p>
+    </div>
+  </div>
+
+  <!-- 제10조 -->
+  <div class="section" id="s10">
+    <h2><span class="section-num">10</span>개인정보 보호책임자</h2>
+    <div class="contact-card">
+      <h4>👤 개인정보 보호책임자 (CPO)</h4>
+      <div class="contact-row"><span class="contact-label">담당자</span><span class="contact-value">누빈 운영팀</span></div>
+      <div class="contact-row"><span class="contact-label">이메일</span><span class="contact-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e393918a9582809aa38d96958a8dcd8891">[email&#160;protected]</a></span></div>
+      <div class="contact-row"><span class="contact-label">처리 기한</span><span class="contact-value">접수 후 10일 이내 답변</span></div>
+    </div>
+  </div>
+
+  <!-- 제11조 -->
+  <div class="section" id="s11">
+    <h2><span class="section-num">11</span>권익침해 구제 방법</h2>
+    <p>개인정보 침해 관련 신고·상담은 아래 기관에 문의하실 수 있습니다.</p>
+    <table class="info-table">
+      <thead><tr><th>기관</th><th>연락처</th></tr></thead>
+      <tbody>
+        <tr><td>개인정보 침해신고센터 (한국인터넷진흥원)</td><td>privacy.kisa.or.kr / ☎ 118</td></tr>
+        <tr><td>개인정보 분쟁조정위원회</td><td>www.kopico.go.kr / ☎ 1833-6972</td></tr>
+        <tr><td>대검찰청 사이버범죄수사단</td><td>www.spo.go.kr / ☎ 1301</td></tr>
+        <tr><td>경찰청 사이버수사국</td><td>ecrm.cyber.go.kr / ☎ 182</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 제12조 -->
+  <div class="section" id="s12">
+    <h2><span class="section-num">12</span>방침 변경 고지</h2>
+    <p>본 개인정보처리방침은 법령·정책 변경 또는 서비스 변경에 따라 수정될 수 있습니다. 변경 시 시행 7일 전 서비스 내 공지사항을 통해 사전 안내합니다.</p>
+    <div class="highlight-box">
+      <p style="color:#c4b5fd; font-weight:700;">📅 시행일: 2026년 4월 7일</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="privacy-footer">
+  <p>© 2026 누빈(NUVIN). All rights reserved.</p>
+  <p style="margin-top:8px;">
+    <a href="index.html">메인으로 돌아가기</a>  · 
+    <a href="migration-guide.html">서비스 안내</a>
+  </p>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+}
+</script>
+</body>
+</html>

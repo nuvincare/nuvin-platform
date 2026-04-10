@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <title>내 워크스페이스 — NUVIN 누빈</title>
+  <meta name="description" content="간병 대시보드, 병원 연결 관리, 멘토 관리, 받은 자료 한눈에"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand: #5B5BD6; --brand2: #8B5CF6; --brand-g: linear-gradient(135deg,#5B5BD6,#8B5CF6);
+      --green: #10B981; --red: #EF4444; --orange: #F59E0B; --blue: #0EA5E9;
+      --text1: #0F0F1A; --text2: #374151; --text3: #6B7280; --text4: #9CA3AF;
+      --bg: #F8F7FF; --bg2: #fff; --border: #E5E7EB; --border2: #EDE9FE;
+      --radius: 14px; --shadow: 0 2px 12px rgba(91,91,214,0.10);
+      --nav-h: 64px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Noto Sans KR', sans-serif;
+      background: var(--bg); color: var(--text1);
+      min-height: 100vh; padding-bottom: calc(var(--nav-h) + 20px);
+    }
+
+    /* TOP BAR */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border2);
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 16px;
+    }
+    .topbar-back {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--bg); border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; text-decoration: none; color: var(--text2);
+      font-size: 16px;
+    }
+    .topbar-title { font-size: 17px; font-weight: 900; flex: 1; }
+    .topbar-badge {
+      background: var(--brand-g); color: #fff;
+      font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 12px;
+    }
+
+    /* USER CARD */
+    .user-card {
+      margin: 16px; padding: 20px;
+      background: var(--brand-g); border-radius: 18px; color: #fff;
+      display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 4px 20px rgba(91,91,214,0.3);
+    }
+    .user-avatar {
+      width: 58px; height: 58px; border-radius: 50%;
+      background: rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+    }
+    .user-name { font-size: 18px; font-weight: 900; margin-bottom: 3px; }
+    .user-since { font-size: 12px; opacity: 0.85; }
+    .user-badges { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+    .user-chip {
+      background: rgba(255,255,255,0.22); font-size: 11px; font-weight: 700;
+      padding: 3px 9px; border-radius: 12px;
+    }
+
+    /* SECTION HEADER */
+    .sec-head {
+      padding: 18px 16px 8px;
+      font-size: 14px; font-weight: 900; color: var(--text2);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .sec-head span { font-size: 16px; }
+
+    /* STAT ROW */
+    .stat-row {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+      padding: 0 16px;
+    }
+    .stat-box {
+      background: #fff; border-radius: var(--radius); padding: 14px 10px;
+      text-align: center; box-shadow: var(--shadow);
+      border: 1px solid var(--border2);
+    }
+    .stat-num { font-size: 22px; font-weight: 900; color: var(--brand); }
+    .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+    /* DASHBOARD SECTION */
+    .dash-card {
+      margin: 0 16px 12px; background: #fff; border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow); border: 1px solid var(--border2);
+    }
+    .dash-card-title {
+      font-size: 14px; font-weight: 900; color: var(--text1);
+      display: flex; align-items: center; gap: 6px; margin-bottom: 12px;
+    }
+    .dash-card-title .badge {
+      background: var(--bg); color: var(--text3); font-size: 11px;
+      padding: 2px 8px; border-radius: 8px; font-weight: 700;
+    }
+
+    /* CHECKLIST */
+    .check-list { display: flex; flex-direction: column; gap: 8px; }
+    .check-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; background: var(--bg); border-radius: 10px;
+      cursor: pointer; transition: background 0.12s;
+    }
+    .check-item.done { opacity: 0.55; }
+    .check-item.done .check-label { text-decoration: line-through; color: var(--text3); }
+    .check-cb {
+      width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.15s; background: #fff;
+    }
+    .check-item.done .check-cb { background: var(--green); border-color: var(--green); color: #fff; font-size: 12px; }
+    .check-label { font-size: 13px; font-weight: 700; flex: 1; }
+    .check-time { font-size: 11px; color: var(--text3); }
+
+    /* PROGRESS BAR */
+    .prog-bar-wrap { margin-top: 10px; }
+    .prog-bar-row { display: flex; justify-content: space-between; font-size: 11px; color: var(--text3); margin-bottom: 5px; }
+    .prog-bar-bg { height: 8px; background: #F0EDFF; border-radius: 4px; }
+    .prog-bar-fill { height: 100%; border-radius: 4px; background: var(--brand-g); transition: width 0.4s; }
+
+    /* HOSPITAL CONNECTIONS */
+    .hosp-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .hosp-item:last-child { border-bottom: none; }
+    .hosp-ico {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: #EFF6FF; display: flex; align-items: center;
+      justify-content: center; font-size: 20px; flex-shrink: 0;
+    }
+    .hosp-name { font-size: 14px; font-weight: 800; }
+    .hosp-dept { font-size: 12px; color: var(--text3); margin-top: 2px; }
+    .hosp-status {
+      margin-left: auto; font-size: 11px; font-weight: 700; padding: 3px 9px;
+      border-radius: 10px; white-space: nowrap;
+    }
+    .hs-confirm { background: #D1FAE5; color: #065F46; }
+    .hs-pending { background: #FEF3C7; color: #92400E; }
+    .hs-chat    { background: #EDE9FE; color: #5B21B6; }
+    .hosp-action {
+      font-size: 12px; color: var(--brand); font-weight: 700;
+      background: none; border: none; cursor: pointer; margin-left: 6px;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* MENTOR ITEMS */
+    .mentor-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .mentor-item:last-child { border-bottom: none; }
+    .mentor-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--brand-g); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .mentor-name { font-size: 14px; font-weight: 800; }
+    .mentor-tag { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .mentor-btn {
+      margin-left: auto; background: var(--brand-g); color: #fff;
+      border: none; border-radius: 10px; padding: 6px 12px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* DOCUMENTS */
+    .doc-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; background: var(--bg); border-radius: 10px; margin-bottom: 8px;
+    }
+    .doc-ico {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .doc-ico.type-pdf { background: #FEE2E2; }
+    .doc-ico.type-img { background: #DBEAFE; }
+    .doc-ico.type-guide { background: #EDE9FE; }
+    .doc-name { font-size: 13px; font-weight: 800; flex: 1; }
+    .doc-date { font-size: 11px; color: var(--text3); }
+    .doc-dl {
+      color: var(--brand); font-size: 16px; cursor: pointer;
+      background: none; border: none; padding: 4px 6px;
+    }
+
+    /* MOOD LOG */
+    .mood-row { display: flex; gap: 10px; margin-bottom: 10px; }
+    .mood-btn {
+      flex: 1; background: var(--bg); border: 2px solid var(--border);
+      border-radius: 12px; padding: 10px 4px; text-align: center;
+      cursor: pointer; transition: all 0.15s; font-size: 20px; line-height: 1;
+    }
+    .mood-btn.selected { border-color: var(--brand); background: #EDE9FE; }
+    .mood-btn span { display: block; font-size: 10px; color: var(--text3); margin-top: 4px; font-weight: 700; }
+    .memo-area {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 10px 12px; font-size: 13px; font-family: 'Noto Sans KR', sans-serif;
+      resize: none; outline: none; height: 80px;
+    }
+    .memo-area:focus { border-color: var(--brand); }
+    .save-btn {
+      width: 100%; background: var(--brand-g); color: #fff;
+      border: none; border-radius: 10px; padding: 11px;
+      font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 8px;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+
+    /* BOTTOM NAV */
+    .bottom-nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      background: rgba(255,255,255,0.97); backdrop-filter: blur(24px);
+      border-top: 1px solid var(--border2); height: var(--nav-h);
+      display: flex; align-items: center; padding: 0;
+      box-shadow: 0 -2px 16px rgba(0,0,0,0.07);
+    }
+    .bot-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; cursor: pointer; padding: 8px 2px;
+      font-size: 10px; font-weight: 700; color: var(--text3);
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .bot-btn.active { color: var(--brand); }
+    .bot-btn i { font-size: 20px; }
+    .bot-btn.active i { color: var(--brand); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: calc(var(--nav-h) + 14px); left: 50%; transform: translateX(-50%);
+      background: rgba(15,15,26,0.88); color: #fff; padding: 10px 20px;
+      border-radius: 20px; font-size: 13px; font-weight: 700; z-index: 999;
+      white-space: nowrap; pointer-events: none;
+    }
+
+    /* TAB PANEL */
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <a href="index.html" class="topbar-back"><i class="fas fa-arrow-left"></i></a>
+  <div class="topbar-title">🗂️ 내 워크스페이스</div>
+  <div class="topbar-badge">NUVIN 회원</div>
+</div>
+
+<!-- USER CARD -->
+<div class="user-card" id="userCard">
+  <div class="user-avatar">👤</div>
+  <div style="flex:1;">
+    <div class="user-name" id="wsUserName">누빈 회원</div>
+    <div class="user-since" id="wsUserSince">가입일: 2026.04.10</div>
+    <div class="user-badges">
+      <div class="user-chip" id="wsDiseaseChip">암 보호자</div>
+      <div class="user-chip">멘토 매칭 완료</div>
+      <div class="user-chip">가이드북 받음</div>
+    </div>
+  </div>
+</div>
+
+<!-- STAT ROW -->
+<div class="stat-row">
+  <div class="stat-box">
+    <div class="stat-num" id="wsDayCount">14</div>
+    <div class="stat-lbl">간병 일수</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">2</div>
+    <div class="stat-lbl">연결 병원</div>
+  </div>
+  <div class="stat-box">
+    <div class="stat-num">1</div>
+    <div class="stat-lbl">담당 멘토</div>
+  </div>
+</div>
+
+<!-- TAB NAVIGATION INSIDE PAGE -->
+<div style="display:flex;gap:0;padding:18px 16px 0;">
+  <button class="tab-switch-btn active" id="tbDash" onclick="switchWsTab('dash')">📊 대시보드</button>
+  <button class="tab-switch-btn" id="tbHosp" onclick="switchWsTab('hosp')">🏥 병원연결</button>
+  <button class="tab-switch-btn" id="tbMentor" onclick="switchWsTab('mentor')">🤝 멘토</button>
+  <button class="tab-switch-btn" id="tbDocs" onclick="switchWsTab('docs')">📁 받은자료</button>
+</div>
+<style>
+  .tab-switch-btn {
+    flex:1; background:var(--bg); border:none; border-bottom:2px solid transparent;
+    padding:9px 4px; font-size:11px; font-weight:700; color:var(--text3);
+    cursor:pointer; font-family:'Noto Sans KR',sans-serif; transition:all 0.15s;
+  }
+  .tab-switch-btn.active { color:var(--brand); border-bottom-color:var(--brand); background:#fff; }
+</style>
+
+<!-- ════════ 대시보드 TAB ════════ -->
+<div id="tab-dash" class="tab-panel active">
+
+  <!-- 오늘 간병 체크리스트 -->
+  <div class="sec-head"><span>✅</span> 오늘 간병 체크리스트 <span class="badge" style="background:#EDE9FE;color:#5B5BD6;font-size:11px;padding:2px 8px;border-radius:8px;font-weight:700;" id="checkProgress">0/6 완료</span></div>
+  <div class="dash-card">
+    <div class="check-list" id="checkList">
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-cb"><i class="fas fa-check" style="display:none"></i></div>
+        <div class="check-label">아침 약 복용 확인</div>
+        <div class="check-time">오전 8:00</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-cb"><i class="fas fa-check" style="display:none"></i></div>
+        <div class="check-label">혈압·혈당 측정</div>
+        <div class="check-time">오전 8:30</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-cb"><i class="fas fa-check" style="display:none"></i></div>
+        <div class="check-label">점심 식사 및 약 복용</div>
+        <div class="check-time">오후 12:00</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-cb"><i class="fas fa-check" style="display:none"></i></div>
+        <div class="check-label">수분 섭취 2L 체크</div>
+        <div class="check-time">오후 3:00</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-cb"><i class="fas fa-check" style="display:none"></i></div>
+        <div class="check-label">저녁 약 복용</div>
+        <div class="check-time">오후 6:00</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this)">
+        <div class="check-cb"><i class="fas fa-check" style="display:none"></i></div>
+        <div class="check-label">체온 측정 기록</div>
+        <div class="check-time">오후 8:00</div>
+      </div>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-row">
+        <span>오늘 간병 완료율</span>
+        <span id="progPct">0%</span>
+      </div>
+      <div class="prog-bar-bg">
+        <div class="prog-bar-fill" id="progFill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 기분·메모 기록 -->
+  <div class="sec-head"><span>😊</span> 오늘 컨디션 기록</div>
+  <div class="dash-card">
+    <div class="mood-row">
+      <div class="mood-btn" onclick="selectMood(this,'😊','좋음')">😊<span>좋음</span></div>
+      <div class="mood-btn" onclick="selectMood(this,'😐','보통')">😐<span>보통</span></div>
+      <div class="mood-btn" onclick="selectMood(this,'😔','힘듦')">😔<span>힘듦</span></div>
+      <div class="mood-btn" onclick="selectMood(this,'😰','위기')">😰<span>위기</span></div>
+    </div>
+    <textarea class="memo-area" id="memoText" placeholder="오늘 특이사항이나 메모를 남겨보세요..."></textarea>
+    <button class="save-btn" onclick="saveMemo()">💾 오늘 기록 저장</button>
+  </div>
+
+  <!-- 누빈 1.0 대시보드 바로가기 -->
+  <div class="dash-card" style="display:flex;align-items:center;gap:12px;">
+    <div style="font-size:28px;">📱</div>
+    <div style="flex:1;">
+      <div style="font-size:14px;font-weight:900;">누빈 1.0 간병 대시보드</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:2px;">기존 체크리스트·약복용·모니터링 도구</div>
+    </div>
+    <a href="https://vplviksu.gensparkspace.com/dashboard.html" target="_blank"
+       style="background:var(--brand-g);color:#fff;border:none;border-radius:10px;padding:8px 14px;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;">
+      열기 →
+    </a>
+  </div>
+</div>
+
+<!-- ════════ 병원연결 TAB ════════ -->
+<div id="tab-hosp" class="tab-panel">
+  <div class="sec-head"><span>🏥</span> 연결된 병원</div>
+  <div class="dash-card">
+    <div class="hosp-item">
+      <div class="hosp-ico">🏥</div>
+      <div>
+        <div class="hosp-name">삼성서울병원</div>
+        <div class="hosp-dept">종양내과 · 8병동 304호</div>
+      </div>
+      <span class="hosp-status hs-confirm">입원확정</span>
+      <button class="hosp-action" onclick="showToast('💬 누빈 메신저로 연결합니다')"><i class="fas fa-comment"></i></button>
+    </div>
+    <div class="hosp-item">
+      <div class="hosp-ico">🏨</div>
+      <div>
+        <div class="hosp-name">국립암센터 부속 요양병원</div>
+        <div class="hosp-dept">재활·요양 · 예약 대기중</div>
+      </div>
+      <span class="hosp-status hs-pending">대기중</span>
+      <button class="hosp-action" onclick="showToast('📞 담당자에게 연락 중...')"><i class="fas fa-phone"></i></button>
+    </div>
+  </div>
+
+  <div class="sec-head"><span>🔍</span> 병원 추가 검색</div>
+  <div class="dash-card">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">빈 병상 실시간 조회 후 바로 예약 신청이 가능합니다.</p>
+    <a href="nuvin2-home.html" style="display:block;background:var(--brand-g);color:#fff;text-align:center;padding:12px;border-radius:12px;font-weight:800;font-size:14px;text-decoration:none;">
+      🔍 실시간 병원 검색하기
+    </a>
+  </div>
+
+  <div class="sec-head"><span>📋</span> 예약 내역</div>
+  <div class="dash-card">
+    <div class="hosp-item">
+      <div class="hosp-ico">📅</div>
+      <div>
+        <div class="hosp-name">외래 진료 예약</div>
+        <div class="hosp-dept">삼성서울병원 · 2026.04.15 오전 10:30</div>
+      </div>
+      <span class="hosp-status hs-confirm">확정</span>
+    </div>
+    <div class="hosp-item">
+      <div class="hosp-ico">🩺</div>
+      <div>
+        <div class="hosp-name">정기 검사</div>
+        <div class="hosp-dept">삼성서울병원 · 2026.04.22 오후 2:00</div>
+      </div>
+      <span class="hosp-status hs-chat">예약요청</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 멘토 TAB ════════ -->
+<div id="tab-mentor" class="tab-panel">
+  <div class="sec-head"><span>🤝</span> 내 담당 멘토</div>
+  <div class="dash-card">
+    <div class="mentor-item">
+      <div class="mentor-avatar">👩</div>
+      <div>
+        <div class="mentor-name">김○○ 멘토</div>
+        <div class="mentor-tag">유방암 3기 보호자 2년 경험 · 서울 거주</div>
+      </div>
+      <button class="mentor-btn" onclick="showToast('💬 누빈 메신저에서 대화를 이어가세요')">메시지</button>
+    </div>
+    <div style="padding-top:8px;border-top:1px solid var(--border);">
+      <div style="font-size:12px;color:var(--text3);margin-bottom:6px;">최근 상담 내용</div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text2);line-height:1.6;">
+        항암 부작용 중 구역감 관리법에 대해 이야기 나눴습니다. 생강차, 소량 자주 섭취 방법 안내 완료. 다음 상담: 2026.04.14 오후 3시
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-head"><span>🌟</span> 멘토 더 찾기</div>
+  <div class="dash-card">
+    <p style="font-size:13px;color:var(--text2);margin-bottom:12px;">340명+ 선배 보호자 멘토와 연결하세요.</p>
+    <a href="https://vplviksu.gensparkspace.com/mentors.html" target="_blank"
+       style="display:block;background:var(--brand-g);color:#fff;text-align:center;padding:12px;border-radius:12px;font-weight:800;font-size:14px;text-decoration:none;">
+      🤝 멘토 목록 전체 보기
+    </a>
+  </div>
+
+  <div class="sec-head"><span>📝</span> 상담 기록</div>
+  <div class="dash-card">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="display:flex;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div style="font-size:20px;">🗓️</div>
+        <div>
+          <div style="font-size:13px;font-weight:800;">1회차 상담 — 초기 상황 공유</div>
+          <div style="font-size:12px;color:var(--text3);">2026.04.08 · 45분</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;padding:10px 0;">
+        <div style="font-size:20px;">🗓️</div>
+        <div>
+          <div style="font-size:13px;font-weight:800;">2회차 상담 — 부작용 관리</div>
+          <div style="font-size:12px;color:var(--text3);">2026.04.10 · 30분</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ 받은자료 TAB ════════ -->
+<div id="tab-docs" class="tab-panel">
+  <div class="sec-head"><span>📁</span> 받은 자료 목록</div>
+  <div class="dash-card">
+    <div class="doc-item">
+      <div class="doc-ico type-guide">📖</div>
+      <div style="flex:1;">
+        <div class="doc-name">누빈 공식 가이드북 v3.0</div>
+        <div class="doc-date">2026.04.08 · NUVIN 공식</div>
+      </div>
+      <button class="doc-dl" onclick="location.href='guidebook.html'"><i class="fas fa-external-link-alt"></i></button>
+    </div>
+    <div class="doc-item">
+      <div class="doc-ico type-pdf">📄</div>
+      <div style="flex:1;">
+        <div class="doc-name">항암치료 부작용 관리 가이드</div>
+        <div class="doc-date">2026.04.08 · 김○○ 멘토 제공</div>
+      </div>
+      <button class="doc-dl" onclick="showToast('📥 다운로드 준비 중...')"><i class="fas fa-download"></i></button>
+    </div>
+    <div class="doc-item">
+      <div class="doc-ico type-img">🏥</div>
+      <div style="flex:1;">
+        <div class="doc-name">삼성서울병원 입원 안내문</div>
+        <div class="doc-date">2026.04.09 · 병원 제공</div>
+      </div>
+      <button class="doc-dl" onclick="showToast('📥 파일 열기 중...')"><i class="fas fa-eye"></i></button>
+    </div>
+    <div class="doc-item">
+      <div class="doc-ico type-pdf">📑</div>
+      <div style="flex:1;">
+        <div class="doc-name">보험 청구 서류 체크리스트</div>
+        <div class="doc-date">2026.04.09 · NUVIN 제공</div>
+      </div>
+      <button class="doc-dl" onclick="showToast('📥 다운로드 준비 중...')"><i class="fas fa-download"></i></button>
+    </div>
+  </div>
+
+  <div class="sec-head"><span>📢</span> 받은 공지 / 안내</div>
+  <div class="dash-card">
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <div style="background:var(--bg);border-radius:10px;padding:10px 12px;border-left:3px solid var(--brand);">
+        <div style="font-size:13px;font-weight:800;margin-bottom:3px;">🎉 멘토 매칭 완료 안내</div>
+        <div style="font-size:12px;color:var(--text2);">김○○ 멘토와 성공적으로 매칭되었습니다. 누빈 메신저에서 대화를 시작해보세요!</div>
+        <div style="font-size:11px;color:var(--text4);margin-top:4px;">2026.04.08</div>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:10px 12px;">
+        <div style="font-size:13px;font-weight:800;margin-bottom:3px;">🏥 입원 예약 확정</div>
+        <div style="font-size:12px;color:var(--text2);">삼성서울병원 8병동 304호 입원이 확정되었습니다.</div>
+        <div style="font-size:11px;color:var(--text4);margin-top:4px;">2026.04.09</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <button class="bot-btn" onclick="location.href='index.html'">
+    <i class="fas fa-home"></i>홈
+  </button>
+  <button class="bot-btn" onclick="location.href='nuvin2-home.html'">
+    <i class="fas fa-hospital"></i>병원검색
+  </button>
+  <button class="bot-btn active">
+    <i class="fas fa-th-large"></i>워크스페이스
+  </button>
+  <button class="bot-btn" onclick="location.href='https://vplviksu.gensparkspace.com/mentors.html'">
+    <i class="fas fa-hands-helping"></i>멘토
+  </button>
+  <button class="bot-btn" onclick="location.href='news.html'">
+    <i class="fas fa-newspaper"></i>뉴스
+  </button>
+</nav>
+
+<!-- TOAST -->
+<div id="wsToast" class="toast" style="display:none;"></div>
+
+<script>
+/* ── 탭 전환 ── */
+function switchWsTab(tab) {
+  ['dash','hosp','mentor','docs'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('tb'+t.charAt(0).toUpperCase()+t.slice(1))?.classList.toggle('active', t===tab);
+  });
+  // capitalize first for menu btn ids
+  const map = {dash:'Dash', hosp:'Hosp', mentor:'Mentor', docs:'Docs'};
+  ['dash','hosp','mentor','docs'].forEach(t => {
+    const btn = document.getElementById('tb'+map[t]);
+    if (btn) btn.classList.toggle('active', t===tab);
+  });
+}
+
+/* ── 체크리스트 ── */
+function toggleCheck(item) {
+  item.classList.toggle('done');
+  const icon = item.querySelector('.check-cb i');
+  icon.style.display = item.classList.contains('done') ? 'block' : 'none';
+  updateProgress();
+}
+function updateProgress() {
+  const items = document.querySelectorAll('.check-item');
+  const done  = document.querySelectorAll('.check-item.done').length;
+  const pct   = Math.round(done / items.length * 100);
+  document.getElementById('checkProgress').textContent = done + '/' + items.length + ' 완료';
+  document.getElementById('progPct').textContent = pct + '%';
+  document.getElementById('progFill').style.width = pct + '%';
+}
+
+/* ── 기분 선택 ── */
+let selectedMood = '';
+function selectMood(btn, emoji, label) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMood = emoji + ' ' + label;
+}
+
+/* ── 메모 저장 ── */
+function saveMemo() {
+  const mood = selectedMood || '미선택';
+  const memo = document.getElementById('memoText')?.value || '';
+  const today = new Date().toLocaleDateString('ko-KR');
+  const log = JSON.parse(localStorage.getItem('nuvin_care_log') || '[]');
+  log.push({ date: today, mood, memo });
+  localStorage.setItem('nuvin_care_log', JSON.stringify(log));
+  showToast('✅ 오늘 기록이 저장되었습니다!');
+}
+
+/* ── 사용자 정보 로드 ── */
+function loadUserInfo() {
+  try {
+    const users = JSON.parse(localStorage.getItem('nuvin_users') || '[]');
+    const last = users[users.length - 1];
+    if (last) {
+      document.getElementById('wsUserName').textContent = last.name + '님';
+      const d = new Date(last.created_at);
+      document.getElementById('wsUserSince').textContent = '가입일: ' + d.toLocaleDateString('ko-KR');
+      const diseaseMap = { cancer: '암 보호자', brain: '뇌질환 보호자', metabolic: '대사질환 보호자' };
+      if (last.primary_disease) {
+        document.getElementById('wsDiseaseChip').textContent = diseaseMap[last.primary_disease] || last.primary_disease;
+      }
+      // 가입 후 일수 계산
+      const diffDays = Math.floor((Date.now() - d.getTime()) / 86400000);
+      document.getElementById('wsDayCount').textContent = Math.max(diffDays, 1);
+    }
+  } catch(e) {}
+}
+
+/* ── 토스트 ── */
+function showToast(msg) {
+  const el = document.getElementById('wsToast');
+  el.textContent = msg;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 2600);
+}
+
+loadUserInfo();
+updateProgress();
+</script>
+</body>
+</html>

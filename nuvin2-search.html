@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>NUVIN — 병원 검색</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<!-- 카카오맵 JavaScript API v2 — 앱 키 a3ff4692336f7a55c868d43e254d287c -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a3ff4692336f7a55c868d43e254d287c&libraries=services,clusterer"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans KR',sans-serif;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#F4F5F8;--surface:#FFFFFF;--surface2:#F9FAFB;
+  --border:#E5E7EB;--text:#111827;--text2:#4B5563;--text3:#9CA3AF;
+  --accent:#5B5BD6;--accent2:#8B5CF6;--brand-light:#EEF0FF;
+  --grad:linear-gradient(135deg,#5B5BD6,#8B5CF6);
+  --red:#EF4444;--green:#10B981;--amber:#F59E0B;
+}
+html,body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+
+/* HEADER — T맵 통일 */
+.header{background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid #F3F4F6;padding:0 12px;flex-shrink:0;box-shadow:0 1px 0 rgba(0,0,0,0.04);}
+.header-inner{display:flex;align-items:center;height:52px;gap:8px;}
+.back-btn{width:36px;height:36px;border-radius:50%;background:none;border:none;display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;font-size:16px;flex-shrink:0;transition:background 0.15s;}
+.back-btn:active{background:var(--border);}
+.search-box{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:12px;height:38px;display:flex;align-items:center;padding:0 12px;gap:8px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.search-box i{color:var(--text3);font-size:13px;}
+.search-inp{background:transparent;border:none;outline:none;color:var(--text);font-size:14px;font-weight:500;flex:1;font-family:'Noto Sans KR',sans-serif;}
+.search-inp::placeholder{color:var(--text3);}
+
+/* API KEY BANNER */
+.api-banner{background:linear-gradient(135deg,rgba(254,229,0,0.07),rgba(254,229,0,0.02));border-bottom:1px solid rgba(254,229,0,0.15);padding:8px 12px;display:flex;align-items:center;gap:8px;flex-shrink:0;cursor:pointer;transition:background 0.2s;}
+.api-banner:hover{background:linear-gradient(135deg,rgba(254,229,0,0.12),rgba(254,229,0,0.05));}
+.api-banner-txt{font-size:11px;font-weight:700;color:#fde68a;flex:1;}
+.api-banner-btn{padding:4px 10px;background:rgba(254,229,0,0.15);border:1px solid rgba(254,229,0,0.3);border-radius:6px;font-size:10px;font-weight:800;color:#fde68a;white-space:nowrap;}
+
+/* CAT FILTER TABS */
+.cat-tabs{display:flex;gap:6px;padding:10px 12px;background:var(--surface);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;flex-shrink:0;}
+.cat-tabs::-webkit-scrollbar{display:none;}
+.cat-tab{flex-shrink:0;padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.cat-tab.on{background:var(--grad);border-color:transparent;color:#fff;}
+
+/* VIEW TOGGLE */
+.view-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface);flex-shrink:0;border-bottom:1px solid var(--border);}
+.result-count{font-size:12px;color:var(--text3);}
+.result-count strong{color:var(--accent);}
+.view-toggle{display:flex;background:var(--surface2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.v-btn{padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;color:var(--text3);border:none;background:transparent;}
+.v-btn.on{background:var(--grad);color:#fff;}
+
+/* FILTER ROW */
+.filter-row{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;background:var(--surface);border-bottom:1px solid var(--border);}
+.filter-row::-webkit-scrollbar{display:none;}
+.f-btn{flex-shrink:0;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:4px;}
+.f-btn.on{background:#EEF0FF;border-color:var(--accent);color:var(--accent);}
+.f-btn i{font-size:10px;}
+
+/* MAP AREA */
+.map-area{flex:1;position:relative;overflow:hidden;display:none;}
+.map-area.show{display:flex;}
+#kakaoMap{width:100%;height:100%;}
+/* 카카오맵 미연동 시 더미 맵 */
+.map-mock{width:100%;height:100%;background:linear-gradient(160deg,#E8F0FE 0%,#F0F4FF 40%,#EEF2FF 100%);position:relative;}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(91,91,214,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(91,91,214,0.06) 1px,transparent 1px);background-size:40px 40px;}
+.map-road-h{position:absolute;background:rgba(255,255,255,0.7);height:2px;left:0;right:0;}
+.map-road-v{position:absolute;background:rgba(255,255,255,0.7);width:2px;top:0;bottom:0;}
+.map-pin{position:absolute;cursor:pointer;transform:translate(-50%,-100%);transition:transform 0.2s;}
+.map-pin:active{transform:translate(-50%,-100%) scale(1.2);}
+.pin-bubble{background:var(--grad);border-radius:10px;padding:5px 8px;font-size:11px;font-weight:800;color:#fff;white-space:nowrap;box-shadow:0 4px 16px rgba(102,126,234,0.4);}
+.pin-bubble.urgent{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,0.4);}
+.pin-tail{width:8px;height:8px;background:var(--grad);margin:0 auto;clip-path:polygon(50% 100%,0 0,100% 0);}
+.pin-tail.urgent{background:linear-gradient(135deg,#ef4444,#dc2626);}
+.map-my-loc{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);}
+.my-dot{width:16px;height:16px;border-radius:50%;background:#60a5fa;border:3px solid #fff;box-shadow:0 0 0 6px rgba(96,165,250,0.2),0 2px 8px rgba(0,0,0,0.3);}
+.map-ctrl{position:absolute;bottom:80px;right:14px;display:flex;flex-direction:column;gap:6px;}
+.map-ctrl-btn{width:36px;height:36px;background:rgba(255,255,255,0.95);border:1px solid var(--border);border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:13px;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,0.10);}
+.map-list-btn{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);background:white;border:1px solid var(--border);border-radius:999px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer;backdrop-filter:blur(8px);display:flex;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.15);color:var(--text);}
+.map-no-key{position:absolute;top:16px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.95);border:1px solid rgba(91,91,214,0.25);border-radius:14px;padding:12px 20px;text-align:center;backdrop-filter:blur(8px);z-index:10;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.10);}
+.map-no-key-txt{font-size:12px;font-weight:700;color:var(--accent);}
+.map-no-key-sub{font-size:10px;color:var(--text3);margin-top:3px;}
+
+/* SORT ROW */
+.sort-row{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface);border-top:1px solid var(--border);flex-shrink:0;}
+.sort-lbl{font-size:12px;color:var(--text2);}
+.sort-sel{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;color:var(--text);outline:none;cursor:pointer;}
+
+/* LIST AREA */
+.list-area{flex:1;overflow-y:auto;display:none;padding:8px 12px;gap:10px;flex-direction:column;}
+.list-area::-webkit-scrollbar{width:0;}
+.list-area.show{display:flex;}
+
+/* HOSPITAL CARD */
+.hosp-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;cursor:pointer;transition:all 0.2s;position:relative;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+.hosp-card:hover{border-color:rgba(91,91,214,0.30);box-shadow:0 4px 16px rgba(91,91,214,0.10);}
+.hosp-card-top{display:flex;gap:12px;align-items:flex-start;}
+.hosp-thumb{width:52px;height:52px;border-radius:12px;background:var(--bg);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
+.hosp-main{flex:1;min-width:0;}
+.name-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+.hosp-name{font-size:15px;font-weight:800;}
+.pro{padding:2px 7px;border-radius:5px;background:var(--grad);font-size:9px;font-weight:900;color:#fff;letter-spacing:0.5px;}
+.hira{padding:2px 7px;border-radius:5px;background:linear-gradient(135deg,#06b6d4,#0284c7);font-size:9px;font-weight:900;color:#fff;letter-spacing:0.5px;}
+.hosp-addr{font-size:11px;color:var(--text3);margin-bottom:4px;display:flex;align-items:center;gap:4px;}
+.star-row{display:flex;align-items:center;gap:3px;}
+.star{color:var(--amber);font-size:11px;}
+.star-num{font-size:12px;font-weight:700;margin-left:2px;}
+.rev-cnt{font-size:11px;color:var(--text3);}
+.bed-col{text-align:center;flex-shrink:0;width:58px;}
+.bed-num{font-size:28px;font-weight:900;color:var(--green);line-height:1;}
+.bed-lbl{font-size:10px;color:var(--text3);}
+.bed-avail{font-size:10px;font-weight:700;border-radius:6px;padding:2px 6px;margin-top:3px;text-align:center;}
+.avail-ok{background:rgba(52,211,153,0.12);color:var(--green);}
+.avail-full{background:rgba(248,113,113,0.12);color:var(--red);}
+.hosp-tags{display:flex;flex-wrap:wrap;gap:5px;margin:10px 0 10px;}
+.tag{padding:3px 8px;border-radius:6px;background:#EEF0FF;border:1px solid rgba(91,91,214,0.15);font-size:11px;color:var(--accent);}
+.tag.urgent{background:#FEF2F2;border-color:rgba(239,68,68,0.25);color:var(--red);}
+.tag.hira-tag{background:#E0F7FA;border-color:rgba(0,188,212,0.2);color:#00838F;font-size:10px;}
+.hosp-card-btns{display:flex;gap:6px;}
+.card-btn{flex:1;padding:9px 8px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);font-size:12px;font-weight:700;text-align:center;cursor:pointer;color:var(--text2);transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.card-btn:hover{border-color:var(--accent);color:var(--accent);}
+.card-btn.primary{background:var(--grad);border-color:transparent;color:#fff;}
+
+/* 심평원 배너 */
+.hira-banner{margin:0 0 10px;background:linear-gradient(135deg,rgba(6,182,212,0.07),rgba(2,132,199,0.04));border:1px solid rgba(6,182,212,0.18);border-radius:14px;padding:12px 14px;display:flex;align-items:flex-start;gap:10px;}
+.hira-icon{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#06b6d4,#0284c7);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.hira-info{flex:1;}
+.hira-title{font-size:12px;font-weight:800;color:#67e8f9;margin-bottom:3px;}
+.hira-desc{font-size:11px;color:var(--text3);line-height:1.5;}
+.hira-link{font-size:11px;font-weight:700;color:#22d3ee;text-decoration:none;border-bottom:1px solid rgba(34,211,238,0.3);}
+
+/* 모바일 */
+@media (max-width:480px){
+  .hosp-name{font-size:14px;}
+  .card-btn{font-size:11px;padding:8px 6px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="back-btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></div>
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input class="search-inp" id="searchInp" placeholder="병원명, 지역, 진료유형 검색..." oninput="filterList()"/>
+    </div>
+    <div class="back-btn" onclick="openApiKeyModal()"><i class="fas fa-map-marked-alt" title="카카오맵 API 키 설정"></i></div>
+  </div>
+</div>
+
+<!-- 카카오맵 연동 상태 배너 -->
+<div class="api-banner" id="apiBanner" style="background:linear-gradient(135deg,rgba(52,211,153,0.07),rgba(5,150,105,0.03));border-bottom-color:rgba(52,211,153,0.15);cursor:default;">
+  <i class="fas fa-map-marked-alt" style="color:#34d399;font-size:13px;flex-shrink:0;"></i>
+  <div class="api-banner-txt" id="apiBannerTxt" style="color:#6ee7b7;">✅ 카카오맵 연동 완료 — 실시간 지도 활성화</div>
+  <div class="api-banner-btn" style="background:rgba(52,211,153,0.15);border-color:rgba(52,211,153,0.3);color:#34d399;">연동됨</div>
+</div>
+
+<!-- CAT FILTER TABS -->
+<div class="cat-tabs">
+  <div class="cat-tab on" data-cat="all" onclick="setCat(this,'all')">전체</div>
+  <div class="cat-tab" data-cat="cancer" onclick="setCat(this,'cancer')">🎗️ 암수술후요양</div>
+  <div class="cat-tab" data-cat="brain" onclick="setCat(this,'brain')">🧠 뇌수술후요양</div>
+  <div class="cat-tab" data-cat="dialysis" onclick="setCat(this,'dialysis')">🩸 24시간 신장투석</div>
+  <div class="cat-tab" data-cat="meta" onclick="setCat(this,'meta')">🩺 대사질환 외래</div>
+</div>
+
+<!-- VIEW TOGGLE -->
+<div class="view-row">
+  <div class="result-count">주변 <strong id="countNum">64</strong>개 병원</div>
+  <div class="view-toggle">
+    <div class="v-btn on" id="btnList" onclick="setView('list')"><i class="fas fa-list" style="margin-right:4px;"></i>목록</div>
+    <div class="v-btn" id="btnMap" onclick="setView('map')"><i class="fas fa-map" style="margin-right:4px;"></i>지도</div>
+  </div>
+</div>
+
+<!-- FILTER ROW -->
+<div class="filter-row">
+  <div class="f-btn" onclick="toggleFilter(this,'urgent')"><i class="fas fa-bolt"></i>즉시입원</div>
+  <div class="f-btn" onclick="toggleFilter(this,'single')"><i class="fas fa-bed"></i>1인실</div>
+  <div class="f-btn" onclick="toggleFilter(this,'isolation')"><i class="fas fa-shield-alt"></i>격리실</div>
+  <div class="f-btn" onclick="toggleFilter(this,'dialysis24')"><i class="fas fa-clock"></i>24시간투석</div>
+  <div class="f-btn" onclick="toggleFilter(this,'parking')"><i class="fas fa-parking"></i>주차가능</div>
+  <div class="f-btn" onclick="toggleFilter(this,'elevator')"><i class="fas fa-wheelchair"></i>장애인편의</div>
+  <div class="f-btn" style="background:rgba(6,182,212,0.08);border-color:rgba(6,182,212,0.2);color:#67e8f9;" onclick="filterHiraOnly()"><i class="fas fa-database"></i>심평원인증</div>
+</div>
+
+<!-- SORT ROW (List mode only) -->
+<div class="sort-row" id="sortRow">
+  <div class="sort-lbl">결과 <span id="countNum2">64</span>개</div>
+  <select class="sort-sel" onchange="sortList(this.value)">
+    <option value="dist">거리순</option>
+    <option value="bed">빈병상 많은순</option>
+    <option value="star">별점순</option>
+    <option value="new">최신등록순</option>
+  </select>
+</div>
+
+<!-- MAP VIEW -->
+<div class="map-area" id="mapArea">
+  <!-- 카카오맵이 연동되면 이 div에 렌더링 -->
+  <div id="kakaoMap" style="display:none;width:100%;height:100%;"></div>
+  <!-- 카카오맵 미연동 시 더미 맵 -->
+  <div class="map-mock" id="mapMock">
+    <div class="map-grid"></div>
+    <!-- Roads -->
+    <div class="map-road-h" style="top:35%;height:4px;background:rgba(255,255,255,0.07);"></div>
+    <div class="map-road-h" style="top:65%;height:3px;background:rgba(255,255,255,0.05);"></div>
+    <div class="map-road-v" style="left:40%;width:4px;background:rgba(255,255,255,0.07);"></div>
+    <div class="map-road-v" style="left:70%;width:3px;background:rgba(255,255,255,0.05);"></div>
+    <!-- My Location -->
+    <div class="map-my-loc"><div class="my-dot"></div></div>
+    <!-- Hospital Pins -->
+    <div class="map-pin" style="top:28%;left:38%;" onclick="selectPin('hankook')">
+      <div class="pin-bubble">한국요양 · 8병상</div>
+      <div class="pin-tail"></div>
+    </div>
+    <div class="map-pin" style="top:45%;left:62%;" onclick="selectPin('gangnam')">
+      <div class="pin-bubble urgent">강남신장 · 12병상</div>
+      <div class="pin-tail urgent"></div>
+    </div>
+    <div class="map-pin" style="top:60%;left:28%;" onclick="selectPin('seoul')">
+      <div class="pin-bubble">서울재활 · 5병상</div>
+      <div class="pin-tail"></div>
+    </div>
+    <div class="map-pin" style="top:22%;left:65%;" onclick="selectPin('mirae')">
+      <div class="pin-bubble" style="background:linear-gradient(135deg,#f59e0b,#d97706);box-shadow:0 4px 16px rgba(245,158,11,0.4);">미래내과 · 외래</div>
+      <div class="pin-tail" style="background:linear-gradient(135deg,#f59e0b,#d97706);"></div>
+    </div>
+    <div class="map-pin" style="top:72%;left:55%;" onclick="selectPin('hanyang')">
+      <div class="pin-bubble">한양요양 · 3병상</div>
+      <div class="pin-tail"></div>
+    </div>
+    <!-- No Key Overlay -->
+    <div class="map-no-key" id="mapNoKey">
+      <div class="map-no-key-txt">🗺️ 카카오맵 API 키 미입력 — 프리뷰 모드</div>
+      <div class="map-no-key-sub">API 키 설정 후 실제 지도로 전환됩니다</div>
+    </div>
+    <!-- Controls -->
+    <div class="map-ctrl">
+      <div class="map-ctrl-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></div>
+      <div class="map-ctrl-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></div>
+      <div class="map-ctrl-btn" onclick="centerMyLoc()"><i class="fas fa-location-arrow"></i></div>
+    </div>
+    <div class="map-list-btn" onclick="setView('list')">
+      <i class="fas fa-list" style="margin-right:6px;"></i>목록으로 보기
+    </div>
+  </div>
+</div>
+
+<!-- LIST VIEW -->
+<div class="list-area show" id="listArea">
+
+  <!-- 심평원 연동 안내 배너 -->
+  <div class="hira-banner">
+    <div class="hira-icon">🏥</div>
+    <div class="hira-info">
+      <div class="hira-title">건강보험심사평가원(심평원) 공공데이터 연동</div>
+      <div class="hira-desc">
+        <a href="https://www.data.go.kr/data/15001698/openapi.do" target="_blank" class="hira-link">data.go.kr</a>에서 병원정보서비스 API 키 발급(무료) 후 대시보드에 입력하면<br/>
+        실제 병원 정보(주소·진료과목·연락처)가 자동 연동됩니다.
+        <span class="tag hira-tag" style="display:inline-block;margin-left:4px;padding:2px 6px;">심평원인증</span> 표시 병원은 심평원 실데이터입니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 1 -->
+  <div class="hosp-card" id="card-hankook" onclick="goHospital('hankook')">
+    <div class="hosp-card-top">
+      <div class="hosp-thumb">🏥</div>
+      <div class="hosp-main">
+        <div class="name-row">
+          <div class="hosp-name">한국요양병원</div>
+          <div class="pro">PRO</div>
+          <div class="hira">심평원</div>
+        </div>
+        <div class="hosp-addr"><i class="fas fa-map-marker-alt" style="color:var(--accent2);"></i> 1.2km · 서울 강남구 역삼동</div>
+        <div class="star-row">
+          <i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star-half-alt star"></i>
+          <span class="star-num">4.8</span><span class="rev-cnt">(124)</span>
+        </div>
+      </div>
+      <div class="bed-col">
+        <div class="bed-num">8</div>
+        <div class="bed-lbl">빈병상</div>
+        <div class="bed-avail avail-ok">입원가능</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="tag">암수술후요양</span>
+      <span class="tag">1인실</span>
+      <span class="tag">격리실</span>
+      <span class="tag urgent"><i class="fas fa-bolt"></i>즉시입원</span>
+      <span class="tag hira-tag"><i class="fas fa-database" style="font-size:9px;"></i> 심평원인증</span>
+    </div>
+    <div class="hosp-card-btns">
+      <div class="card-btn" onclick="event.stopPropagation();callHosp('한국요양병원')"><i class="fas fa-phone"></i>전화</div>
+      <div class="card-btn" onclick="event.stopPropagation();chatHosp('한국요양병원')"><i class="fas fa-comment"></i>채팅</div>
+      <div class="card-btn" onclick="event.stopPropagation();showOnMap('hankook')"><i class="fas fa-map-marker-alt"></i>지도</div>
+      <div class="card-btn primary" onclick="event.stopPropagation();goHospital('hankook')"><i class="fas fa-calendar-plus"></i>예약</div>
+    </div>
+  </div>
+
+  <!-- Card 2 -->
+  <div class="hosp-card" id="card-gangnam" onclick="goHospital('gangnam')">
+    <div class="hosp-card-top">
+      <div class="hosp-thumb">💊</div>
+      <div class="hosp-main">
+        <div class="name-row">
+          <div class="hosp-name">강남신장투석센터</div>
+          <div class="pro">PRO</div>
+        </div>
+        <div class="hosp-addr"><i class="fas fa-map-marker-alt" style="color:var(--red);"></i> 2.1km · 서울 서초구 방배동</div>
+        <div class="star-row">
+          <i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i>
+          <span class="star-num">4.9</span><span class="rev-cnt">(87)</span>
+        </div>
+      </div>
+      <div class="bed-col">
+        <div class="bed-num" style="color:var(--red);">12</div>
+        <div class="bed-lbl">빈병상</div>
+        <div class="bed-avail avail-ok">즉시가능</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="tag">24시간 신장투석</span>
+      <span class="tag">투석 전문</span>
+      <span class="tag urgent"><i class="fas fa-bolt"></i>긴급입원</span>
+    </div>
+    <div class="hosp-card-btns">
+      <div class="card-btn" onclick="event.stopPropagation();callHosp('강남신장투석센터')"><i class="fas fa-phone"></i>전화</div>
+      <div class="card-btn" onclick="event.stopPropagation();chatHosp('강남신장투석센터')"><i class="fas fa-comment"></i>채팅</div>
+      <div class="card-btn" onclick="event.stopPropagation();showOnMap('gangnam')"><i class="fas fa-map-marker-alt"></i>지도</div>
+      <div class="card-btn primary" onclick="event.stopPropagation();goHospital('gangnam')"><i class="fas fa-calendar-plus"></i>예약</div>
+    </div>
+  </div>
+
+  <!-- Card 3 -->
+  <div class="hosp-card" id="card-seoul" onclick="goHospital('seoul')">
+    <div class="hosp-card-top">
+      <div class="hosp-thumb">🧠</div>
+      <div class="hosp-main">
+        <div class="name-row">
+          <div class="hosp-name">서울재활요양병원</div>
+          <div class="hira">심평원</div>
+        </div>
+        <div class="hosp-addr"><i class="fas fa-map-marker-alt" style="color:var(--accent2);"></i> 3.4km · 서울 송파구 잠실동</div>
+        <div class="star-row">
+          <i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="far fa-star star"></i>
+          <span class="star-num">4.2</span><span class="rev-cnt">(56)</span>
+        </div>
+      </div>
+      <div class="bed-col">
+        <div class="bed-num">5</div>
+        <div class="bed-lbl">빈병상</div>
+        <div class="bed-avail avail-ok">입원가능</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="tag">뇌수술후요양</span>
+      <span class="tag">재활치료</span>
+      <span class="tag">격리실</span>
+      <span class="tag hira-tag"><i class="fas fa-database" style="font-size:9px;"></i> 심평원인증</span>
+    </div>
+    <div class="hosp-card-btns">
+      <div class="card-btn" onclick="event.stopPropagation();callHosp('서울재활요양병원')"><i class="fas fa-phone"></i>전화</div>
+      <div class="card-btn" onclick="event.stopPropagation();chatHosp('서울재활요양병원')"><i class="fas fa-comment"></i>채팅</div>
+      <div class="card-btn" onclick="event.stopPropagation();showOnMap('seoul')"><i class="fas fa-map-marker-alt"></i>지도</div>
+      <div class="card-btn primary" onclick="event.stopPropagation();goHospital('seoul')"><i class="fas fa-calendar-plus"></i>예약</div>
+    </div>
+  </div>
+
+  <!-- Card 4 -->
+  <div class="hosp-card" id="card-mirae" onclick="goHospital('mirae')">
+    <div class="hosp-card-top">
+      <div class="hosp-thumb">🩺</div>
+      <div class="hosp-main">
+        <div class="name-row">
+          <div class="hosp-name">미래내과의원</div>
+        </div>
+        <div class="hosp-addr"><i class="fas fa-map-marker-alt" style="color:var(--amber);"></i> 0.8km · 서울 강남구 대치동</div>
+        <div class="star-row">
+          <i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star-half-alt star"></i>
+          <span class="star-num">4.6</span><span class="rev-cnt">(203)</span>
+        </div>
+      </div>
+      <div class="bed-col">
+        <div class="bed-num" style="font-size:18px;color:var(--amber);">당일</div>
+        <div class="bed-lbl">예약가능</div>
+        <div class="bed-avail" style="background:rgba(251,191,36,0.12);color:var(--amber);">외래진료</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="tag">대사질환 외래</span>
+      <span class="tag">당뇨관리</span>
+      <span class="tag">혈압·혈당</span>
+    </div>
+    <div class="hosp-card-btns">
+      <div class="card-btn" onclick="event.stopPropagation();callHosp('미래내과의원')"><i class="fas fa-phone"></i>전화</div>
+      <div class="card-btn" onclick="event.stopPropagation();chatHosp('미래내과의원')"><i class="fas fa-comment"></i>채팅</div>
+      <div class="card-btn" onclick="event.stopPropagation();showOnMap('mirae')"><i class="fas fa-map-marker-alt"></i>지도</div>
+      <div class="card-btn primary" onclick="event.stopPropagation();goHospital('mirae')"><i class="fas fa-calendar-plus"></i>예약</div>
+    </div>
+  </div>
+
+  <!-- Card 5 -->
+  <div class="hosp-card" id="card-hanyang" onclick="goHospital('hanyang')">
+    <div class="hosp-card-top">
+      <div class="hosp-thumb">💉</div>
+      <div class="hosp-main">
+        <div class="name-row">
+          <div class="hosp-name">한양요양병원</div>
+        </div>
+        <div class="hosp-addr"><i class="fas fa-map-marker-alt" style="color:var(--accent2);"></i> 4.7km · 경기 성남시 분당구</div>
+        <div class="star-row">
+          <i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="far fa-star star"></i>
+          <span class="star-num">4.1</span><span class="rev-cnt">(38)</span>
+        </div>
+      </div>
+      <div class="bed-col">
+        <div class="bed-num">3</div>
+        <div class="bed-lbl">빈병상</div>
+        <div class="bed-avail avail-ok">입원가능</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="tag">신장투석</span>
+      <span class="tag">2인실</span>
+      <span class="tag">주차가능</span>
+    </div>
+    <div class="hosp-card-btns">
+      <div class="card-btn" onclick="event.stopPropagation();callHosp('한양요양병원')"><i class="fas fa-phone"></i>전화</div>
+      <div class="card-btn" onclick="event.stopPropagation();chatHosp('한양요양병원')"><i class="fas fa-comment"></i>채팅</div>
+      <div class="card-btn" onclick="event.stopPropagation();showOnMap('hanyang')"><i class="fas fa-map-marker-alt"></i>지도</div>
+      <div class="card-btn primary" onclick="event.stopPropagation();goHospital('hanyang')"><i class="fas fa-calendar-plus"></i>예약</div>
+    </div>
+  </div>
+
+  <div style="height:20px;"></div>
+</div><!-- /listArea -->
+
+<!-- ══ 카카오맵 API 키 설정 모달 ══ -->
+<div id="apiKeyModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.8);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:#0f0f1c;border:1.5px solid rgba(255,255,255,0.1);border-radius:24px;width:100%;max-width:480px;padding:28px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+      <div>
+        <div style="font-size:17px;font-weight:900;">🔑 API 키 설정</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:3px;">카카오맵은 이미 연동됨 — 심평원 키만 입력하세요</div>
+      </div>
+      <button onclick="closeApiKeyModal()" style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#9ca3af;cursor:pointer;font-size:14px;">✕</button>
+    </div>
+
+    <!-- 카카오맵 연동 완료 상태 -->
+    <div style="background:rgba(52,211,153,0.06);border:1.5px solid rgba(52,211,153,0.25);border-radius:14px;padding:14px;margin-bottom:18px;display:flex;align-items:center;gap:12px;">
+      <div style="width:36px;height:36px;border-radius:10px;background:rgba(52,211,153,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;">🗺️</div>
+      <div>
+        <div style="font-size:13px;font-weight:800;color:#34d399;">✅ 카카오맵 연동 완료</div>
+        <div style="font-size:11px;color:#6b7280;margin-top:2px;">앱 키: a3ff4692···287c · 지도/검색/클러스터 라이브러리 활성</div>
+      </div>
+    </div>
+
+    <div>
+      <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">카카오맵 JavaScript 앱 키 (읽기 전용)</label>
+      <input id="kakaoKeyInput" type="text" readonly style="width:100%;background:#0f0f1c;border:1.5px solid rgba(52,211,153,0.25);border-radius:10px;padding:11px 13px;color:#34d399;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;cursor:default;"/>
+    </div>
+
+    <!-- 심평원 API 섹션 -->
+    <div style="margin-top:18px;background:#161628;border-radius:14px;padding:16px;">
+      <div style="font-size:12px;font-weight:800;color:#67e8f9;margin-bottom:12px;">🏥 심평원 공공데이터 API 키</div>
+      <div style="font-size:11px;color:#9ca3af;line-height:1.6;margin-bottom:10px;">
+        <a href="https://www.data.go.kr/data/15001698/openapi.do" target="_blank" style="color:#22d3ee;font-weight:700;">data.go.kr</a>에서 
+        <strong style="color:#f0f0ff;">"건강보험심사평가원_병원정보서비스"</strong> 검색 → 활용신청(무료) → 1~2일 내 인증키 발급
+      </div>
+      <input id="hiraKeyInput" type="text" placeholder="심평원 서비스키 입력..." style="width:100%;background:#0f0f1c;border:1.5px solid rgba(6,182,212,0.2);border-radius:10px;padding:10px 13px;color:#f0f0ff;font-size:12px;outline:none;font-family:'Noto Sans KR',sans-serif;" onfocus="this.style.borderColor='rgba(6,182,212,0.5)'" onblur="this.style.borderColor='rgba(6,182,212,0.2)'"/>
+      <div style="margin-top:8px;font-size:10px;color:#6b7280;">⚠️ CORS 정책으로 브라우저에서 직접 호출 시 제한될 수 있습니다. NUVIN 서버 연동 시 프록시를 통해 처리합니다.</div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px;">
+      <button onclick="closeApiKeyModal()" style="padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9ca3af;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
+      <button onclick="saveApiKeys()" style="padding:12px;background:linear-gradient(135deg,#667eea,#764ba2);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">저장 및 활성화</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+//  카카오맵 — 앱 키 장착 완료
+//  JavaScript 앱 키: a3ff4692336f7a55c868d43e254d287c
+// ══════════════════════════════════════════
+const KAKAO_APP_KEY = 'a3ff4692336f7a55c868d43e254d287c';
+let hiraApiKey = localStorage.getItem('nuvin_hira_key') || '';
+let kakaoMap   = null;
+let openInfoWindow = null;   // 현재 열린 인포윈도우
+let myMarker   = null;
+
+// API 키 설정 모달 (HIRA 전용)
+function openApiKeyModal(){
+  document.getElementById('kakaoKeyInput').value = KAKAO_APP_KEY;
+  document.getElementById('hiraKeyInput').value  = hiraApiKey;
+  document.getElementById('apiKeyModal').style.display='flex';
+}
+function closeApiKeyModal(){
+  document.getElementById('apiKeyModal').style.display='none';
+}
+function saveApiKeys(){
+  const hk = document.getElementById('hiraKeyInput').value.trim();
+  hiraApiKey = hk;
+  if(hk){
+    localStorage.setItem('nuvin_hira_key', hk);
+    fetchHiraData();
+  }
+  closeApiKeyModal();
+}
+
+// ── 카카오맵 초기화 ──
+function initKakaoMap(){
+  const container = document.getElementById('kakaoMap');
+  kakaoMap = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(37.5170, 127.0470),  // 서울 강남 중심
+    level: 6
+  });
+
+  // 현재 위치 파란 점 마커
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      const latlng = new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+      kakaoMap.setCenter(latlng);
+      // 커스텀 내 위치 마커
+      const myLocContent = [
+        '<div style="',
+        'width:16px;height:16px;border-radius:50%;',
+        'background:#60a5fa;border:3px solid #fff;',
+        'box-shadow:0 0 0 6px rgba(96,165,250,0.25),0 2px 8px rgba(0,0,0,0.35);',
+        '"></div>'
+      ].join('');
+      myMarker = new kakao.maps.CustomOverlay({
+        map: kakaoMap,
+        position: latlng,
+        content: myLocContent,
+        zIndex: 10
+      });
+    }, ()=>{
+      // 위치 권한 거부 시 서울 강남 기본
+    });
+  }
+
+  // 병원 데이터
+  const HOSPITALS = [
+    {id:'hankook', name:'한국요양병원',      lat:37.5005, lng:127.0313, beds:8,  cat:'암수술후요양', phone:'02-1234-5678', urgent:true,  pro:true,  hira:true },
+    {id:'gangnam', name:'강남신장투석센터',   lat:37.4976, lng:127.0276, beds:12, cat:'24시간 신장투석',phone:'02-2345-6789', urgent:true,  pro:true,  hira:false},
+    {id:'seoul',   name:'서울재활요양병원',  lat:37.5135, lng:127.1005, beds:5,  cat:'뇌수술후요양', phone:'02-3456-7890', urgent:false, pro:false, hira:true },
+    {id:'mirae',   name:'미래내과의원',      lat:37.4952, lng:127.0610, beds:0,  cat:'대사질환 외래', phone:'02-4567-8901', urgent:false, pro:false, hira:false},
+    {id:'hanyang', name:'한양요양병원',      lat:37.3882, lng:127.1232, beds:3,  cat:'신장투석',    phone:'031-567-8901', urgent:false, pro:false, hira:false},
+  ];
+
+  HOSPITALS.forEach(h => addHospMarker(h));
+
+  // 카카오맵 보이기, 목업 숨기기
+  document.getElementById('kakaoMap').style.display = 'block';
+  document.getElementById('mapMock').style.display  = 'none';
+  document.getElementById('mapNoKey').style.display = 'none';
+
+  // 지도 클릭 시 인포윈도우 닫기
+  kakao.maps.event.addListener(kakaoMap, 'click', () => {
+    if(openInfoWindow){ openInfoWindow.close(); openInfoWindow = null; }
+  });
+}
+
+// ── 커스텀 말풍선 마커 ──
+function addHospMarker(h){
+  const bedText = h.beds > 0
+    ? `빈병상 <strong style="color:#34d399;">${h.beds}</strong>개`
+    : '<span style="color:#f87171;">만병상</span>';
+  const urgentStyle = h.urgent
+    ? 'background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 4px 16px rgba(239,68,68,0.45);'
+    : 'background:linear-gradient(135deg,#667eea,#764ba2);box-shadow:0 4px 16px rgba(102,126,234,0.45);';
+  const tailColor = h.urgent ? '#dc2626' : '#764ba2';
+
+  const bubbleContent = [
+    `<div style="cursor:pointer;" onclick="selectPinById('${h.id}')">`,
+    `<div style="${urgentStyle}border-radius:10px;padding:5px 10px;white-space:nowrap;font-family:'Noto Sans KR',sans-serif;">`,
+    `<div style="font-size:11px;font-weight:900;color:#fff;">${h.name}</div>`,
+    `<div style="font-size:10px;color:rgba(255,255,255,0.85);margin-top:1px;">${bedText}</div>`,
+    '</div>',
+    `<div style="width:8px;height:8px;background:${tailColor};margin:0 auto;clip-path:polygon(50% 100%,0 0,100% 0);"></div>`,
+    '</div>'
+  ].join('');
+
+  const overlay = new kakao.maps.CustomOverlay({
+    map: kakaoMap,
+    position: new kakao.maps.LatLng(h.lat, h.lng),
+    content: bubbleContent,
+    yAnchor: 1.0
+  });
+
+  // 인포윈도우 (마커 클릭 시)
+  const iwContent = [
+    '<div style="padding:14px 16px;font-family:\'Noto Sans KR\',sans-serif;width:220px;background:#0f0f1c;border:1px solid rgba(255,255,255,0.1);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.5);">',
+    `<div style="font-size:14px;font-weight:900;color:#f0f0ff;margin-bottom:8px;">${h.name}</div>`,
+    `<div style="font-size:11px;color:#9ca3af;margin-bottom:4px;">📋 ${h.cat}</div>`,
+    `<div style="font-size:11px;color:#9ca3af;margin-bottom:10px;">📞 ${h.phone}</div>`,
+    `<div style="display:flex;gap:6px;">`,
+    `<a href="tel:${h.phone}" style="flex:1;padding:7px;background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:8px;font-size:11px;font-weight:700;color:#34d399;text-align:center;text-decoration:none;">전화</a>`,
+    `<div onclick="goHospital('${h.id}')" style="flex:1;padding:7px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;font-size:11px;font-weight:700;color:#fff;text-align:center;cursor:pointer;">예약</div>`,
+    '</div></div>'
+  ].join('');
+
+  const infowindow = new kakao.maps.InfoWindow({
+    content: iwContent,
+    removable: true
+  });
+
+  // 말풍선 클릭 → 인포윈도우 토글
+  const overlayDiv = document.createElement('div');
+  overlayDiv.innerHTML = bubbleContent;
+  overlayDiv.addEventListener('click', () => {
+    if(openInfoWindow){ openInfoWindow.close(); }
+    if(openInfoWindow === infowindow){ openInfoWindow = null; return; }
+    infowindow.open(kakaoMap, new kakao.maps.Marker({ position: new kakao.maps.LatLng(h.lat, h.lng) }));
+    openInfoWindow = infowindow;
+  });
+
+  // 실제로는 CustomOverlay 클릭 이벤트를 HTML에 직접 연결
+  h._overlay   = overlay;
+  h._infowindow = infowindow;
+}
+
+// ── 말풍선 클릭 → 목록 이동 ──
+function selectPinById(id){
+  if(openInfoWindow){ openInfoWindow.close(); openInfoWindow = null; }
+  setView('list');
+  setTimeout(()=>{
+    const card = document.getElementById('card-'+id);
+    if(card){
+      card.scrollIntoView({behavior:'smooth', block:'center'});
+      card.style.borderColor = 'rgba(102,126,234,0.6)';
+      card.style.boxShadow   = '0 0 0 2px rgba(102,126,234,0.3)';
+      setTimeout(()=>{ card.style.borderColor=''; card.style.boxShadow=''; }, 2000);
+    }
+  }, 250);
+}
+
+// ── 페이지 로드 시 카카오맵 자동 초기화 ──
+window.addEventListener('DOMContentLoaded', ()=>{
+  // kakao SDK 로드 확인 후 초기화
+  if(window.kakao && kakao.maps){
+    initKakaoMap();
+  } else {
+    // SDK 로드 대기 (비동기 로드 완료 후 실행되도록 재시도)
+    const tryInit = setInterval(()=>{
+      if(window.kakao && kakao.maps){ clearInterval(tryInit); initKakaoMap(); }
+    }, 300);
+    setTimeout(()=>{ clearInterval(tryInit); }, 8000); // 8초 타임아웃
+  }
+  if(hiraApiKey) fetchHiraData();
+});
+
+// ── 심평원 API 연동 ──
+function fetchHiraData(){
+  if(!hiraApiKey) return;
+  // 심평원 병원정보서비스 API (CORS 제한으로 실제 운영 시 서버 프록시 필요)
+  // data.go.kr 병원정보서비스: GET 요청
+  const url = `https://apis.data.go.kr/B551182/hospInfoServicev2/getHospBasisList?serviceKey=${encodeURIComponent(hiraApiKey)}&pageNo=1&numOfRows=10&city=110100&type=05&_type=json`;
+  fetch(url)
+    .then(r=>r.json())
+    .then(data=>{
+      if(data?.response?.body?.items?.item){
+        const items = data.response.body.items.item;
+        console.log('심평원 데이터 수신:', items.length, '건');
+        appendHiraCards(Array.isArray(items)?items:[items]);
+      }
+    })
+    .catch(err=>{
+      console.warn('심평원 API (CORS 제한 - 서버 프록시 필요):', err.message);
+    });
+}
+
+function appendHiraCards(items){
+  const listArea = document.getElementById('listArea');
+  items.slice(0,3).forEach(h=>{
+    const card = document.createElement('div');
+    card.className='hosp-card';
+    card.innerHTML=`
+      <div class="hosp-card-top">
+        <div class="hosp-thumb">🏥</div>
+        <div class="hosp-main">
+          <div class="name-row">
+            <div class="hosp-name">${h.yadmNm||'병원명 미상'}</div>
+            <div class="hira">심평원</div>
+          </div>
+          <div class="hosp-addr"><i class="fas fa-map-marker-alt" style="color:var(--accent2);"></i> ${h.addr||''}</div>
+          <div style="font-size:11px;color:var(--text3);">📞 ${h.telno||'—'}</div>
+        </div>
+        <div class="bed-col">
+          <div class="bed-num">${h.cmdcGdrCnt||'?'}</div>
+          <div class="bed-lbl">병상수</div>
+        </div>
+      </div>
+      <div class="hosp-tags">
+        <span class="tag hira-tag"><i class="fas fa-database" style="font-size:9px;"></i> 심평원실데이터</span>
+        ${h.clCdNm?`<span class="tag">${h.clCdNm}</span>`:''}
+      </div>
+      <div class="hosp-card-btns">
+        <div class="card-btn" onclick="callHosp('${h.yadmNm}')"><i class="fas fa-phone"></i>전화</div>
+        <div class="card-btn primary" onclick="chatHosp('${h.yadmNm}')"><i class="fas fa-comment"></i>채팅문의</div>
+      </div>`;
+    listArea.insertBefore(card, listArea.children[1]);
+  });
+}
+
+// ── URL 파라미터 및 카테고리 ──
+const urlParams = new URLSearchParams(window.location.search);
+const initCat = urlParams.get('cat') || localStorage.getItem('nuvin_search_cat') || 'all';
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(initCat !== 'all'){
+    document.querySelectorAll('.cat-tab').forEach(t=>{
+      t.classList.toggle('on', t.dataset.cat === initCat);
+    });
+  }
+});
+
+// ── 뷰 전환 ──
+function setView(v){
+  const mapA = document.getElementById('mapArea');
+  const listA = document.getElementById('listArea');
+  const btnMap = document.getElementById('btnMap');
+  const btnList = document.getElementById('btnList');
+  const sortRow = document.getElementById('sortRow');
+  if(v==='map'){
+    mapA.classList.add('show'); listA.classList.remove('show');
+    btnMap.classList.add('on'); btnList.classList.remove('on');
+    sortRow.style.display='none';
+    // 카카오맵이 연동됐으면 리사이즈
+    if(kakaoMap) kakao.maps.event.trigger(kakaoMap,'resize');
+  } else {
+    listA.classList.add('show'); mapA.classList.remove('show');
+    btnList.classList.add('on'); btnMap.classList.remove('on');
+    sortRow.style.display='flex';
+  }
+}
+
+// ── 카테고리 필터 ──
+function setCat(el, cat){
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  localStorage.setItem('nuvin_search_cat', cat);
+  filterList();
+}
+
+function toggleFilter(btn){
+  btn.classList.toggle('on');
+  filterList();
+}
+
+function filterHiraOnly(){
+  const cards = document.querySelectorAll('.hosp-card');
+  cards.forEach(c=>{
+    const hasHira = c.querySelector('.hira');
+    c.style.display = hasHira ? '' : 'none';
+  });
+}
+
+function filterList(){
+  const q = document.getElementById('searchInp').value.trim().toLowerCase();
+  const cards = document.querySelectorAll('.hosp-card');
+  let cnt=0;
+  cards.forEach(c=>{
+    const txt = c.textContent.toLowerCase();
+    const show = !q || txt.includes(q);
+    c.style.display = show?'':'none';
+    if(show) cnt++;
+  });
+  document.getElementById('countNum').textContent=cnt;
+  document.getElementById('countNum2').textContent=cnt;
+}
+
+function sortList(val){
+  const listArea = document.getElementById('listArea');
+  const banner = listArea.querySelector('.hira-banner');
+  const cards = [...listArea.querySelectorAll('.hosp-card')];
+  const getData = c => ({
+    dist:  parseFloat((c.querySelector('.hosp-addr')||{}).textContent?.match(/([\d.]+)km/)?.[1] || '99'),
+    beds:  parseInt((c.querySelector('.bed-num')||{}).textContent) || 0,
+    stars: parseFloat((c.querySelector('.star-num')||{}).textContent) || 0,
+  });
+  const sorted = cards.sort((a,b) => {
+    const da=getData(a), db=getData(b);
+    if(val==='dist')  return da.dist  - db.dist;
+    if(val==='bed')   return db.beds  - da.beds;
+    if(val==='star')  return db.stars - da.stars;
+    return 0;
+  });
+  sorted.forEach(c => listArea.appendChild(c));
+  if(banner) listArea.insertBefore(banner, listArea.firstChild);
+}
+
+// ── 지도 핀 클릭 (더미 맵 핀용) ──
+function selectPin(id){ selectPinById(id); }
+
+// ── 지도에서 보기 ──
+function showOnMap(id){
+  setView('map');
+  if(kakaoMap){
+    const coords = {
+      hankook: [37.5005, 127.0313],
+      gangnam: [37.4976, 127.0276],
+      seoul:   [37.5135, 127.1005],
+      mirae:   [37.4952, 127.0610],
+      hanyang: [37.3882, 127.1232]
+    };
+    if(coords[id]){
+      const pos = new kakao.maps.LatLng(coords[id][0], coords[id][1]);
+      kakaoMap.setCenter(pos);
+      kakaoMap.setLevel(4);
+    }
+  }
+}
+
+// ── 카카오맵 컨트롤 ──
+function zoomIn(){ if(kakaoMap) kakaoMap.setLevel(kakaoMap.getLevel()-1); }
+function zoomOut(){ if(kakaoMap) kakaoMap.setLevel(kakaoMap.getLevel()+1); }
+function centerMyLoc(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      if(kakaoMap) kakaoMap.setCenter(new kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+    });
+  }
+}
+
+// ── 병원 액션 ──
+function goHospital(id){
+  localStorage.setItem('nuvin_hosp_id', id);
+  window.location.href = 'nuvin2-hospital.html?id='+id;
+}
+function callHosp(name){
+  if(confirm(name+'\n전화 연결하시겠습니까?')) window.location.href='tel:021234567';
+}
+function chatHosp(name){
+  localStorage.setItem('nuvin_chat_hosp', name);
+  window.location.href='nuvin2-hospital.html?chat=1&name='+encodeURIComponent(name);
+}
+
+// ── 심평원 데모 데이터 (API 키 없어도 예시 표시) ──
+function showHiraDemoCards(){
+  const demoItems = [
+    {yadmNm:'강북삼성요양병원', addr:'서울특별시 종로구 세종대로 149', telno:'02-2001-2000', cmdcGdrCnt:120, clCdNm:'요양병원'},
+    {yadmNm:'은평재활요양병원', addr:'서울특별시 은평구 진흥로 26', telno:'02-389-1234', cmdcGdrCnt:85, clCdNm:'요양병원'},
+  ];
+  appendHiraCards(demoItems);
+  document.getElementById('hira-demo-btn').style.display='none';
+}
+</script>
+<!-- 심평원 데모 버튼 -->
+<div id="hira-demo-btn" style="margin:8px 12px;background:linear-gradient(135deg,rgba(6,182,212,0.08),rgba(2,132,199,0.04));border:1px solid rgba(6,182,212,0.25);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="showHiraDemoCards()">
+  <span style="font-size:20px;">🏥</span>
+  <div>
+    <div style="font-size:12px;font-weight:800;color:#67e8f9;">심평원 공공데이터 예시 보기</div>
+    <div style="font-size:11px;color:var(--text3,#6b7280);">API 키 없이도 심평원 연동 결과를 미리 확인하세요</div>
+  </div>
+  <span style="margin-left:auto;padding:4px 10px;background:rgba(6,182,212,0.15);border-radius:6px;font-size:10px;font-weight:800;color:#67e8f9;white-space:nowrap;">데모 보기</span>
+</div>
+
+</body>
+</html>

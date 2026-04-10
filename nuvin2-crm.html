@@ -1,0 +1,1286 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NUVIN SaaS — 환자 CRM · 채팅 · 예약</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans KR',sans-serif;}
+:root{
+  --bg:#07070f;--surface:#0f0f1c;--surface2:#161628;--surface3:#1c1c32;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --text:#f0f0ff;--text2:#9ca3af;--text3:#6b7280;
+  --accent:#7c6ef0;--accent2:#a78bfa;--grad:linear-gradient(135deg,#667eea,#764ba2);
+  --red:#f87171;--green:#34d399;--amber:#fbbf24;--blue:#60a5fa;
+  --sidebar:240px;
+}
+html,body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;}
+
+/* ─── SIDEBAR ─── */
+.sidebar{width:var(--sidebar);min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;z-index:20;}
+.sb-logo{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-logo-text{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sb-logo-sub{font-size:10px;color:var(--text3);margin-top:1px;}
+.sb-hosp{padding:12px 16px;border-bottom:1px solid var(--border);}
+.sb-hosp-name{font-size:13px;font-weight:800;}
+.sb-hosp-meta{font-size:10px;color:var(--text3);margin-top:2px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.nav-section{padding:4px 16px 2px;font-size:10px;font-weight:800;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:8px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:all 0.2s;font-size:13px;font-weight:700;color:var(--text3);margin:1px 8px;border-radius:10px;}
+.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text2);}
+.nav-item.on{background:rgba(102,126,234,0.14);color:var(--accent2);}
+.nav-item i{width:18px;text-align:center;font-size:14px;}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:800;}
+.sb-bottom{padding:12px 16px;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:8px;}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.online-dot{width:8px;height:8px;background:var(--green);border-radius:50%;border:2px solid var(--surface);}
+
+/* ─── MAIN ─── */
+.main{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--border);background:var(--surface);flex-shrink:0;}
+.page-title{font-size:18px;font-weight:900;}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.tb-btn{width:36px;height:36px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;font-size:14px;transition:all 0.2s;position:relative;}
+.tb-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.tb-dot{position:absolute;top:6px;right:6px;width:7px;height:7px;background:var(--red);border-radius:50%;border:2px solid var(--surface);}
+.content-area{flex:1;overflow:hidden;display:flex;flex-direction:column;padding:16px 28px 0;}
+
+/* ─── TABS ─── */
+.tab-bar{display:flex;gap:4px;background:var(--surface2);border-radius:12px;padding:4px;margin-bottom:14px;flex-shrink:0;}
+.tab-btn{flex:1;padding:9px;text-align:center;font-size:13px;font-weight:800;border-radius:9px;cursor:pointer;border:none;transition:all 0.2s;background:transparent;color:var(--text3);font-family:'Noto Sans KR',sans-serif;}
+.tab-btn.on{background:var(--grad);color:#fff;}
+.tab-content{flex:1;overflow:hidden;}
+.tab-pane{height:100%;display:none;}
+.tab-pane.on{display:flex;flex-direction:column;}
+
+/* ──────────────────────────────────────────────
+   CHAT TAB — full two-way consultation
+────────────────────────────────────────────── */
+.chat-layout{flex:1;display:grid;grid-template-columns:290px 1fr 300px;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;height:100%;}
+
+/* Left: contact list */
+.chat-list{border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.chat-list-header{padding:12px 14px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.chat-list-title{font-size:13px;font-weight:900;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;}
+.new-chat-btn{padding:4px 10px;background:var(--grad);border:none;border-radius:6px;font-size:10px;font-weight:800;color:#fff;cursor:pointer;}
+.chat-list-search{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--text);width:100%;outline:none;font-family:'Noto Sans KR',sans-serif;}
+.chat-list-search::placeholder{color:var(--text3);}
+.chat-list-body{flex:1;overflow-y:auto;}
+.chat-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.03);transition:all 0.2s;display:flex;align-items:center;gap:10px;}
+.chat-item:hover{background:rgba(255,255,255,0.03);}
+.chat-item.on{background:rgba(102,126,234,0.1);border-left:3px solid var(--accent);}
+.chat-avatar{width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:16px;position:relative;}
+.chat-avatar.cancer{background:rgba(239,68,68,0.18);}
+.chat-avatar.brain{background:rgba(139,92,246,0.18);}
+.chat-avatar.dialysis{background:rgba(6,182,212,0.18);}
+.chat-avatar.meta{background:rgba(245,158,11,0.18);}
+.chat-avatar.rehab{background:rgba(52,211,153,0.18);}
+.online-indicator{position:absolute;bottom:1px;right:1px;width:9px;height:9px;background:var(--green);border-radius:50%;border:2px solid var(--surface);}
+.chat-item-info{flex:1;min-width:0;}
+.chat-item-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;}
+.chat-new{width:7px;height:7px;border-radius:50%;background:var(--red);flex-shrink:0;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+.chat-item-msg{font-size:11px;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+.chat-item-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0;}
+.chat-item-time{font-size:10px;color:var(--text3);}
+.unread-badge{background:var(--red);color:#fff;border-radius:99px;padding:1px 5px;font-size:9px;font-weight:800;}
+
+/* Center: message area */
+.chat-main{display:flex;flex-direction:column;height:100%;}
+.chat-header{padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-shrink:0;background:var(--surface2);}
+.chat-head-avatar{width:38px;height:38px;border-radius:50%;background:rgba(239,68,68,0.18);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.chat-head-name{font-size:15px;font-weight:800;}
+.chat-head-sub{font-size:11px;color:var(--text3);}
+.chat-head-status{font-size:10px;color:var(--green);display:flex;align-items:center;gap:3px;margin-top:2px;}
+.chat-actions{margin-left:auto;display:flex;gap:6px;}
+.chat-act-btn{padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:11px;font-weight:700;cursor:pointer;color:var(--text2);transition:all 0.2s;}
+.chat-act-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.chat-act-btn.primary{background:var(--grad);border-color:transparent;color:#fff;}
+.chat-act-btn.danger{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.3);color:var(--red);}
+.chat-act-btn.green{background:rgba(52,211,153,0.12);border-color:rgba(52,211,153,0.3);color:var(--green);}
+
+.chat-messages{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:8px;}
+.chat-messages::-webkit-scrollbar{width:4px;}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+
+.date-divider{text-align:center;font-size:11px;color:var(--text3);padding:6px 0;position:relative;}
+.date-divider::before,.date-divider::after{content:'';position:absolute;top:50%;width:28%;height:1px;background:var(--border);}
+.date-divider::before{left:0;}.date-divider::after{right:0;}
+
+/* message bubbles */
+.msg-wrap-r{display:flex;justify-content:flex-end;gap:6px;align-items:flex-end;}
+.msg-wrap-l{display:flex;justify-content:flex-start;gap:8px;align-items:flex-end;}
+.msg-l-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+.msg-r{background:var(--grad);border-radius:16px 16px 2px 16px;padding:10px 14px;font-size:13px;max-width:68%;line-height:1.6;word-break:break-word;}
+.msg-l{background:var(--surface3);border:1px solid var(--border2);border-radius:16px 16px 16px 2px;padding:10px 14px;font-size:13px;max-width:68%;line-height:1.6;word-break:break-word;}
+.msg-meta-r{display:flex;align-items:center;gap:4px;justify-content:flex-end;margin-top:3px;}
+.msg-meta-l{display:flex;align-items:center;gap:4px;margin-top:3px;}
+.msg-time{font-size:10px;color:var(--text3);}
+.msg-read{font-size:10px;color:var(--accent2);}
+
+/* system / notification messages */
+.msg-system{background:rgba(124,110,240,0.08);border:1px solid rgba(124,110,240,0.2);border-radius:10px;padding:8px 14px;font-size:12px;color:var(--text2);text-align:center;margin:4px 0;}
+.msg-reservation{background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.2);border-radius:12px;padding:10px 14px;margin:4px 0;}
+.msg-reservation-title{font-size:12px;font-weight:800;color:var(--green);display:flex;align-items:center;gap:5px;}
+.msg-reservation-body{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.6;}
+.msg-reservation-actions{display:flex;gap:6px;margin-top:8px;}
+.res-action-btn{padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;border:none;}
+.res-action-btn.confirm{background:var(--green);color:#000;}
+.res-action-btn.deny{background:rgba(239,68,68,0.15);color:var(--red);}
+
+/* quick templates */
+.template-row{display:flex;gap:6px;padding:6px 14px;overflow-x:auto;scrollbar-width:none;flex-shrink:0;border-top:1px solid var(--border);}
+.template-row::-webkit-scrollbar{display:none;}
+.tmpl-btn{flex-shrink:0;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface2);font-size:11px;font-weight:600;color:var(--text3);cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.tmpl-btn:hover{border-color:var(--accent);color:var(--accent2);}
+
+/* input bar */
+.chat-inp-bar{padding:10px 14px;border-top:1px solid var(--border);display:flex;align-items:flex-end;gap:8px;flex-shrink:0;background:var(--surface2);}
+.chat-inp{flex:1;background:var(--surface3);border:1.5px solid var(--border);color:var(--text);border-radius:12px;padding:10px 14px;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;resize:none;max-height:100px;line-height:1.5;}
+.chat-inp:focus{border-color:var(--accent);}
+.inp-actions{display:flex;align-items:flex-end;gap:6px;}
+.att-btn{width:36px;height:36px;background:var(--surface3);border:1px solid var(--border);border-radius:10px;color:var(--text3);cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.att-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.send-btn{width:40px;height:40px;background:var(--grad);border:none;border-radius:10px;color:#fff;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s;}
+.send-btn:hover{opacity:0.85;}
+
+/* Right: consultation detail panel */
+.chat-detail{border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.detail-header{padding:12px 16px;border-bottom:1px solid var(--border);font-size:13px;font-weight:900;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;}
+.detail-body{flex:1;overflow-y:auto;padding:14px;}
+.detail-section{margin-bottom:16px;}
+.detail-section-title{font-size:10px;font-weight:900;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;}
+.detail-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;}
+.detail-row{display:flex;justify-content:space-between;align-items:flex-start;font-size:12px;margin-bottom:7px;}
+.detail-row:last-child{margin-bottom:0;}
+.detail-label{color:var(--text3);}
+.detail-val{font-weight:700;text-align:right;max-width:60%;}
+
+/* quick action buttons in detail panel */
+.quick-actions{display:flex;flex-direction:column;gap:6px;}
+.qa-btn{width:100%;padding:9px 14px;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;border:none;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;gap:8px;transition:all 0.2s;}
+.qa-btn:hover{opacity:0.85;}
+.qa-btn.admit{background:var(--grad);color:#fff;}
+.qa-btn.kakao{background:rgba(254,229,0,0.15);border:1px solid rgba(254,229,0,0.3);color:#fde68a;}
+.qa-btn.call{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--green);}
+.qa-btn.deny{background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);color:var(--red);}
+.qa-btn.monitor{background:rgba(96,165,250,0.1);border:1px solid rgba(96,165,250,0.25);color:var(--blue);}
+
+/* status chip */
+.status-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:10px;font-weight:800;}
+.chip-wait{background:rgba(251,191,36,0.15);color:var(--amber);}
+.chip-confirm{background:rgba(52,211,153,0.12);color:var(--green);}
+.chip-admit{background:rgba(96,165,250,0.12);color:var(--blue);}
+.chip-done{background:rgba(107,114,128,0.15);color:#9ca3af;}
+
+/* ──────────────────────────────────────────────
+   CALENDAR TAB
+────────────────────────────────────────────── */
+.cal-layout{flex:1;display:grid;grid-template-columns:1fr 300px;gap:16px;overflow:hidden;}
+.cal-main{display:flex;flex-direction:column;gap:14px;overflow-y:auto;padding-right:4px;}
+.cal-header{display:flex;align-items:center;gap:12px;}
+.cal-nav-btn{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);transition:all 0.2s;}
+.cal-nav-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.cal-month{font-size:18px;font-weight:900;}
+.cal-grid-head{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-day-name{text-align:center;font-size:11px;font-weight:700;color:var(--text3);padding:6px 0;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.cal-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:6px 4px 3px;border-radius:10px;cursor:pointer;transition:all 0.2s;position:relative;font-size:13px;font-weight:700;color:var(--text2);}
+.cal-cell:hover{background:rgba(255,255,255,0.05);}
+.cal-cell.today{background:var(--grad);color:#fff;}
+.cal-cell.has-event::after{content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--green);border-radius:50%;}
+.cal-cell.other-month{color:var(--text3);}
+.cal-cell.selected{background:rgba(102,126,234,0.2);border:1px solid var(--accent);}
+
+.schedule-list{display:flex;flex-direction:column;gap:8px;}
+.schedule-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all 0.2s;}
+.schedule-item:hover{border-color:var(--accent);}
+.schedule-time-col{text-align:center;flex-shrink:0;width:48px;}
+.schedule-time{font-size:12px;font-weight:800;}
+.schedule-date{font-size:10px;color:var(--text3);}
+.schedule-bar{width:3px;height:38px;border-radius:2px;flex-shrink:0;}
+.schedule-info{flex:1;min-width:0;}
+.schedule-name{font-size:13px;font-weight:700;}
+.schedule-sub{font-size:11px;color:var(--text3);margin-top:2px;}
+.schedule-status{flex-shrink:0;}
+.status-badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:10px;font-weight:800;}
+.status-badge.pending{background:rgba(251,191,36,0.15);color:var(--amber);}
+.status-badge.confirmed{background:rgba(52,211,153,0.12);color:var(--green);}
+
+.kakao-widget{background:linear-gradient(135deg,rgba(254,229,0,0.08),rgba(254,229,0,0.02));border:1.5px solid rgba(254,229,0,0.2);border-radius:14px;padding:14px;}
+.kakao-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.kakao-label{font-size:13px;font-weight:800;display:flex;align-items:center;gap:6px;}
+.toggle{width:44px;height:24px;background:var(--surface3);border-radius:999px;cursor:pointer;position:relative;transition:background 0.3s;border:1px solid var(--border);}
+.toggle.on{background:var(--green);}
+.toggle-dot{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:2px;left:3px;transition:transform 0.3s;box-shadow:0 2px 4px rgba(0,0,0,0.3);}
+.toggle.on .toggle-dot{transform:translateX(20px);}
+.kakao-desc{font-size:11px;color:var(--text3);line-height:1.5;}
+
+/* ──────────────────────────────────────────────
+   CRM TABLE TAB
+────────────────────────────────────────────── */
+.crm-layout{flex:1;overflow-y:auto;}
+.crm-search-bar{display:flex;gap:8px;margin-bottom:14px;flex-shrink:0;}
+.crm-search-inp{flex:1;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:'Noto Sans KR',sans-serif;}
+.crm-search-inp::placeholder{color:var(--text3);}
+.crm-filter-btn{padding:9px 14px;border-radius:10px;background:var(--surface);border:1.5px solid var(--border);font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all 0.2s;}
+.crm-filter-btn:hover{border-color:var(--accent);color:var(--accent2);}
+.crm-table{width:100%;border-collapse:collapse;}
+.crm-table th{font-size:11px;color:var(--text3);font-weight:700;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;}
+.crm-table td{font-size:12px;padding:11px 12px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.crm-table tr:hover td{background:rgba(255,255,255,0.02);}
+.patient-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.action-btns{display:flex;gap:4px;}
+.act-btn{padding:4px 8px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;border:none;transition:all 0.2s;}
+.act-btn.chat{background:rgba(124,110,240,0.15);color:var(--accent2);}
+.act-btn.call{background:rgba(52,211,153,0.12);color:var(--green);}
+.act-btn.view{background:var(--surface3);color:var(--text2);}
+.act-btn.kakao{background:rgba(254,229,0,0.12);color:#fde68a;}
+
+/* ──────────────────────────────────────────────
+   NEW RESERVATION FORM
+────────────────────────────────────────────── */
+.form-inp{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--text);outline:none;font-family:'Noto Sans KR',sans-serif;width:100%;}
+.form-inp:focus{border-color:var(--accent);}
+.form-inp::placeholder{color:var(--text3);}
+
+/* ──────────────────────────────────────────────
+   MODAL OVERLAY (patient detail / new chat)
+────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.on{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:480px;max-width:95vw;overflow:hidden;}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-head-title{font-size:16px;font-weight:900;}
+.modal-close{width:32px;height:32px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text3);}
+.modal-body{padding:20px 24px;display:flex;flex-direction:column;gap:12px;max-height:60vh;overflow-y:auto;}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;}
+.modal-btn{padding:10px 20px;border-radius:10px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;border:none;transition:all 0.2s;}
+.modal-btn.primary{background:var(--grad);color:#fff;}
+.modal-btn.secondary{background:var(--surface2);border:1px solid var(--border);color:var(--text2);}
+.modal-label{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px;}
+
+/* ──────────────────────────────────────────────
+   TOAST NOTIFICATION
+────────────────────────────────────────────── */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:14px 20px;font-size:13px;font-weight:700;z-index:9999;transform:translateY(80px);opacity:0;transition:all 0.35s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:340px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,0.4);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{border-color:rgba(52,211,153,0.3);}
+.toast.warning{border-color:rgba(251,191,36,0.3);}
+.toast.error{border-color:rgba(239,68,68,0.3);}
+.toast-icon{font-size:18px;}
+
+/* ──────────────────────────────────────────────
+   MOBILE
+────────────────────────────────────────────── */
+@media(max-width:1100px){
+  .chat-detail{display:none;}
+  .chat-layout{grid-template-columns:260px 1fr;}
+}
+@media(max-width:900px){
+  .sidebar{display:none;}
+  .content-area{padding:10px 12px 0;}
+  .topbar{padding:12px 14px;}
+  .chat-layout{grid-template-columns:1fr;}
+  .chat-list{display:none;}
+  .chat-layout.show-list .chat-list{display:flex;}
+  .chat-layout.show-list .chat-main{display:none;}
+  .cal-layout{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ─── SIDEBAR ─── -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div style="width:36px;height:36px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;color:#fff;flex-shrink:0;">N</div>
+    <div><div class="sb-logo-text">NUVIN SaaS</div><div class="sb-logo-sub">병원 관리자 플랫폼</div></div>
+  </div>
+  <div class="sb-hosp">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>
+      <div class="sb-hosp-name" id="sbHospName">한국요양병원</div>
+    </div>
+    <div class="sb-hosp-meta">빈병상 <strong style="color:var(--green);" id="sbBeds">8</strong> / 총 <span id="sbTotal">42</span>병상</div>
+  </div>
+  <div class="sb-nav">
+    <div class="nav-section">메인</div>
+    <div class="nav-item" onclick="location.href='nuvin2-admin.html'"><i class="fas fa-chart-line"></i>오늘 대시보드</div>
+    <div class="nav-item on"><i class="fas fa-users"></i>환자 CRM<span class="nav-badge" id="navCrmBadge">3</span></div>
+    <div class="nav-item" onclick="showTab('calendar')"><i class="fas fa-calendar-check"></i>예약 캘린더</div>
+    <div class="nav-item" onclick="location.href='nuvin2-monitor.html'"><i class="fas fa-heartbeat"></i>환자 모니터링<span class="nav-badge">2</span></div>
+    <div class="nav-section" style="margin-top:12px;">채널</div>
+    <div class="nav-item" onclick="showTab('chat')"><i class="fas fa-comment-dots"></i>채팅 메시지<span class="nav-badge" id="navChatBadge">5</span></div>
+    <div class="nav-item"><i class="fas fa-bell"></i>알림 설정</div>
+    <div class="nav-section" style="margin-top:12px;">설정</div>
+    <div class="nav-item" onclick="location.href='nuvin2-admin.html'"><i class="fas fa-hospital"></i>병원 정보 수정</div>
+    <div class="nav-item" onclick="location.href='nuvin2-home.html'"><i class="fas fa-external-link-alt"></i>환자용 앱 보기</div>
+    <div class="nav-item" onclick="location.href='nuvin2-landing.html'"><i class="fas fa-info-circle"></i>서비스 안내</div>
+  </div>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-avatar">👨‍⚕️</div>
+      <div style="flex:1;">
+        <div style="font-size:12px;font-weight:700;" id="sbAdminName">김원장</div>
+        <div style="font-size:10px;color:var(--text3);">원장 · 관리자</div>
+      </div>
+      <div class="online-dot"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MAIN ─── -->
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="page-title">환자 CRM · 채팅 · 예약</div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-btn" title="대시보드" onclick="location.href='nuvin2-admin.html'"><i class="fas fa-home"></i></div>
+      <div class="tb-btn" title="모니터링" onclick="location.href='nuvin2-monitor.html'"><i class="fas fa-heartbeat"></i><div class="tb-dot"></div></div>
+      <div class="tb-btn" title="신규 채팅" onclick="openNewChatModal()"><i class="fas fa-edit"></i></div>
+    </div>
+  </div>
+
+  <div class="content-area">
+    <!-- TABS -->
+    <div class="tab-bar">
+      <button class="tab-btn on" id="tabBtnChat" onclick="showTab('chat')">
+        <i class="fas fa-comment-dots" style="margin-right:4px;"></i>채팅
+        <span id="chatTabBadge" style="background:var(--red);border-radius:5px;padding:0 5px;font-size:10px;margin-left:3px;">5</span>
+      </button>
+      <button class="tab-btn" id="tabBtnCalendar" onclick="showTab('calendar')">
+        <i class="fas fa-calendar" style="margin-right:4px;"></i>예약 캘린더
+      </button>
+      <button class="tab-btn" id="tabBtnCrm" onclick="showTab('crm')">
+        <i class="fas fa-users" style="margin-right:4px;"></i>환자 CRM
+      </button>
+    </div>
+
+    <!-- TAB CONTENTS -->
+    <div class="tab-content">
+
+      <!-- ══════════════════════════════
+           CHAT TAB — three-column
+      ══════════════════════════════ -->
+      <div class="tab-pane on" id="paneChat">
+        <div class="chat-layout" id="chatLayout">
+
+          <!-- LEFT: contact list -->
+          <div class="chat-list">
+            <div class="chat-list-header">
+              <div class="chat-list-title">
+                상담 채팅 <span style="font-size:11px;color:var(--text3);font-weight:400;">5개 미읽음</span>
+                <button class="new-chat-btn" onclick="openNewChatModal()">+ 새 채팅</button>
+              </div>
+              <input class="chat-list-search" id="chatSearch" placeholder="환자명 검색..." oninput="filterChats(this.value)"/>
+            </div>
+            <div class="chat-list-body" id="chatListBody">
+              <!-- populated by JS -->
+            </div>
+          </div>
+
+          <!-- CENTER: messages -->
+          <div class="chat-main">
+            <div class="chat-header">
+              <div class="chat-head-avatar" id="chatAvatar">🎗️</div>
+              <div>
+                <div class="chat-head-name" id="chatName">이○○ 보호자</div>
+                <div class="chat-head-sub" id="chatSub">암수술후요양 · 한국요양병원 문의</div>
+                <div class="chat-head-status" id="chatStatus"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> 온라인 · 방금 활성</div>
+              </div>
+              <div class="chat-actions">
+                <div class="chat-act-btn green" onclick="callPatient()"><i class="fas fa-phone"></i> 전화</div>
+                <div class="chat-act-btn" onclick="sendReservationCard()"><i class="fas fa-calendar-plus"></i> 예약 카드</div>
+                <div class="chat-act-btn primary" onclick="sendKakao()">💛 카카오 알림</div>
+                <div class="chat-act-btn danger" onclick="endConsultation()"><i class="fas fa-times"></i> 상담 종료</div>
+              </div>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+              <!-- populated by JS -->
+            </div>
+
+            <div class="template-row" id="templateRow">
+              <div class="tmpl-btn" onclick="insertTemplate('안녕하세요! 한국요양병원입니다. 문의 주셔서 감사합니다 😊')">👋 인사말</div>
+              <div class="tmpl-btn" onclick="insertTemplate('현재 빈병상은 8개입니다. 즉시 입원 가능합니다.')">🛏️ 빈병상 안내</div>
+              <div class="tmpl-btn" onclick="insertTemplate('1인실: 180,000원/일\n2인실: 120,000원/일\n다인실: 65,000원/일')">💰 요금 안내</div>
+              <div class="tmpl-btn" onclick="insertTemplate('예약이 확정되었습니다. 입원 당일 오전 9시까지 방문해 주세요.')">✅ 예약 확정</div>
+              <div class="tmpl-btn" onclick="insertTemplate('담당 의료진과 상담 후 연락드리겠습니다. 잠시만 기다려 주세요.')">⏳ 대기 안내</div>
+              <div class="tmpl-btn" onclick="insertTemplate('입원 준비물: 신분증, 건강보험카드, 진단서, 상비약 등')">📋 입원 준비물</div>
+              <div class="tmpl-btn" onclick="insertTemplate('퇴원 처리가 완료되었습니다. 이용해 주셔서 감사합니다 🙏')">🏠 퇴원 안내</div>
+            </div>
+
+            <div class="chat-inp-bar">
+              <div class="inp-actions">
+                <div class="att-btn" title="파일 첨부" onclick="attachFile()"><i class="fas fa-paperclip"></i></div>
+                <div class="att-btn" title="이미지 전송" onclick="attachFile()"><i class="fas fa-image"></i></div>
+              </div>
+              <textarea class="chat-inp" id="chatInp" rows="1"
+                placeholder="메시지 입력… (Enter: 전송 / Shift+Enter: 줄바꿈)"
+                oninput="autoResize(this)" onkeydown="chatKeydown(event)"></textarea>
+              <div class="send-btn" onclick="sendMsg()" title="전송 (Enter)"><i class="fas fa-paper-plane"></i></div>
+            </div>
+          </div><!-- /chat-main -->
+
+          <!-- RIGHT: consultation detail -->
+          <div class="chat-detail">
+            <div class="detail-header">
+              <span>상담 상세</span>
+              <span id="detailChip" class="status-chip chip-wait">대기중</span>
+            </div>
+            <div class="detail-body">
+              <div class="detail-section">
+                <div class="detail-section-title">환자 정보</div>
+                <div class="detail-card">
+                  <div class="detail-row"><span class="detail-label">환자명</span><span class="detail-val" id="dPatName">이○○</span></div>
+                  <div class="detail-row"><span class="detail-label">진료 유형</span><span class="detail-val" id="dPatCat">암수술후요양</span></div>
+                  <div class="detail-row"><span class="detail-label">문의 경로</span><span class="detail-val">NUVIN 앱 채팅</span></div>
+                  <div class="detail-row"><span class="detail-label">첫 문의</span><span class="detail-val">2026.04.09 09:42</span></div>
+                  <div class="detail-row"><span class="detail-label">마지막 활성</span><span class="detail-val">방금</span></div>
+                </div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">상담 현황</div>
+                <div class="detail-card">
+                  <div class="detail-row"><span class="detail-label">희망 병실</span><span class="detail-val" id="dRoom">1인실</span></div>
+                  <div class="detail-row"><span class="detail-label">입원 희망일</span><span class="detail-val" id="dDate">오늘 (긴급)</span></div>
+                  <div class="detail-row"><span class="detail-label">예상 기간</span><span class="detail-val">30일 내외</span></div>
+                  <div class="detail-row"><span class="detail-label">보험 유형</span><span class="detail-val">건강보험</span></div>
+                  <div class="detail-row"><span class="detail-label">상담 메시지</span><span class="detail-val" style="color:var(--accent2);">4건</span></div>
+                </div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">빠른 액션</div>
+                <div class="quick-actions">
+                  <button class="qa-btn admit" onclick="confirmAdmission()"><i class="fas fa-hospital-user"></i> 입원 확정</button>
+                  <button class="qa-btn kakao" onclick="sendKakao()"><span>💛</span> 카카오 알림톡 발송</button>
+                  <button class="qa-btn call" onclick="callPatient()"><i class="fas fa-phone"></i> 전화 상담</button>
+                  <button class="qa-btn monitor" onclick="location.href='nuvin2-monitor.html'"><i class="fas fa-heartbeat"></i> 모니터링 연동</button>
+                  <button class="qa-btn deny" onclick="endConsultation()"><i class="fas fa-times-circle"></i> 상담 종료</button>
+                </div>
+              </div>
+              <div class="detail-section">
+                <div class="detail-section-title">메모</div>
+                <textarea id="consultMemo" class="form-inp" rows="3"
+                  placeholder="내부 메모를 입력하세요..." style="resize:none;"></textarea>
+                <button onclick="saveMemo()" style="margin-top:6px;width:100%;padding:8px;border-radius:8px;background:var(--surface3);border:1px solid var(--border);color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;">메모 저장</button>
+              </div>
+            </div>
+          </div><!-- /chat-detail -->
+
+        </div><!-- /chat-layout -->
+      </div><!-- /pane-chat -->
+
+      <!-- ══════════════════════════════
+           CALENDAR TAB
+      ══════════════════════════════ -->
+      <div class="tab-pane" id="paneCalendar">
+        <div class="cal-layout">
+          <div class="cal-main">
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px;">
+              <div class="cal-header" style="margin-bottom:14px;">
+                <div class="cal-nav-btn" onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></div>
+                <div class="cal-month" id="calMonthLabel">2026년 4월</div>
+                <div class="cal-nav-btn" onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></div>
+                <div style="margin-left:auto;padding:6px 14px;border-radius:8px;background:var(--grad);font-size:12px;font-weight:700;color:#fff;cursor:pointer;" onclick="goToday()">오늘</div>
+              </div>
+              <div class="cal-grid-head">
+                <div class="cal-day-name" style="color:#f87171;">일</div>
+                <div class="cal-day-name">월</div><div class="cal-day-name">화</div>
+                <div class="cal-day-name">수</div><div class="cal-day-name">목</div>
+                <div class="cal-day-name">금</div>
+                <div class="cal-day-name" style="color:#60a5fa;">토</div>
+              </div>
+              <div class="cal-grid" id="calGrid"></div>
+            </div>
+
+            <div>
+              <div style="font-size:14px;font-weight:800;margin-bottom:10px;" id="scheduleLabel">4월 9일 (목) 일정</div>
+              <div class="schedule-list" id="scheduleList">
+                <!-- populated by JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Kakao + New Reservation -->
+          <div style="display:flex;flex-direction:column;gap:14px;overflow-y:auto;">
+            <div class="kakao-widget">
+              <div class="kakao-header">
+                <div class="kakao-label">💛 카카오 알림톡 자동발송</div>
+                <div class="toggle on" id="kakaoToggle" onclick="toggleKakao()"><div class="toggle-dot"></div></div>
+              </div>
+              <div class="kakao-desc">예약 확정·입원 전날·퇴원 당일 자동으로<br>카카오 알림톡이 발송됩니다.</div>
+              <div style="margin-top:10px;font-size:11px;color:var(--green);"><i class="fas fa-check-circle"></i> 이번 달 발송: <strong>47건</strong></div>
+            </div>
+
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;">
+              <div style="font-size:14px;font-weight:800;margin-bottom:14px;">📅 신규 예약 등록</div>
+              <div style="display:flex;flex-direction:column;gap:9px;">
+                <div>
+                  <div class="modal-label">환자 성함 *</div>
+                  <input type="text" class="form-inp" placeholder="홍길동" id="newPatName"/>
+                </div>
+                <div>
+                  <div class="modal-label">진료 유형 *</div>
+                  <select class="form-inp" id="newCat">
+                    <option>암수술후요양</option>
+                    <option>뇌수술후요양</option>
+                    <option>24시간 신장투석</option>
+                    <option>대사질환 외래</option>
+                    <option>신장투석</option>
+                    <option>재활치료</option>
+                  </select>
+                </div>
+                <div>
+                  <div class="modal-label">입원 예정일 *</div>
+                  <input type="date" class="form-inp" id="newDate"/>
+                </div>
+                <div>
+                  <div class="modal-label">병실 유형</div>
+                  <select class="form-inp" id="newRoom">
+                    <option>1인실</option><option>2인실</option>
+                    <option>다인실</option><option>격리실</option><option>외래</option>
+                  </select>
+                </div>
+                <div>
+                  <div class="modal-label">연락처</div>
+                  <input type="tel" class="form-inp" placeholder="010-0000-0000" id="newPhone"/>
+                </div>
+                <button onclick="addReservation()"
+                  style="padding:11px;border-radius:10px;background:var(--grad);border:none;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;margin-top:2px;">
+                  <i class="fas fa-calendar-plus"></i> 예약 등록
+                </button>
+              </div>
+            </div>
+
+            <!-- 오늘 빈병상 현황 -->
+            <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;">
+              <div style="font-size:14px;font-weight:800;margin-bottom:12px;">🛏️ 오늘 병상 현황</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;color:var(--text3);">총 병상</span>
+                <span style="font-size:16px;font-weight:900;" id="calTotalBeds">42</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+                <span style="font-size:12px;color:var(--text3);">빈 병상</span>
+                <span style="font-size:16px;font-weight:900;color:var(--green);" id="calEmptyBeds">8</span>
+              </div>
+              <div style="height:6px;background:var(--surface2);border-radius:3px;overflow:hidden;margin-bottom:4px;">
+                <div style="height:100%;background:var(--grad);border-radius:3px;width:81%;" id="bedBar"></div>
+              </div>
+              <div style="font-size:10px;color:var(--text3);text-align:right;">입원율 81%</div>
+            </div>
+          </div>
+        </div>
+      </div><!-- /pane-calendar -->
+
+      <!-- ══════════════════════════════
+           CRM TABLE TAB
+      ══════════════════════════════ -->
+      <div class="tab-pane" id="paneCrm">
+        <div class="crm-search-bar">
+          <input class="crm-search-inp" placeholder="환자명, 진료유형, 연락처 검색..." id="crmSearch" oninput="filterCrm(this.value)"/>
+          <div class="crm-filter-btn"><i class="fas fa-sliders-h"></i> 필터</div>
+          <div class="crm-filter-btn" style="background:var(--grad);border-color:transparent;color:#fff;" onclick="openNewPatientModal()">+ 신규 환자</div>
+        </div>
+        <div class="crm-layout">
+          <table class="crm-table" id="crmTable">
+            <thead>
+              <tr>
+                <th>환자명</th><th>진료 유형</th><th>입원일</th>
+                <th>예정 퇴원</th><th>병실</th><th>상태</th>
+                <th>연락처</th><th>마지막 연락</th><th>액션</th>
+              </tr>
+            </thead>
+            <tbody id="crmBody">
+              <!-- populated by JS -->
+            </tbody>
+          </table>
+          <div style="height:20px;"></div>
+        </div>
+      </div><!-- /pane-crm -->
+
+    </div><!-- /tab-content -->
+  </div><!-- /content-area -->
+</div><!-- /main -->
+
+<!-- ─── NEW CHAT MODAL ─── -->
+<div class="modal-overlay" id="newChatModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title">새 상담 채팅 시작</div>
+      <div class="modal-close" onclick="closeModal('newChatModal')"><i class="fas fa-times"></i></div>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-label">보호자/환자명 *</div>
+        <input type="text" class="form-inp" id="nc_name" placeholder="홍길동 보호자"/>
+      </div>
+      <div>
+        <div class="modal-label">진료 유형 *</div>
+        <select class="form-inp" id="nc_cat">
+          <option>암수술후요양</option><option>뇌수술후요양</option>
+          <option>24시간 신장투석</option><option>대사질환 외래</option>
+          <option>신장투석</option><option>재활치료</option>
+        </select>
+      </div>
+      <div>
+        <div class="modal-label">첫 메시지 (선택)</div>
+        <textarea class="form-inp" id="nc_msg" rows="3" placeholder="입원 문의 내용을 입력하세요..."></textarea>
+      </div>
+      <div>
+        <div class="modal-label">연락처</div>
+        <input type="tel" class="form-inp" id="nc_phone" placeholder="010-0000-0000"/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn secondary" onclick="closeModal('newChatModal')">취소</button>
+      <button class="modal-btn primary" onclick="createNewChat()">채팅 시작</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── NEW PATIENT MODAL ─── -->
+<div class="modal-overlay" id="newPatientModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title">신규 환자 등록</div>
+      <div class="modal-close" onclick="closeModal('newPatientModal')"><i class="fas fa-times"></i></div>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <div class="modal-label">환자명 *</div>
+          <input type="text" class="form-inp" id="np_name" placeholder="홍○○"/>
+        </div>
+        <div>
+          <div class="modal-label">연락처 *</div>
+          <input type="tel" class="form-inp" id="np_phone" placeholder="010-0000-0000"/>
+        </div>
+        <div>
+          <div class="modal-label">진료 유형 *</div>
+          <select class="form-inp" id="np_cat">
+            <option>암수술후요양</option><option>뇌수술후요양</option>
+            <option>24시간 신장투석</option><option>대사질환 외래</option>
+            <option>신장투석</option><option>재활치료</option>
+          </select>
+        </div>
+        <div>
+          <div class="modal-label">병실 유형</div>
+          <select class="form-inp" id="np_room">
+            <option>1인실</option><option>2인실</option>
+            <option>다인실</option><option>격리실</option><option>외래</option>
+          </select>
+        </div>
+        <div>
+          <div class="modal-label">입원일</div>
+          <input type="date" class="form-inp" id="np_admit"/>
+        </div>
+        <div>
+          <div class="modal-label">예정 퇴원일</div>
+          <input type="date" class="form-inp" id="np_discharge"/>
+        </div>
+      </div>
+      <div>
+        <div class="modal-label">특이사항</div>
+        <textarea class="form-inp" id="np_note" rows="2" placeholder="특이사항, 알레르기, 추가 요청 등"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-btn secondary" onclick="closeModal('newPatientModal')">취소</button>
+      <button class="modal-btn primary" onclick="addNewPatient()">등록</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✅</span>
+  <span id="toastMsg">완료되었습니다.</span>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════ */
+const CONTACTS = [
+  {id:'c1', name:'이○○', cat:'cancer', catLabel:'암수술후요양', icon:'🎗️', lastMsg:'긴급 입원 가능한지 확인 부탁드립니다', time:'방금', unread:2, online:true, phone:'010-1234-5678', room:'1인실', date:'오늘 (긴급)', status:'wait'},
+  {id:'c2', name:'박○○', cat:'dialysis', catLabel:'24시간 신장투석', icon:'🩸', lastMsg:'1인실 가격 및 격리실 가능한지요?', time:'3분', unread:1, online:true, phone:'010-2345-6789', room:'2인실', date:'2026.04.10', status:'wait'},
+  {id:'c3', name:'최○○', cat:'brain', catLabel:'뇌수술후요양', icon:'🧠', lastMsg:'뇌수술 후 재활 프로그램이 있나요?', time:'15분', unread:0, online:false, phone:'010-3456-7890', room:'격리실', date:'2026.04.15', status:'confirm'},
+  {id:'c4', name:'정○○', cat:'meta', catLabel:'대사질환 외래', icon:'🩺', lastMsg:'혈당 관리 외래 예약 변경 가능할까요', time:'1시간', unread:1, online:true, phone:'010-4567-8901', room:'외래', date:'2026.04.12', status:'admit'},
+  {id:'c5', name:'강○○', cat:'dialysis', catLabel:'신장투석', icon:'💉', lastMsg:'감사합니다. 예약 확인했습니다.', time:'3시간', unread:0, online:false, phone:'010-5678-9012', room:'다인실', date:'2026.03.20', status:'admit'},
+];
+
+const MESSAGES = {
+  c1:[
+    {type:'date', text:'2026년 4월 9일'},
+    {type:'l', text:'안녕하세요, 암수술 후 요양 병원을 찾고 있습니다. 지금 입원 가능한지요?', time:'오전 9:42'},
+    {type:'r', text:'안녕하세요! 한국요양병원입니다. 현재 빈병상 8개가 있으며 즉시 입원 가능합니다 😊', time:'오전 9:45'},
+    {type:'l', text:'1인실이 있나요? 가격도 알고 싶습니다.', time:'오전 9:46'},
+    {type:'r', text:'네, 1인실 현재 1개 가능합니다.\n1인실: 180,000원/일\n2인실: 120,000원/일\n다인실: 65,000원/일\n\n자세한 상담은 전화로 안내해 드릴 수 있습니다.', time:'오전 9:48'},
+    {type:'l', text:'감사합니다! 긴급 입원 가능한지 확인 부탁드립니다. 오늘 입원 가능할까요?', time:'방금'},
+  ],
+  c2:[
+    {type:'date', text:'2026년 4월 9일'},
+    {type:'l', text:'1인실 격리실 가능한지요? 신장투석이 필요한데요.', time:'오전 10:02'},
+    {type:'r', text:'네! 24시간 신장투석 전문 병동이 있습니다. 격리실도 1개 남아있습니다.', time:'오전 10:05'},
+    {type:'l', text:'1인실 가격 및 격리실 가능한지요?', time:'3분'},
+  ],
+  c3:[
+    {type:'date', text:'2026년 4월 9일'},
+    {type:'system', text:'최○○ 보호자가 채팅을 시작했습니다.'},
+    {type:'l', text:'뇌수술 후 재활 프로그램이 있나요?', time:'오전 10:30'},
+    {type:'r', text:'네, 뇌수술 후 재활 전문 프로그램을 운영하고 있습니다. 물리치료, 작업치료, 언어치료가 포함됩니다.', time:'오전 10:33'},
+    {type:'reservation', name:'최○○', cat:'뇌수술후요양', date:'2026.04.15', room:'격리실', status:'confirm'},
+  ],
+  c4:[
+    {type:'date', text:'2026년 4월 9일'},
+    {type:'l', text:'혈당 관리 외래 예약 변경 가능할까요? 4월 12일에서 15일로 변경 부탁드립니다.', time:'1시간'},
+  ],
+  c5:[
+    {type:'date', text:'2026년 4월 9일'},
+    {type:'r', text:'예약이 확정되었습니다. 4월 20일까지 신장투석 스케줄이 배정되었습니다.', time:'3시간'},
+    {type:'l', text:'감사합니다. 예약 확인했습니다.', time:'3시간'},
+  ],
+};
+
+const CRM_DATA = [
+  {name:'이○○', color:'#f87171', cat:'🎗️ 암수술후요양', admit:'2026.04.09', discharge:'2026.05.09', room:'1인실', status:'입원중', statusCls:'confirmed', phone:'010-1234-5678', lastContact:'방금'},
+  {name:'박○○', color:'#67e8f9', cat:'🩸 24시간 신장투석', admit:'2026.04.10', discharge:'2026.04.30', room:'2인실', status:'입원예정', statusCls:'pending', phone:'010-2345-6789', lastContact:'3분 전'},
+  {name:'최○○', color:'#c4b5fd', cat:'🧠 뇌수술후요양', admit:'2026.04.15', discharge:'2026.06.15', room:'격리실', status:'예약대기', statusCls:'pending', phone:'010-3456-7890', lastContact:'15분 전'},
+  {name:'김○○', color:'#fde68a', cat:'🩺 대사질환 외래', admit:'—', discharge:'—', room:'외래', status:'정기외래', statusCls:'confirmed', phone:'010-6789-0123', lastContact:'1시간 전'},
+  {name:'강○○', color:'#6ee7b7', cat:'💉 신장투석', admit:'2026.03.20', discharge:'2026.04.20', room:'다인실', status:'입원중', statusCls:'confirmed', phone:'010-5678-9012', lastContact:'3시간 전'},
+  {name:'정○○', color:'#f87171', cat:'🎗️ 암수술후요양', admit:'2026.02.10', discharge:'2026.04.09', room:'1인실', status:'퇴원완료', statusCls:'done', phone:'010-4567-8901', lastContact:'어제'},
+];
+
+let currentContact = CONTACTS[0];
+let calYear = 2026, calMonth = 3;
+
+/* ═══════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  // Restore admin info from localStorage
+  const admin = JSON.parse(localStorage.getItem('nuvin_current_admin') || '{}');
+  if (admin.hospital_name) document.getElementById('sbHospName').textContent = admin.hospital_name;
+  if (admin.name) document.getElementById('sbAdminName').textContent = admin.name;
+  const beds = JSON.parse(localStorage.getItem('nuvin_beds') || '{}');
+  if (beds.available !== undefined) {
+    document.getElementById('sbBeds').textContent = beds.available;
+    document.getElementById('calEmptyBeds').textContent = beds.available;
+    document.getElementById('calTotalBeds').textContent = beds.total || 42;
+    const pct = Math.round(((beds.total - beds.available) / beds.total) * 100);
+    document.getElementById('bedBar').style.width = pct + '%';
+  }
+
+  renderChatList(CONTACTS);
+  selectContact(CONTACTS[0]);
+  renderCrm(CRM_DATA);
+  buildCalendar();
+  renderSchedule(9);
+
+  // URL hash routing
+  const hash = location.hash.replace('#','');
+  if (['chat','calendar','crm'].includes(hash)) showTab(hash);
+});
+
+/* ═══════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════ */
+function showTab(tab) {
+  ['chat','calendar','crm'].forEach(t => {
+    document.getElementById('pane' + cap(t)).classList.remove('on');
+    document.getElementById('tabBtn' + cap(t)).classList.remove('on');
+  });
+  document.getElementById('pane' + cap(tab)).classList.add('on');
+  document.getElementById('tabBtn' + cap(tab)).classList.add('on');
+}
+function cap(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+/* ═══════════════════════════════════════════════
+   CHAT LIST
+═══════════════════════════════════════════════ */
+function renderChatList(contacts) {
+  const body = document.getElementById('chatListBody');
+  body.innerHTML = '';
+  contacts.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'chat-item' + (c.id === currentContact?.id ? ' on' : '');
+    div.id = 'ci_' + c.id;
+    div.onclick = () => selectContact(c);
+    div.innerHTML = `
+      <div class="chat-avatar ${c.cat}" style="position:relative;">
+        ${c.icon}
+        ${c.online ? '<div class="online-indicator"></div>' : ''}
+      </div>
+      <div class="chat-item-info">
+        <div class="chat-item-name">
+          <span>${c.name} 보호자</span>
+          ${c.unread > 0 ? '<div class="chat-new"></div>' : ''}
+        </div>
+        <div class="chat-item-msg">${c.lastMsg}</div>
+      </div>
+      <div class="chat-item-right">
+        <span class="chat-item-time">${c.time}</span>
+        ${c.unread > 0 ? `<span class="unread-badge">${c.unread}</span>` : ''}
+      </div>`;
+    body.appendChild(div);
+  });
+}
+
+function selectContact(c) {
+  currentContact = c;
+  // Update header
+  document.getElementById('chatAvatar').textContent = c.icon;
+  document.getElementById('chatAvatar').className = 'chat-head-avatar';
+  document.getElementById('chatName').textContent = c.name + ' 보호자';
+  document.getElementById('chatSub').textContent = c.catLabel + ' · 한국요양병원 문의';
+  document.getElementById('chatStatus').innerHTML = c.online
+    ? `<span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block;"></span> 온라인 · 방금 활성`
+    : `<span style="width:6px;height:6px;border-radius:50%;background:var(--text3);display:inline-block;"></span> 오프라인`;
+
+  // Update detail panel
+  document.getElementById('dPatName').textContent = c.name;
+  document.getElementById('dPatCat').textContent = c.catLabel;
+  document.getElementById('dRoom').textContent = c.room;
+  document.getElementById('dDate').textContent = c.date;
+  const chipMap = {wait:'chip-wait',confirm:'chip-confirm',admit:'chip-admit',done:'chip-done'};
+  const chipLabel = {wait:'상담 대기',confirm:'예약 확정',admit:'입원중',done:'완료'};
+  const chip = document.getElementById('detailChip');
+  chip.className = 'status-chip ' + (chipMap[c.status] || 'chip-wait');
+  chip.textContent = chipLabel[c.status] || '대기중';
+
+  // Mark as read
+  c.unread = 0;
+  renderChatList(CONTACTS);
+  document.querySelectorAll('#chatListBody .chat-item').forEach(el => el.classList.remove('on'));
+  const el = document.getElementById('ci_' + c.id);
+  if (el) el.classList.add('on');
+
+  // Render messages
+  renderMessages(MESSAGES[c.id] || []);
+}
+
+function filterChats(q) {
+  const filtered = q ? CONTACTS.filter(c =>
+    c.name.includes(q) || c.catLabel.includes(q)
+  ) : CONTACTS;
+  renderChatList(filtered);
+}
+
+/* ═══════════════════════════════════════════════
+   MESSAGES
+═══════════════════════════════════════════════ */
+function renderMessages(msgs) {
+  const area = document.getElementById('chatMessages');
+  area.innerHTML = '';
+  msgs.forEach(m => appendMsgNode(m));
+  area.scrollTop = area.scrollHeight;
+}
+
+function appendMsgNode(m) {
+  const area = document.getElementById('chatMessages');
+  const node = document.createElement('div');
+  if (m.type === 'date') {
+    node.className = 'date-divider';
+    node.textContent = m.text;
+  } else if (m.type === 'system') {
+    node.className = 'msg-system';
+    node.textContent = m.text;
+  } else if (m.type === 'reservation') {
+    node.className = 'msg-reservation';
+    node.innerHTML = `
+      <div class="msg-reservation-title"><i class="fas fa-calendar-check"></i> 예약 카드 — ${m.name}</div>
+      <div class="msg-reservation-body">
+        진료: ${m.cat}<br>날짜: ${m.date}<br>병실: ${m.room}
+      </div>
+      <div class="msg-reservation-actions">
+        ${m.status === 'confirm'
+          ? '<button class="res-action-btn confirm" disabled>✅ 예약 확정됨</button>'
+          : '<button class="res-action-btn confirm" onclick="confirmResCard(this)">예약 확정</button><button class="res-action-btn deny" onclick="denyResCard(this)">거절</button>'}
+      </div>`;
+  } else if (m.type === 'r') {
+    node.className = 'msg-wrap-r';
+    node.innerHTML = `<div>
+      <div class="msg-r">${m.text.replace(/\n/g,'<br>')}</div>
+      <div class="msg-meta-r"><span class="msg-read">읽음</span><span class="msg-time">${m.time}</span></div>
+    </div>`;
+  } else if (m.type === 'l') {
+    node.className = 'msg-wrap-l';
+    node.innerHTML = `
+      <div class="msg-l-avatar">👤</div>
+      <div>
+        <div class="msg-l">${m.text.replace(/\n/g,'<br>')}</div>
+        <div class="msg-meta-l"><span class="msg-time">${m.time}</span></div>
+      </div>`;
+  }
+  area.appendChild(node);
+  area.scrollTop = area.scrollHeight;
+}
+
+function confirmResCard(btn) {
+  btn.disabled = true; btn.textContent = '✅ 예약 확정됨';
+  btn.nextSibling?.remove();
+  showToast('✅', '예약이 확정되었습니다. 카카오 알림톡을 발송합니다.', 'success');
+}
+function denyResCard(btn) {
+  btn.parentElement.innerHTML = '<span style="font-size:11px;color:var(--red);">❌ 예약 거절됨</span>';
+  showToast('❌', '예약이 거절되었습니다.', 'error');
+}
+
+/* ═══════════════════════════════════════════════
+   SEND MESSAGE
+═══════════════════════════════════════════════ */
+function sendMsg() {
+  const inp = document.getElementById('chatInp');
+  const text = inp.value.trim();
+  if (!text) return;
+  const now = new Date();
+  const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  appendMsgNode({type:'r', text, time:timeStr});
+  inp.value = '';
+  inp.style.height = '';
+  // Update last message in list
+  if (currentContact) {
+    currentContact.lastMsg = text.substring(0,30) + (text.length > 30 ? '…' : '');
+    currentContact.time = '방금';
+    renderChatList(CONTACTS);
+    const el = document.getElementById('ci_' + currentContact.id);
+    if (el) el.classList.add('on');
+  }
+  // Simulate patient reply after 2s
+  if (Math.random() < 0.5) {
+    setTimeout(() => simulateReply(), 2000 + Math.random()*2000);
+  }
+}
+
+function simulateReply() {
+  if (!currentContact) return;
+  const replies = [
+    '감사합니다! 추가로 궁금한 점이 있습니다.',
+    '네, 알겠습니다. 조금 더 생각해 보겠습니다.',
+    '오늘 방문해도 될까요?',
+    '보험 적용이 가능한지 알고 싶습니다.',
+    '보호자 동반이 가능한가요?',
+  ];
+  const text = replies[Math.floor(Math.random()*replies.length)];
+  const now = new Date();
+  const timeStr = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+  appendMsgNode({type:'l', text, time:timeStr});
+  currentContact.lastMsg = text.substring(0,30);
+  currentContact.time = '방금';
+  renderChatList(CONTACTS);
+  const el = document.getElementById('ci_' + currentContact.id);
+  if (el) el.classList.add('on');
+  showToast('💬', `${currentContact.name} 보호자: ${text.substring(0,25)}…`, 'success');
+}
+
+function chatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+function autoResize(el) {
+  el.style.height = ''; el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+function insertTemplate(text) {
+  const inp = document.getElementById('chatInp');
+  inp.value = text; inp.focus(); autoResize(inp);
+}
+
+/* ═══════════════════════════════════════════════
+   CHAT ACTIONS
+═══════════════════════════════════════════════ */
+function callPatient() {
+  const name = currentContact?.name || '환자';
+  const phone = currentContact?.phone || '010-0000-0000';
+  if (confirm(`${name} 보호자(${phone})에게 전화를 연결합니까?`)) {
+    appendMsgNode({type:'system', text:`📞 ${name} 보호자에게 전화 연결 시도 (${phone})`});
+    showToast('📞', '전화 연결 중...', 'success');
+  }
+}
+
+function sendKakao() {
+  const name = currentContact?.name || '환자';
+  const msg = `💛 카카오 알림톡 발송 완료\n수신: ${name} 보호자\n내용: 입원 안내 및 확인 요청`;
+  appendMsgNode({type:'system', text:`💛 카카오 알림톡 발송 완료 → ${name} 보호자`});
+  showToast('💛', `카카오 알림톡이 ${name} 보호자에게 발송되었습니다.`, 'success');
+}
+
+function sendReservationCard() {
+  if (!currentContact) return;
+  const c = currentContact;
+  appendMsgNode({type:'reservation', name:c.name, cat:c.catLabel, date:c.date, room:c.room, status:'wait'});
+  showToast('📅', '예약 카드를 전송했습니다.', 'success');
+}
+
+function confirmAdmission() {
+  const name = currentContact?.name || '환자';
+  appendMsgNode({type:'system', text:`✅ ${name} 입원 확정 — 담당자: 김원장`});
+  if (currentContact) {
+    currentContact.status = 'admit';
+    currentContact.unread = 0;
+    document.getElementById('detailChip').className = 'status-chip chip-admit';
+    document.getElementById('detailChip').textContent = '입원중';
+    renderChatList(CONTACTS);
+    const el = document.getElementById('ci_' + currentContact.id);
+    if (el) el.classList.add('on');
+  }
+  showToast('🏥', `${name} 입원이 확정되었습니다! 카카오 알림톡을 발송합니다.`, 'success');
+}
+
+function endConsultation() {
+  const name = currentContact?.name || '환자';
+  if (confirm(`${name} 상담을 종료하시겠습니까?`)) {
+    appendMsgNode({type:'system', text:`상담이 종료되었습니다. 담당: 김원장`});
+    if (currentContact) {
+      currentContact.status = 'done';
+      document.getElementById('detailChip').className = 'status-chip chip-done';
+      document.getElementById('detailChip').textContent = '완료';
+    }
+    showToast('✅', '상담이 종료되었습니다.', 'success');
+  }
+}
+
+function attachFile() {
+  showToast('📎', '파일 첨부 기능은 유료 플랜에서 이용 가능합니다.', 'warning');
+}
+
+function saveMemo() {
+  const memo = document.getElementById('consultMemo').value;
+  const key = `nuvin_memo_${currentContact?.id}`;
+  localStorage.setItem(key, memo);
+  showToast('📝', '메모가 저장되었습니다.', 'success');
+}
+
+/* ═══════════════════════════════════════════════
+   NEW CHAT MODAL
+═══════════════════════════════════════════════ */
+function openNewChatModal() {
+  document.getElementById('newChatModal').classList.add('on');
+}
+function createNewChat() {
+  const name = document.getElementById('nc_name').value.trim();
+  const cat = document.getElementById('nc_cat').value;
+  const msg = document.getElementById('nc_msg').value.trim();
+  if (!name) { showToast('⚠️', '이름을 입력해주세요.', 'warning'); return; }
+  const catIcons = {'암수술후요양':'🎗️','뇌수술후요양':'🧠','24시간 신장투석':'🩸','대사질환 외래':'🩺','신장투석':'💉','재활치료':'🦽'};
+  const catCls = {'암수술후요양':'cancer','뇌수술후요양':'brain','24시간 신장투석':'dialysis','대사질환 외래':'meta','신장투석':'dialysis','재활치료':'rehab'};
+  const id = 'c' + Date.now();
+  const newContact = {
+    id, name, cat: catCls[cat] || 'cancer', catLabel: cat,
+    icon: catIcons[cat] || '🏥', lastMsg: msg || '채팅 시작',
+    time: '방금', unread: 0, online: true,
+    phone: document.getElementById('nc_phone').value || '—',
+    room: '미정', date: '미정', status: 'wait'
+  };
+  CONTACTS.unshift(newContact);
+  MESSAGES[id] = msg ? [{type:'date', text:'오늘'},{type:'l', text:msg, time:'방금'}] : [{type:'date', text:'오늘'},{type:'system', text:'채팅이 시작되었습니다.'}];
+  closeModal('newChatModal');
+  renderChatList(CONTACTS);
+  selectContact(newContact);
+  showToast('💬', `${name} 보호자와 채팅이 시작되었습니다.`, 'success');
+  document.getElementById('nc_name').value = '';
+  document.getElementById('nc_msg').value = '';
+  document.getElementById('nc_phone').value = '';
+}
+
+/* ═══════════════════════════════════════════════
+   CRM TABLE
+═══════════════════════════════════════════════ */
+function renderCrm(data) {
+  const tbody = document.getElementById('crmBody');
+  tbody.innerHTML = '';
+  data.forEach(p => {
+    const statusBg = {confirmed:'rgba(52,211,153,0.12)',pending:'rgba(251,191,36,0.15)',done:'rgba(107,114,128,0.15)'};
+    const statusColor = {confirmed:'var(--green)',pending:'var(--amber)',done:'#9ca3af'};
+    const cls = p.statusCls || 'confirmed';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><div class="patient-name"><div class="cat-dot" style="background:${p.color};"></div>${p.name}</div></td>
+      <td>${p.cat}</td>
+      <td>${p.admit}</td>
+      <td>${p.discharge}</td>
+      <td>${p.room}</td>
+      <td><span class="status-badge" style="background:${statusBg[cls]||statusBg.confirmed};color:${statusColor[cls]||statusColor.confirmed};">${p.status}</span></td>
+      <td style="color:var(--text3);font-size:11px;">${p.phone}</td>
+      <td style="color:var(--text3);">${p.lastContact}</td>
+      <td>
+        <div class="action-btns">
+          <div class="act-btn chat" onclick="showTab('chat')">💬채팅</div>
+          <div class="act-btn kakao" onclick="showToast('💛','카카오 알림톡을 발송합니다.','success')">💛</div>
+          ${cls !== 'done' ? `<div class="act-btn call">📞전화</div>` : `<div class="act-btn view" onclick="location.href='nuvin2-monitor.html'">모니터링</div>`}
+        </div>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterCrm(q) {
+  const filtered = q ? CRM_DATA.filter(p =>
+    p.name.includes(q) || p.cat.includes(q) || p.phone.includes(q) || p.status.includes(q)
+  ) : CRM_DATA;
+  renderCrm(filtered);
+}
+
+function openNewPatientModal() {
+  document.getElementById('newPatientModal').classList.add('on');
+}
+function addNewPatient() {
+  const name = document.getElementById('np_name').value.trim();
+  const phone = document.getElementById('np_phone').value.trim();
+  const cat = document.getElementById('np_cat').value;
+  if (!name || !phone) { showToast('⚠️', '이름과 연락처를 입력해주세요.', 'warning'); return; }
+  const catIcons = {'암수술후요양':'🎗️','뇌수술후요양':'🧠','24시간 신장투석':'🩸','대사질환 외래':'🩺','신장투석':'💉','재활치료':'🦽'};
+  const colors = ['#f87171','#67e8f9','#c4b5fd','#fde68a','#6ee7b7','#a78bfa'];
+  const np = {
+    name, color: colors[Math.floor(Math.random()*colors.length)],
+    cat: catIcons[cat] + ' ' + cat,
+    admit: document.getElementById('np_admit').value || '—',
+    discharge: document.getElementById('np_discharge').value || '—',
+    room: document.getElementById('np_room').value,
+    status: '예약대기', statusCls: 'pending',
+    phone, lastContact: '방금'
+  };
+  CRM_DATA.unshift(np);
+  renderCrm(CRM_DATA);
+  closeModal('newPatientModal');
+  showToast('✅', `${name} 환자가 등록되었습니다.`, 'success');
+  // Save to localStorage
+  const patients = JSON.parse(localStorage.getItem('nuvin_patients') || '[]');
+  patients.unshift({...np, created_at: new Date().toISOString()});
+  localStorage.setItem('nuvin_patients', JSON.stringify(patients));
+}
+
+/* ═══════════════════════════════════════════════
+   CALENDAR
+═══════════════════════════════════════════════ */
+const EVENT_DAYS = {9:['박○○ 입원','김○○ 외래','정○○ 퇴원'],10:['박○○ 입원'],12:['김○○ 외래'],15:['최○○ 입원'],20:['강○○ 퇴원'],22:['신환 상담'],25:['박○○ 퇴원']};
+
+function buildCalendar() {
+  const grid = document.getElementById('calGrid');
+  const label = document.getElementById('calMonthLabel');
+  if (!grid) return;
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  label.textContent = `${calYear}년 ${months[calMonth]}`;
+  grid.innerHTML = '';
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const prevDays = new Date(calYear, calMonth, 0).getDate();
+  const today = (calYear === 2026 && calMonth === 3) ? 9 : -1;
+  for (let i=0; i<firstDay; i++) {
+    const c = document.createElement('div');
+    c.className = 'cal-cell other-month';
+    c.textContent = prevDays - firstDay + i + 1;
+    grid.appendChild(c);
+  }
+  for (let d=1; d<=daysInMonth; d++) {
+    const c = document.createElement('div');
+    c.className = 'cal-cell' + (d===today?' today':'') + (EVENT_DAYS[d]&&d!==today?' has-event':'');
+    c.textContent = d;
+    c.onclick = () => { renderSchedule(d); document.querySelectorAll('.cal-cell.selected').forEach(el=>el.classList.remove('selected')); c.classList.add('selected'); };
+    grid.appendChild(c);
+  }
+}
+function changeMonth(dir) { calMonth += dir; if(calMonth<0){calMonth=11;calYear--;}if(calMonth>11){calMonth=0;calYear++;} buildCalendar(); }
+function goToday() { calYear=2026; calMonth=3; buildCalendar(); renderSchedule(9); }
+
+const SCHEDULE_DATA = {
+  9:[
+    {time:'10:00',period:'AM',color:'var(--green)',name:'박○○ 입원 예정',sub:'24시간 신장투석 · 2인실',status:'confirmed'},
+    {time:'14:00',period:'PM',color:'var(--amber)',name:'김○○ 외래 방문',sub:'대사질환 외래 · 당뇨 추적관찰',status:'confirmed'},
+    {time:'16:30',period:'PM',color:'var(--accent2)',name:'정○○ 퇴원',sub:'암수술후요양 완료 · 병실 회수',status:'confirmed'},
+    {time:'미정',period:'—',color:'var(--red)',name:'이○○ 입원 상담 대기',sub:'암수술후요양 · 즉시 입원 희망',status:'pending'},
+  ],
+  10:[{time:'09:00',period:'AM',color:'var(--blue)',name:'박○○ 입원',sub:'신장투석 · 2인실',status:'confirmed'}],
+  15:[{time:'10:00',period:'AM',color:'var(--accent2)',name:'최○○ 입원',sub:'뇌수술후요양 · 격리실',status:'confirmed'}],
+};
+
+function renderSchedule(d) {
+  const list = document.getElementById('scheduleList');
+  const label = document.getElementById('scheduleLabel');
+  const dayNames = ['일','월','화','수','목','금','토'];
+  const dn = dayNames[new Date(calYear, calMonth, d).getDay()];
+  label.textContent = `${calMonth+1}월 ${d}일 (${dn}) 일정`;
+  list.innerHTML = '';
+  const items = SCHEDULE_DATA[d] || [];
+  if (!items.length) {
+    list.innerHTML = '<div style="color:var(--text3);font-size:13px;padding:16px;text-align:center;">일정이 없습니다.</div>';
+    return;
+  }
+  items.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'schedule-item';
+    div.innerHTML = `
+      <div class="schedule-time-col"><div class="schedule-time">${s.time}</div><div class="schedule-date">${s.period}</div></div>
+      <div class="schedule-bar" style="background:${s.color};"></div>
+      <div class="schedule-info"><div class="schedule-name">${s.name}</div><div class="schedule-sub">${s.sub}</div></div>
+      <div class="schedule-status"><span class="status-badge ${s.status}">${s.status==='confirmed'?'확정':'대기중'}</span></div>`;
+    list.appendChild(div);
+  });
+}
+
+/* ═══════════════════════════════════════════════
+   NEW RESERVATION
+═══════════════════════════════════════════════ */
+function addReservation() {
+  const name = document.getElementById('newPatName').value;
+  const cat = document.getElementById('newCat').value;
+  const date = document.getElementById('newDate').value;
+  const room = document.getElementById('newRoom').value;
+  const phone = document.getElementById('newPhone').value;
+  if (!name || !date) { showToast('⚠️', '성함과 날짜를 입력해주세요.', 'warning'); return; }
+  const r = {name, cat, date, room, phone, status:'pending', created_at:new Date().toISOString()};
+  const reservs = JSON.parse(localStorage.getItem('nuvin_reservations') || '[]');
+  reservs.unshift(r);
+  localStorage.setItem('nuvin_reservations', JSON.stringify(reservs));
+  // Add to CRM
+  const colors = ['#f87171','#67e8f9','#c4b5fd','#fde68a','#6ee7b7'];
+  CRM_DATA.unshift({
+    name, color:colors[0], cat: cat, admit:date, discharge:'—',
+    room, status:'예약대기', statusCls:'pending', phone: phone||'—', lastContact:'방금'
+  });
+  renderCrm(CRM_DATA);
+  document.getElementById('newPatName').value = '';
+  document.getElementById('newDate').value = '';
+  document.getElementById('newPhone').value = '';
+  showToast('✅', `${name} 예약이 등록되었습니다!`, 'success');
+}
+
+/* ═══════════════════════════════════════════════
+   KAKAO TOGGLE
+═══════════════════════════════════════════════ */
+function toggleKakao() {
+  const el = document.getElementById('kakaoToggle');
+  el.classList.toggle('on');
+  const on = el.classList.contains('on');
+  showToast(on ? '💛' : '⚪', on ? '카카오 알림톡 자동발송이 켜졌습니다.' : '카카오 알림톡 자동발송이 꺼졌습니다.', 'success');
+}
+
+/* ═══════════════════════════════════════════════
+   MODAL HELPERS
+═══════════════════════════════════════════════ */
+function openModal(id) { document.getElementById(id).classList.add('on'); }
+function closeModal(id) { document.getElementById(id).classList.remove('on'); }
+document.querySelectorAll('.modal-overlay').forEach(el =>
+  el.addEventListener('click', e => { if(e.target === el) el.classList.remove('on'); })
+);
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+let toastTimer;
+function showToast(icon, msg, type = 'success') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastIcon').textContent = icon;
+  document.getElementById('toastMsg').textContent = msg;
+  t.className = `toast show ${type}`;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.classList.remove('show'); }, 3200);
+}
+</script>
+</body>
+</html>
