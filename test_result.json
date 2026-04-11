@@ -1,0 +1,1056 @@
+{
+  "test_date": "2026-04-09T18:08:21.823640",
+  "pages_ok": [
+    "메인 홈",
+    "병원 찾기",
+    "병원 검색",
+    "관리자 로그인",
+    "관리자 대시보드",
+    "가이드북",
+    "병원 소개(B2B)",
+    "CRM",
+    "모니터링",
+    "개인정보처리방침",
+    "서비스 안내",
+    "서비스 게이트웨이"
+  ],
+  "pages_fail": [],
+  "members": [
+    {
+      "name": "김민준",
+      "email": "user01@nuvin-test.com",
+      "phone": "010-6474-5257",
+      "primary_disease": "cancer",
+      "cancer_stage": "완치후관리",
+      "care_years": "1개월미만",
+      "main_issues": [
+        "식사거부",
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-26T18:08:21.679002",
+      "step_completed": 3
+    },
+    {
+      "name": "이서연",
+      "email": "user02@nuvin-test.com",
+      "phone": "010-8913-8021",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "배변욕창관리",
+        "병원소통어려움",
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-01-26T18:08:21.679098",
+      "step_completed": 3
+    },
+    {
+      "name": "박도현",
+      "email": "user03@nuvin-test.com",
+      "phone": "010-7806-3841",
+      "primary_disease": "cancer",
+      "cancer_stage": "완치후관리",
+      "care_years": "1~3년",
+      "main_issues": [
+        "치료비부담",
+        "배변욕창관리",
+        "환자우울증",
+        "보호자번아웃"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-06T18:08:21.679156",
+      "step_completed": 3
+    },
+    {
+      "name": "최지우",
+      "email": "user04@nuvin-test.com",
+      "phone": "010-1245-6698",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "간호정보부족",
+        "식사거부",
+        "환자우울증",
+        "치료비부담"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-14T18:08:21.679202",
+      "step_completed": 3
+    },
+    {
+      "name": "정민서",
+      "email": "user05@nuvin-test.com",
+      "phone": "010-9551-2749",
+      "primary_disease": "cancer",
+      "cancer_stage": "모름",
+      "care_years": "1~6개월",
+      "main_issues": [
+        "병원소통어려움",
+        "보호자번아웃",
+        "치료비부담"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-01-11T18:08:21.679241",
+      "step_completed": 3
+    },
+    {
+      "name": "강서준",
+      "email": "user06@nuvin-test.com",
+      "phone": "010-3810-9119",
+      "primary_disease": "cancer",
+      "cancer_stage": "완치후관리",
+      "care_years": "3년이상",
+      "main_issues": [
+        "간호정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-17T18:08:21.679280",
+      "step_completed": 3
+    },
+    {
+      "name": "윤예린",
+      "email": "user07@nuvin-test.com",
+      "phone": "010-8747-4829",
+      "primary_disease": "cancer",
+      "cancer_stage": "3기",
+      "care_years": "1~3년",
+      "main_issues": [
+        "병원소통어려움",
+        "재정지원정보부족",
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-04-02T18:08:21.679318",
+      "step_completed": 3
+    },
+    {
+      "name": "장현우",
+      "email": "user08@nuvin-test.com",
+      "phone": "010-1826-7782",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "환자우울증",
+        "재정지원정보부족",
+        "배변욕창관리",
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-06T18:08:21.679352",
+      "step_completed": 3
+    },
+    {
+      "name": "임수아",
+      "email": "user09@nuvin-test.com",
+      "phone": "010-7693-2658",
+      "primary_disease": "cancer",
+      "cancer_stage": "모름",
+      "care_years": "3년이상",
+      "main_issues": [
+        "병원소통어려움"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-03T18:08:21.679383",
+      "step_completed": 3
+    },
+    {
+      "name": "한지호",
+      "email": "user10@nuvin-test.com",
+      "phone": "010-4681-8197",
+      "primary_disease": "cancer",
+      "cancer_stage": "4기",
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "치료비부담",
+        "식사거부",
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-24T18:08:21.679416",
+      "step_completed": 3
+    },
+    {
+      "name": "오세린",
+      "email": "user11@nuvin-test.com",
+      "phone": "010-9787-6137",
+      "primary_disease": "cancer",
+      "cancer_stage": "완치후관리",
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "보호자번아웃",
+        "간호정보부족",
+        "재정지원정보부족",
+        "치료비부담"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-04-01T18:08:21.679480",
+      "step_completed": 3
+    },
+    {
+      "name": "신태양",
+      "email": "user12@nuvin-test.com",
+      "phone": "010-8004-7191",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-03T18:08:21.679512",
+      "step_completed": 3
+    },
+    {
+      "name": "홍채원",
+      "email": "user13@nuvin-test.com",
+      "phone": "010-4247-8769",
+      "primary_disease": "cancer",
+      "cancer_stage": "모름",
+      "care_years": "1~3년",
+      "main_issues": [
+        "병원소통어려움",
+        "보호자번아웃",
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-08T18:08:21.679545",
+      "step_completed": 3
+    },
+    {
+      "name": "문준혁",
+      "email": "user14@nuvin-test.com",
+      "phone": "010-3355-2468",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "재정지원정보부족",
+        "배변욕창관리"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-10T18:08:21.679574",
+      "step_completed": 3
+    },
+    {
+      "name": "양소영",
+      "email": "user15@nuvin-test.com",
+      "phone": "010-4104-8275",
+      "primary_disease": "cancer",
+      "cancer_stage": "1기",
+      "care_years": "3년이상",
+      "main_issues": [
+        "배변욕창관리",
+        "치료비부담",
+        "환자우울증",
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-14T18:08:21.679609",
+      "step_completed": 3
+    },
+    {
+      "name": "배재원",
+      "email": "user16@nuvin-test.com",
+      "phone": "010-3051-4457",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1~3년",
+      "main_issues": [
+        "재정지원정보부족",
+        "식사거부",
+        "간호정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-19T18:08:21.679653",
+      "step_completed": 3
+    },
+    {
+      "name": "조하린",
+      "email": "user17@nuvin-test.com",
+      "phone": "010-3193-2141",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-13T18:08:21.679690",
+      "step_completed": 3
+    },
+    {
+      "name": "구성민",
+      "email": "user18@nuvin-test.com",
+      "phone": "010-1247-8479",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "간호정보부족",
+        "환자우울증",
+        "치료비부담"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-01-28T18:08:21.679722",
+      "step_completed": 3
+    },
+    {
+      "name": "남다은",
+      "email": "user19@nuvin-test.com",
+      "phone": "010-4130-1119",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "간호정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-01-17T18:08:21.679751",
+      "step_completed": 3
+    },
+    {
+      "name": "류현진",
+      "email": "user20@nuvin-test.com",
+      "phone": "010-6914-7194",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "식사거부",
+        "치료비부담",
+        "환자우울증",
+        "배변욕창관리"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-08T18:08:21.679783",
+      "step_completed": 3
+    },
+    {
+      "name": "심은지",
+      "email": "user21@nuvin-test.com",
+      "phone": "010-3211-4017",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "치료비부담",
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-12T18:08:21.679826",
+      "step_completed": 3
+    },
+    {
+      "name": "전민호",
+      "email": "user22@nuvin-test.com",
+      "phone": "010-6762-5313",
+      "primary_disease": "cancer",
+      "cancer_stage": "2기",
+      "care_years": "1~3년",
+      "main_issues": [
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-01T18:08:21.679856",
+      "step_completed": 3
+    },
+    {
+      "name": "원지현",
+      "email": "user23@nuvin-test.com",
+      "phone": "010-7579-8962",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "치료비부담"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-04-05T18:08:21.679885",
+      "step_completed": 3
+    },
+    {
+      "name": "표준영",
+      "email": "user24@nuvin-test.com",
+      "phone": "010-4643-9192",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-03T18:08:21.679915",
+      "step_completed": 3
+    },
+    {
+      "name": "피하늘",
+      "email": "user25@nuvin-test.com",
+      "phone": "010-6711-5347",
+      "primary_disease": "cancer",
+      "cancer_stage": "완치후관리",
+      "care_years": "1개월미만",
+      "main_issues": [
+        "병원소통어려움",
+        "배변욕창관리"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-25T18:08:21.679945",
+      "step_completed": 3
+    },
+    {
+      "name": "허서율",
+      "email": "user26@nuvin-test.com",
+      "phone": "010-3929-4749",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1~3년",
+      "main_issues": [
+        "식사거부",
+        "병원소통어려움"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-01-27T18:08:21.679982",
+      "step_completed": 3
+    },
+    {
+      "name": "채민수",
+      "email": "user27@nuvin-test.com",
+      "phone": "010-3738-9170",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1~3년",
+      "main_issues": [
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-08T18:08:21.680011",
+      "step_completed": 3
+    },
+    {
+      "name": "방소희",
+      "email": "user28@nuvin-test.com",
+      "phone": "010-3141-7206",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "재정지원정보부족",
+        "보호자번아웃",
+        "간호정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-12T18:08:21.680044",
+      "step_completed": 3
+    },
+    {
+      "name": "노재현",
+      "email": "user29@nuvin-test.com",
+      "phone": "010-7040-1607",
+      "primary_disease": "cancer",
+      "cancer_stage": "2기",
+      "care_years": "1~3년",
+      "main_issues": [
+        "보호자번아웃",
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-04T18:08:21.680075",
+      "step_completed": 3
+    },
+    {
+      "name": "엄지수",
+      "email": "user30@nuvin-test.com",
+      "phone": "010-6936-2112",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-25T18:08:21.680104",
+      "step_completed": 3
+    },
+    {
+      "name": "진수현",
+      "email": "user31@nuvin-test.com",
+      "phone": "010-1419-3447",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "1~6개월",
+      "main_issues": [
+        "간호정보부족",
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-01T18:08:21.680141",
+      "step_completed": 3
+    },
+    {
+      "name": "함나윤",
+      "email": "user32@nuvin-test.com",
+      "phone": "010-2561-1027",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-23T18:08:21.680172",
+      "step_completed": 3
+    },
+    {
+      "name": "권도윤",
+      "email": "user33@nuvin-test.com",
+      "phone": "010-2701-9348",
+      "primary_disease": "cancer",
+      "cancer_stage": "완치후관리",
+      "care_years": "1개월미만",
+      "main_issues": [
+        "간호정보부족",
+        "재정지원정보부족",
+        "배변욕창관리"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-06T18:08:21.680203",
+      "step_completed": 3
+    },
+    {
+      "name": "설하은",
+      "email": "user34@nuvin-test.com",
+      "phone": "010-6131-7472",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "재정지원정보부족",
+        "식사거부",
+        "보호자번아웃",
+        "배변욕창관리"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-01-15T18:08:21.680236",
+      "step_completed": 3
+    },
+    {
+      "name": "추민재",
+      "email": "user35@nuvin-test.com",
+      "phone": "010-3144-7821",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "배변욕창관리",
+        "식사거부",
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-04-08T18:08:21.680267",
+      "step_completed": 3
+    },
+    {
+      "name": "양준서",
+      "email": "user36@nuvin-test.com",
+      "phone": "010-2540-4412",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "보호자번아웃",
+        "환자우울증",
+        "간호정보부족",
+        "병원소통어려움"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-12T18:08:21.680309",
+      "step_completed": 3
+    },
+    {
+      "name": "석예나",
+      "email": "user37@nuvin-test.com",
+      "phone": "010-1602-2531",
+      "primary_disease": "cancer",
+      "cancer_stage": "2기",
+      "care_years": "1~3년",
+      "main_issues": [
+        "병원소통어려움"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-25T18:08:21.680341",
+      "step_completed": 3
+    },
+    {
+      "name": "유시현",
+      "email": "user38@nuvin-test.com",
+      "phone": "010-6935-4878",
+      "primary_disease": "cancer",
+      "cancer_stage": "4기",
+      "care_years": "3년이상",
+      "main_issues": [
+        "식사거부",
+        "보호자번아웃",
+        "병원소통어려움"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-12T18:08:21.680373",
+      "step_completed": 3
+    },
+    {
+      "name": "나도연",
+      "email": "user39@nuvin-test.com",
+      "phone": "010-6840-4102",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "병원소통어려움",
+        "치료비부담"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-04T18:08:21.680409",
+      "step_completed": 3
+    },
+    {
+      "name": "마준호",
+      "email": "user40@nuvin-test.com",
+      "phone": "010-8262-7375",
+      "primary_disease": "cancer",
+      "cancer_stage": "2기",
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "환자우울증",
+        "치료비부담",
+        "보호자번아웃",
+        "간호정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-28T18:08:21.680459",
+      "step_completed": 3
+    },
+    {
+      "name": "라은서",
+      "email": "user41@nuvin-test.com",
+      "phone": "010-3357-4164",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "3년이상",
+      "main_issues": [
+        "식사거부",
+        "재정지원정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-18T18:08:21.680495",
+      "step_completed": 3
+    },
+    {
+      "name": "가윤아",
+      "email": "user42@nuvin-test.com",
+      "phone": "010-1274-5434",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "1~6개월",
+      "main_issues": [
+        "치료비부담",
+        "간호정보부족",
+        "병원소통어려움",
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-04-04T18:08:21.680529",
+      "step_completed": 3
+    },
+    {
+      "name": "사민준",
+      "email": "user43@nuvin-test.com",
+      "phone": "010-4491-4407",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "1~6개월",
+      "main_issues": [
+        "재정지원정보부족",
+        "보호자번아웃",
+        "병원소통어려움",
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-11T18:08:21.680560",
+      "step_completed": 3
+    },
+    {
+      "name": "아채린",
+      "email": "user44@nuvin-test.com",
+      "phone": "010-9827-3813",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "1~6개월",
+      "main_issues": [
+        "병원소통어려움",
+        "재정지원정보부족",
+        "배변욕창관리",
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-18T18:08:21.680593",
+      "step_completed": 3
+    },
+    {
+      "name": "자현수",
+      "email": "user45@nuvin-test.com",
+      "phone": "010-8041-8630",
+      "primary_disease": "cancer",
+      "cancer_stage": "모름",
+      "care_years": "3년이상",
+      "main_issues": [
+        "병원소통어려움",
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-04-04T18:08:21.680624",
+      "step_completed": 3
+    },
+    {
+      "name": "차은빛",
+      "email": "user46@nuvin-test.com",
+      "phone": "010-7264-6518",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "1~6개월",
+      "main_issues": [
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-03-10T18:08:21.680659",
+      "step_completed": 3
+    },
+    {
+      "name": "파동민",
+      "email": "user47@nuvin-test.com",
+      "phone": "010-1378-4410",
+      "primary_disease": "metabolic",
+      "cancer_stage": null,
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": true,
+      "login_type": "email",
+      "created_at": "2026-02-13T18:08:21.680688",
+      "step_completed": 3
+    },
+    {
+      "name": "타지은",
+      "email": "user48@nuvin-test.com",
+      "phone": "010-9124-1305",
+      "primary_disease": "brain",
+      "cancer_stage": null,
+      "care_years": "1개월미만",
+      "main_issues": [
+        "재정지원정보부족",
+        "배변욕창관리",
+        "병원소통어려움",
+        "환자우울증"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-02-07T18:08:21.680719",
+      "step_completed": 3
+    },
+    {
+      "name": "카도현",
+      "email": "user49@nuvin-test.com",
+      "phone": "010-3332-7713",
+      "primary_disease": "cancer",
+      "cancer_stage": "1기",
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "배변욕창관리",
+        "간호정보부족",
+        "식사거부"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-01-23T18:08:21.680751",
+      "step_completed": 3
+    },
+    {
+      "name": "다소율",
+      "email": "user50@nuvin-test.com",
+      "phone": "010-7737-3330",
+      "primary_disease": "cancer",
+      "cancer_stage": "2기",
+      "care_years": "6개월~1년",
+      "main_issues": [
+        "간호정보부족"
+      ],
+      "agree_medical": true,
+      "agree_sensitive": true,
+      "agree_marketing": false,
+      "login_type": "email",
+      "created_at": "2026-03-30T18:08:21.680780",
+      "step_completed": 3
+    }
+  ],
+  "posts": [
+    {
+      "name": "김민준",
+      "disease": "cancer",
+      "content": "위절제술 후 식사 거부 해결한 방법 공유해요 🍲"
+    },
+    {
+      "name": "이서연",
+      "disease": "brain",
+      "content": "뇌졸중 재활병원 강남 vs 서초 어디가 나은가요?"
+    },
+    {
+      "name": "박도현",
+      "disease": "metabolic",
+      "content": "신장투석 24시간 병원 추천 부탁드립니다"
+    },
+    {
+      "name": "최지우",
+      "disease": "cancer",
+      "content": "항암 치료 중 보호자 번아웃... 저만 이런가요 😢"
+    },
+    {
+      "name": "정민서",
+      "disease": "brain",
+      "content": "재활치료 보험 적용 범위 정리해드릴게요 💡"
+    },
+    {
+      "name": "강서준",
+      "disease": "metabolic",
+      "content": "당뇨 합병증 관리 식단 공유 (3개월 경험)"
+    },
+    {
+      "name": "윤예린",
+      "disease": "cancer",
+      "content": "건강보험 본인부담 상한제 신청 완료! 환급받았어요"
+    },
+    {
+      "name": "장현우",
+      "disease": "brain",
+      "content": "언어재활치료 추천 병원 리스트 (서울 기준)"
+    },
+    {
+      "name": "임수아",
+      "disease": "metabolic",
+      "content": "투석 중 여행 가능한가요? 경험담 나눠주세요"
+    },
+    {
+      "name": "한지호",
+      "disease": "cancer",
+      "content": "암 병기별 요양병원 선택 기준 5가지"
+    },
+    {
+      "name": "오세린",
+      "disease": "brain",
+      "content": "뇌경색 후 운전 언제부터 가능한지 아시는 분?"
+    },
+    {
+      "name": "신태양",
+      "disease": "metabolic",
+      "content": "복막투석 vs 혈액투석 장단점 정리"
+    },
+    {
+      "name": "홍채원",
+      "disease": "cancer",
+      "content": "위암 수술 후 1년, 현재 상태 공유합니다 💪"
+    },
+    {
+      "name": "문준혁",
+      "disease": "brain",
+      "content": "보호자 심리상담 지원 받는 방법 알려드려요"
+    },
+    {
+      "name": "양소영",
+      "disease": "metabolic",
+      "content": "신장이식 대기 중인데 생활비 지원 있나요?"
+    },
+    {
+      "name": "배재원",
+      "disease": "cancer",
+      "content": "항암 부작용 구토 줄이는 식이요법"
+    },
+    {
+      "name": "조하린",
+      "disease": "brain",
+      "content": "가정간호 서비스 신청 방법 상세 가이드"
+    },
+    {
+      "name": "구성민",
+      "disease": "metabolic",
+      "content": "혈당 모니터링 앱 추천해주세요"
+    },
+    {
+      "name": "남다은",
+      "disease": "cancer",
+      "content": "유방암 수술 후 림프부종 관리 경험담"
+    },
+    {
+      "name": "류현진",
+      "disease": "brain",
+      "content": "편마비 환자 이동 보조기구 추천"
+    }
+  ],
+  "summary": {
+    "total_pages": 12,
+    "ok_pages": 12,
+    "fail_pages": 0,
+    "total_members": 50,
+    "disease_breakdown": {
+      "cancer": 20,
+      "brain": 15,
+      "metabolic": 15
+    }
+  }
+}

@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NUVIN SaaS — 병원 관리자 대시보드</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans KR',sans-serif;}
+:root{
+  /* ── T맵 스타일 밝은 테마 (메인앱 동기화) ── */
+  --bg:#F4F5F8;--surface:#FFFFFF;--surface2:#F8F7FF;--surface3:#EDE9FE;
+  --border:rgba(91,91,214,0.12);--border2:rgba(91,91,214,0.18);
+  --text:#111827;--text2:#4B5563;--text3:#6B7280;
+  --accent:#5B5BD6;--accent2:#8B5CF6;--grad:linear-gradient(135deg,#5B5BD6,#8B5CF6);
+  --red:#EF4444;--green:#10B981;--amber:#F59E0B;--blue:#3B82F6;
+  --brand:#5B5BD6;--brand-light:#EEF0FF;
+  --sidebar:240px;
+}
+html,body{background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;}
+
+/* ── SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar);min-height:100vh;
+  background:var(--surface);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;flex-shrink:0;z-index:20;
+}
+.sb-logo{padding:20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.sb-logo-text{font-size:18px;font-weight:900;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.sb-logo-sub{font-size:10px;color:var(--text3);margin-top:1px;}
+.sb-hosp{padding:12px 16px;border-bottom:1px solid var(--border);}
+.sb-hosp-name{font-size:13px;font-weight:800;}
+.sb-hosp-meta{font-size:10px;color:var(--text3);margin-top:2px;}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto;}
+.nav-section{padding:4px 16px 2px;font-size:10px;font-weight:800;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-top:8px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:all 0.2s;font-size:13px;font-weight:700;color:var(--text3);margin:1px 8px;border-radius:10px;position:relative;}
+.nav-item:hover{background:var(--brand-light);color:var(--accent);}
+.nav-item.on{background:rgba(102,126,234,0.14);color:var(--accent2);}
+.nav-item i{width:18px;text-align:center;font-size:14px;}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;border-radius:6px;padding:1px 6px;font-size:10px;font-weight:800;}
+.nav-badge.green{background:var(--green);color:#000;}
+.sb-bottom{padding:12px 16px;border-top:1px solid var(--border);}
+.sb-user{display:flex;align-items:center;gap:8px;}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.sb-uname{font-size:12px;font-weight:700;}
+.sb-role{font-size:10px;color:var(--text3);}
+
+/* ── MAIN ── */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1.5px solid var(--border);background:var(--surface);box-shadow:0 2px 8px rgba(91,91,214,0.06);flex-shrink:0;position:sticky;top:0;z-index:10;}
+.topbar-left{display:flex;align-items:center;gap:12px;}
+.page-title{font-size:18px;font-weight:900;}
+.page-date{font-size:12px;color:var(--text3);}
+.topbar-right{display:flex;align-items:center;gap:8px;}
+.tb-btn{width:36px;height:36px;border-radius:10px;background:#F8F7FF;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;font-size:14px;transition:all 0.2s;position:relative;}
+.tb-btn:hover{background:var(--surface3);}
+.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid var(--surface);}
+.content-area{padding:24px 28px;flex:1;}
+
+/* ── ALERT BAR ── */
+.alert-bar{background:linear-gradient(135deg,rgba(239,68,68,0.08),rgba(254,242,242,0.8));border:1.5px solid rgba(239,68,68,0.25);border-radius:14px;padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:22px;cursor:pointer;transition:border-color 0.2s;}
+.alert-bar:hover{border-color:rgba(239,68,68,0.45);}
+.alert-pulse{width:10px;height:10px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite;flex-shrink:0;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.5);}50%{box-shadow:0 0 0 8px rgba(248,113,113,0);}}
+.alert-text{flex:1;font-size:13px;font-weight:700;color:var(--red);}
+.alert-count{background:var(--red);color:#fff;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:800;}
+
+/* ── KPI GRID ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
+.kpi{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:0 2px 12px rgba(91,91,214,0.08);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:-30px;right:-30px;width:80px;height:80px;border-radius:50%;opacity:0.06;}
+.kpi-blue::before{background:#60a5fa;}
+.kpi-green::before{background:var(--green);}
+.kpi-amber::before{background:var(--amber);}
+.kpi-purple::before{background:var(--accent2);}
+.kpi-icon{font-size:20px;margin-bottom:8px;}
+.kpi-val{font-size:28px;font-weight:900;line-height:1;}
+.kpi-label{font-size:12px;color:var(--text3);margin-top:4px;}
+.kpi-change{font-size:11px;margin-top:6px;display:flex;align-items:center;gap:3px;}
+.up{color:var(--green);}
+.dn{color:var(--red);}
+
+/* ── GRID LAYOUT ── */
+.content-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;}
+
+/* ── CARD ── */
+.card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:18px 20px;box-shadow:0 2px 12px rgba(91,91,214,0.08);}
+.card-title{font-size:14px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.card-title-action{font-size:11px;color:var(--accent2);font-weight:700;cursor:pointer;}
+
+/* ── BED UPDATE WIDGET ── */
+.bed-widget{background:linear-gradient(135deg,rgba(52,211,153,0.08),rgba(5,150,105,0.04));border:1.5px solid rgba(52,211,153,0.2);border-radius:14px;padding:16px;margin-bottom:16px;}
+.bed-current{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.bed-big{font-size:40px;font-weight:900;color:var(--green);}
+.bed-info{font-size:12px;color:var(--text3);}
+.bed-info strong{display:block;font-size:15px;font-weight:800;color:var(--text2);}
+.bed-slider-wrap{margin-bottom:10px;}
+.bed-slider{width:100%;accent-color:var(--green);}
+.bed-row{display:flex;align-items:center;gap:8px;}
+.bed-inp{background:#fff;border:1.5px solid rgba(16,185,129,0.4);border-radius:10px;padding:8px 12px;font-size:18px;font-weight:900;color:var(--green);width:80px;text-align:center;outline:none;font-family:'Noto Sans KR',sans-serif;}
+.bed-update-btn{flex:1;padding:10px;border-radius:10px;background:var(--green);border:none;color:#000;font-size:13px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:opacity 0.2s;}
+.bed-update-btn:hover{opacity:0.85;}
+.bed-update-btn:active{opacity:0.7;}
+
+/* ── QUICK MENU ── */
+.quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.quick-item{background:#F8F7FF;border:1px solid var(--border);border-radius:12px;padding:14px 12px;cursor:pointer;transition:all 0.2s;text-align:center;}
+.quick-item:hover{border-color:var(--accent);background:var(--brand-light);}
+.quick-item:active{transform:scale(0.98);}
+.quick-icon{font-size:20px;margin-bottom:6px;}
+.quick-label{font-size:12px;font-weight:700;color:var(--text2);}
+.quick-count{font-size:11px;color:var(--text3);margin-top:2px;}
+.quick-count.alert{color:var(--red);}
+
+/* ── CHART ── */
+.chart-wrap{height:180px;position:relative;}
+
+/* ── NOTIFICATION LIST ── */
+.notif-list{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow-y:auto;}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#F8F7FF;border-radius:10px;border:1px solid var(--border);}
+.notif-dot2{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.notif-dot2.red{background:var(--red);}
+.notif-dot2.amber{background:var(--amber);}
+.notif-dot2.green{background:var(--green);}
+.notif-dot2.blue{background:var(--blue);}
+.notif-content{flex:1;}
+.notif-title{font-size:12px;font-weight:700;margin-bottom:2px;}
+.notif-sub{font-size:11px;color:var(--text3);}
+.notif-time{font-size:10px;color:var(--text3);flex-shrink:0;}
+
+/* ── RECENT RESERVATIONS ── */
+.reservation-table{width:100%;border-collapse:collapse;}
+.reservation-table th{font-size:11px;color:var(--text3);font-weight:700;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);}
+.reservation-table td{font-size:12px;padding:10px 10px;border-bottom:1px solid rgba(255,255,255,0.03);}
+.reservation-table tr:last-child td{border-bottom:none;}
+.reservation-table tr:hover td{background:rgba(255,255,255,0.02);}
+.status-badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:10px;font-weight:800;}
+.status-badge.pending{background:rgba(251,191,36,0.15);color:var(--amber);}
+.status-badge.confirmed{background:rgba(52,211,153,0.12);color:var(--green);}
+.status-badge.cancelled{background:rgba(248,113,113,0.12);color:var(--red);}
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width: 900px) {
+  .sidebar{display:none;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .content-grid{grid-template-columns:1fr;}
+  .content-area{padding:16px;}
+  .topbar{padding:12px 16px;}
+  .mobile-menu-btn{display:flex!important;}
+}
+.mobile-menu-btn{display:none;width:36px;height:36px;border-radius:10px;background:var(--surface2);border:1px solid var(--border);align-items:center;justify-content:center;color:var(--text2);cursor:pointer;font-size:14px;}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div style="width:36px;height:36px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">N</div>
+    <div>
+      <div class="sb-logo-text">NUVIN SaaS</div>
+      <div class="sb-logo-sub">병원 관리자 플랫폼</div>
+    </div>
+  </div>
+
+  <div class="sb-hosp">
+    <div style="display:flex;align-items:center;gap:6px;">
+      <div style="width:8px;height:8px;border-radius:50%;background:var(--green);"></div>
+      <div class="sb-hosp-name">한국요양병원</div>
+    </div>
+    <div class="sb-hosp-meta">빈병상 <strong style="color:var(--green);">8</strong> / 총 42병상 운영 중</div>
+  </div>
+
+  <div class="sb-nav">
+    <div class="nav-section">메인</div>
+    <div class="nav-item on"><i class="fas fa-chart-line"></i>오늘 대시보드</div>
+    <div class="nav-item" onclick="window.location.href='nuvin2-crm.html'"><i class="fas fa-users"></i>환자 CRM<span class="nav-badge">3</span></div>
+    <div class="nav-item" onclick="window.location.href='nuvin2-crm.html#calendar'"><i class="fas fa-calendar-check"></i>예약 캘린더</div>
+    <div class="nav-item" onclick="window.location.href='nuvin2-monitor.html'"><i class="fas fa-heartbeat"></i>환자 모니터링<span class="nav-badge">2</span></div>
+
+    <div class="nav-section" style="margin-top:12px;">병상 관리</div>
+    <div class="nav-item"><i class="fas fa-bed"></i>병상 현황</div>
+    <div class="nav-item"><i class="fas fa-door-open"></i>퇴원 관리</div>
+
+    <div class="nav-section" style="margin-top:12px;">채널</div>
+    <div class="nav-item" onclick="window.location.href='nuvin2-crm.html#chat'"><i class="fas fa-comment-dots"></i>채팅 메시지<span class="nav-badge">5</span></div>
+    <div class="nav-item"><i class="fas fa-bell"></i>알림 설정</div>
+
+    <div class="nav-section" style="margin-top:12px;">통계</div>
+    <div class="nav-item"><i class="fas fa-chart-bar"></i>주간 리포트</div>
+    <div class="nav-item"><i class="fas fa-file-alt"></i>월간 리포트</div>
+
+    <div class="nav-section" style="margin-top:12px;">설정</div>
+    <div class="nav-item"><i class="fas fa-hospital"></i>병원 정보 수정</div>
+    <div class="nav-item"><i class="fas fa-tags"></i>가격표 관리</div>
+    <div class="nav-item"><i class="fas fa-user-shield"></i>계정 설정</div>
+    <div class="nav-item" onclick="window.location.href='nuvin2-home.html'"><i class="fas fa-external-link-alt"></i>환자용 앱 보기</div>
+  </div>
+
+  <div class="sb-bottom">
+    <button onclick="showSignupModal()" style="width:100%;padding:10px;margin-bottom:10px;background:linear-gradient(135deg,#5B5BD6,#8B5CF6);border:none;border-radius:10px;color:#fff;font-size:12px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px;">
+      <i class="fas fa-hospital"></i> 병원 등록 / 정보 수정
+    </button>
+    <div class="sb-user">
+      <div class="sb-avatar">👨‍⚕️</div>
+      <div style="flex:1;">
+        <div class="sb-uname">김원장</div>
+        <div class="sb-role">원장 · 관리자</div>
+      </div>
+      <div style="font-size:14px;color:var(--text3);cursor:pointer;" title="로그아웃"><i class="fas fa-sign-out-alt"></i></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="mobile-menu-btn" id="menuBtn"><i class="fas fa-bars"></i></div>
+      <div>
+        <div class="page-title">오늘 대시보드</div>
+        <div class="page-date" id="todayDate">2026년 4월 9일 (목)</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="tb-btn" title="알림" onclick="window.location.href='nuvin2-crm.html'">
+        <i class="fas fa-bell"></i>
+        <div class="notif-dot"></div>
+      </div>
+      <div class="tb-btn" title="채팅" onclick="window.location.href='nuvin2-crm.html#chat'"><i class="fas fa-comment-dots"></i></div>
+      <div class="tb-btn" title="환자 앱" onclick="window.location.href='nuvin2-home.html'"><i class="fas fa-mobile-alt"></i></div>
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;">👨‍⚕️</div>
+    </div>
+  </div>
+
+  <div class="content-area">
+
+    <!-- ALERT BAR -->
+    <div class="alert-bar" onclick="window.location.href='nuvin2-crm.html'">
+      <div class="alert-pulse"></div>
+      <div class="alert-text">🚨 신규 입원 상담 요청이 <strong>3건</strong> 대기 중입니다 · 채팅 미확인 <strong>5건</strong></div>
+      <div class="alert-count">즉시 확인</div>
+      <i class="fas fa-chevron-right" style="color:var(--red);font-size:12px;margin-left:4px;"></i>
+    </div>
+
+    <!-- KPI GRID -->
+    <div class="kpi-grid">
+      <div class="kpi kpi-blue">
+        <div class="kpi-icon">👁️</div>
+        <div class="kpi-val">247</div>
+        <div class="kpi-label">오늘 병원 조회수</div>
+        <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +23% vs 어제</div>
+      </div>
+      <div class="kpi kpi-green">
+        <div class="kpi-icon">📞</div>
+        <div class="kpi-val">12</div>
+        <div class="kpi-label">오늘 전화 상담</div>
+        <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +4건 vs 어제</div>
+      </div>
+      <div class="kpi kpi-amber">
+        <div class="kpi-icon">💬</div>
+        <div class="kpi-val">8</div>
+        <div class="kpi-label">오늘 채팅 문의</div>
+        <div class="kpi-change dn"><i class="fas fa-arrow-down"></i> -1건 vs 어제</div>
+      </div>
+      <div class="kpi kpi-purple">
+        <div class="kpi-icon">📅</div>
+        <div class="kpi-val">5</div>
+        <div class="kpi-label">오늘 예약 확정</div>
+        <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +2건 vs 어제</div>
+      </div>
+    </div>
+
+    <!-- CONTENT GRID -->
+    <div class="content-grid">
+
+      <!-- LEFT COLUMN -->
+      <div>
+        <!-- BED UPDATE WIDGET -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-title">
+            🛏️ 실시간 빈 병상 업데이트
+            <span style="font-size:11px;color:var(--green);">● 실시간 반영</span>
+          </div>
+          <div class="bed-widget">
+            <div class="bed-current">
+              <div class="bed-big" id="bedDisplay">8</div>
+              <div class="bed-info">
+                <strong>현재 빈 병상</strong>
+                환자앱에 즉시 노출됩니다<br>
+                <span style="color:var(--text3);">총 42병상 운영 중</span>
+              </div>
+            </div>
+            <div class="bed-slider-wrap">
+              <input type="range" class="bed-slider" id="bedSlider" min="0" max="42" value="8" oninput="updateBedDisplay(this.value)">
+            </div>
+            <div class="bed-row">
+              <input type="number" class="bed-inp" id="bedInp" min="0" max="42" value="8" oninput="updateBedSlider(this.value)"/>
+              <span style="font-size:13px;color:var(--text3);">병상</span>
+              <button class="bed-update-btn" onclick="saveBedCount()">📡 즉시 업데이트</button>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:var(--accent2);">1</div>
+              <div style="font-size:10px;color:var(--text3);">1인실</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:var(--amber);">3</div>
+              <div style="font-size:10px;color:var(--text3);">2인실</div>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center;">
+              <div style="font-size:18px;font-weight:900;color:var(--green);">4</div>
+              <div style="font-size:10px;color:var(--text3);">다인실</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- WEEKLY CHART -->
+        <div class="card" style="margin-bottom:20px;">
+          <div class="card-title">
+            📊 주간 환자 유입 추이
+            <span class="card-title-action">월간 보기 →</span>
+          </div>
+          <div class="chart-wrap"><canvas id="weekChart"></canvas></div>
+        </div>
+
+        <!-- RECENT RESERVATIONS TABLE -->
+        <div class="card">
+          <div class="card-title">
+            📋 최근 예약 현황
+            <span class="card-title-action" onclick="window.location.href='nuvin2-crm.html'">전체 보기 →</span>
+          </div>
+          <table class="reservation-table">
+            <thead>
+              <tr>
+                <th>환자명</th>
+                <th>진료 유형</th>
+                <th>희망 입원일</th>
+                <th>병실</th>
+                <th>상태</th>
+                <th>액션</th>
+              </tr>
+            </thead>
+            <tbody id="reservTable">
+              <tr>
+                <td><strong>이○○</strong></td>
+                <td>암수술후요양</td>
+                <td>2026.04.12</td>
+                <td>1인실</td>
+                <td><span class="status-badge pending">대기중</span></td>
+                <td><span style="font-size:11px;color:var(--accent2);cursor:pointer;font-weight:700;" onclick="confirmReserv(this)">확정</span></td>
+              </tr>
+              <tr>
+                <td><strong>박○○</strong></td>
+                <td>24시간신장투석</td>
+                <td>2026.04.10</td>
+                <td>2인실</td>
+                <td><span class="status-badge confirmed">확정</span></td>
+                <td><span style="font-size:11px;color:var(--text3);cursor:pointer;" onclick="viewDetail(this)">상세</span></td>
+              </tr>
+              <tr>
+                <td><strong>최○○</strong></td>
+                <td>뇌수술후요양</td>
+                <td>2026.04.15</td>
+                <td>격리실</td>
+                <td><span class="status-badge pending">대기중</span></td>
+                <td><span style="font-size:11px;color:var(--accent2);cursor:pointer;font-weight:700;" onclick="confirmReserv(this)">확정</span></td>
+              </tr>
+              <tr>
+                <td><strong>김○○</strong></td>
+                <td>대사질환외래</td>
+                <td>2026.04.09</td>
+                <td>외래</td>
+                <td><span class="status-badge confirmed">확정</span></td>
+                <td><span style="font-size:11px;color:var(--text3);cursor:pointer;" onclick="viewDetail(this)">상세</span></td>
+              </tr>
+              <tr>
+                <td><strong>정○○</strong></td>
+                <td>신장투석</td>
+                <td>2026.04.11</td>
+                <td>다인실</td>
+                <td><span class="status-badge cancelled">취소</span></td>
+                <td><span style="font-size:11px;color:var(--text3);cursor:pointer;">-</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN -->
+      <div>
+
+        <!-- QUICK MENU -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title">⚡ 빠른 메뉴</div>
+          <div class="quick-grid">
+            <div class="quick-item" onclick="window.location.href='nuvin2-crm.html#chat'">
+              <div class="quick-icon">💬</div>
+              <div class="quick-label">채팅 메시지</div>
+              <div class="quick-count alert">미확인 5건</div>
+            </div>
+            <div class="quick-item" onclick="window.location.href='nuvin2-crm.html'">
+              <div class="quick-icon">📅</div>
+              <div class="quick-label">예약 관리</div>
+              <div class="quick-count">오늘 2건</div>
+            </div>
+            <div class="quick-item" onclick="window.location.href='nuvin2-monitor.html'">
+              <div class="quick-icon">💊</div>
+              <div class="quick-label">모니터링</div>
+              <div class="quick-count alert">경고 2명</div>
+            </div>
+            <div class="quick-item" onclick="window.location.href='nuvin2-crm.html'">
+              <div class="quick-icon">👥</div>
+              <div class="quick-label">환자 CRM</div>
+              <div class="quick-count">23명 관리 중</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTIFICATIONS -->
+        <div class="card" style="margin-bottom:16px;">
+          <div class="card-title">
+            🔔 실시간 알림
+            <span class="card-title-action" onclick="markAllRead()">모두 읽음</span>
+          </div>
+          <div class="notif-list">
+            <div class="notif-item">
+              <div class="notif-dot2 red"></div>
+              <div class="notif-content">
+                <div class="notif-title">🚨 긴급 입원 요청 — 이○○</div>
+                <div class="notif-sub">암수술후요양 · 오늘 입원 희망</div>
+              </div>
+              <div class="notif-time">방금</div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot2 amber"></div>
+              <div class="notif-content">
+                <div class="notif-title">💬 채팅 문의 — 박○○ 보호자</div>
+                <div class="notif-sub">"1인실 가격 및 격리실 가능한지요?"</div>
+              </div>
+              <div class="notif-time">3분 전</div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot2 green"></div>
+              <div class="notif-content">
+                <div class="notif-title">✅ 예약 확정 — 박○○</div>
+                <div class="notif-sub">24시간 신장투석 · 4월 10일 입원</div>
+              </div>
+              <div class="notif-time">18분 전</div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot2 red"></div>
+              <div class="notif-content">
+                <div class="notif-title">⚠️ 모니터링 경고 — 강○○</div>
+                <div class="notif-sub">혈당 238mg/dL · 즉시 확인 필요</div>
+              </div>
+              <div class="notif-time">31분 전</div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-dot2 blue"></div>
+              <div class="notif-content">
+                <div class="notif-title">👁️ 병원 페이지 조회 급증</div>
+                <div class="notif-sub">오늘 247회 조회 · 어제 대비 +23%</div>
+              </div>
+              <div class="notif-time">1시간 전</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TODAY SUMMARY -->
+        <div class="card">
+          <div class="card-title">📌 오늘 일정 요약</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;">
+              <div style="width:4px;height:40px;background:var(--green);border-radius:2px;"></div>
+              <div>
+                <div style="font-size:12px;font-weight:700;">오전 10:00 — 입원</div>
+                <div style="font-size:11px;color:var(--text3);">박○○ · 24시간신장투석 · 2인실</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;">
+              <div style="width:4px;height:40px;background:var(--amber);border-radius:2px;"></div>
+              <div>
+                <div style="font-size:12px;font-weight:700;">오후 2:00 — 외래</div>
+                <div style="font-size:11px;color:var(--text3);">김○○ · 대사질환 외래 · 당뇨 추적관찰</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--surface2);border-radius:10px;">
+              <div style="width:4px;height:40px;background:var(--accent2);border-radius:2px;"></div>
+              <div>
+                <div style="font-size:12px;font-weight:700;">오후 4:30 — 퇴원</div>
+                <div style="font-size:11px;color:var(--text3);">정○○ · 암수술후요양 완료</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /right col -->
+    </div><!-- /content-grid -->
+
+  </div><!-- /content-area -->
+</div><!-- /main -->
+
+<script>
+// Date
+const now = new Date();
+const d = ['일','월','화','수','목','금','토'][now.getDay()];
+document.getElementById('todayDate').textContent =
+  `${now.getFullYear()}년 ${now.getMonth()+1}월 ${now.getDate()}일 (${d})`;
+
+// Bed update
+function updateBedDisplay(val){
+  document.getElementById('bedDisplay').textContent = val;
+  document.getElementById('bedInp').value = val;
+}
+function updateBedSlider(val){
+  document.getElementById('bedDisplay').textContent = val;
+  document.getElementById('bedSlider').value = val;
+}
+function saveBedCount(){
+  const val = document.getElementById('bedInp').value;
+  localStorage.setItem('nuvin_beds', JSON.stringify({total:42,available:parseInt(val),updated:new Date().toISOString()}));
+  const btn = document.querySelector('.bed-update-btn');
+  const orig = btn.textContent;
+  btn.textContent = '✅ 업데이트 완료!';
+  btn.style.background = '#059669';
+  setTimeout(()=>{btn.textContent=orig;btn.style.background='';},2000);
+}
+
+// Init beds from localStorage
+const storedBeds = JSON.parse(localStorage.getItem('nuvin_beds')||'null');
+if(storedBeds){
+  const av = storedBeds.available;
+  document.getElementById('bedDisplay').textContent = av;
+  document.getElementById('bedSlider').value = av;
+  document.getElementById('bedInp').value = av;
+  document.querySelector('.sb-hosp-meta').innerHTML = `빈병상 <strong style="color:var(--green);">${av}</strong> / 총 42병상 운영 중`;
+}
+
+// Load reservations from localStorage
+const storedReservs = JSON.parse(localStorage.getItem('nuvin_reservations')||'[]');
+if(storedReservs.length){
+  const tbody = document.getElementById('reservTable');
+  storedReservs.slice(0,3).forEach(r=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${r.name}</strong></td>
+      <td>${r.hosp_name||'—'}</td>
+      <td>${r.date}</td>
+      <td>${r.room.split(' ')[0]}</td>
+      <td><span class="status-badge pending">대기중</span></td>
+      <td><span style="font-size:11px;color:var(--accent2);cursor:pointer;font-weight:700;" onclick="confirmReserv(this)">확정</span></td>
+    `;
+    tbody.insertBefore(tr, tbody.firstChild);
+  });
+}
+
+// Weekly Chart
+const ctx = document.getElementById('weekChart').getContext('2d');
+new Chart(ctx, {
+  type:'bar',
+  data:{
+    labels:['월','화','수','목(오늘)','금','토','일'],
+    datasets:[
+      {label:'조회수',data:[180,210,195,247,null,null,null],backgroundColor:'rgba(102,126,234,0.3)',borderColor:'#5B5BD6',borderWidth:1.5,borderRadius:4},
+      {label:'상담',data:[8,11,9,12,null,null,null],backgroundColor:'rgba(52,211,153,0.25)',borderColor:'#34d399',borderWidth:1.5,borderRadius:4}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:'#9ca3af',font:{family:'Noto Sans KR',size:11}}}},
+    scales:{
+      x:{ticks:{color:'#6b7280',font:{family:'Noto Sans KR',size:11}},grid:{color:'rgba(255,255,255,0.04)'}},
+      y:{ticks:{color:'#6b7280',font:{family:'Noto Sans KR',size:11}},grid:{color:'rgba(255,255,255,0.04)'}}
+    }
+  }
+});
+
+function confirmReserv(btn){
+  const row = btn.closest('tr');
+  row.querySelector('.status-badge').className='status-badge confirmed';
+  row.querySelector('.status-badge').textContent='확정';
+  btn.textContent='상세';
+  btn.style.color='var(--text3)';
+  btn.style.fontWeight='400';
+}
+function viewDetail(btn){alert('상세 보기: 준비 중');}
+function markAllRead(){
+  document.querySelectorAll('.notif-dot2.red,.notif-dot2.amber').forEach(d=>{d.className='notif-dot2 green';});
+}
+
+// ── 회원가입 / 병원정보 입력 모달 ──
+function showSignupModal(){
+  document.getElementById('signupModal').style.display='flex';
+  document.getElementById('signupStep1').style.display='block';
+  document.getElementById('signupStep2').style.display='none';
+  document.getElementById('signupStep3').style.display='none';
+  setStep(1);
+}
+function closeSignupModal(){
+  document.getElementById('signupModal').style.display='none';
+}
+function setStep(n){
+  [1,2,3].forEach(i=>{
+    const el=document.getElementById('signupStep'+i);
+    if(el) el.style.display=(i===n?'block':'none');
+    const dot=document.getElementById('stepDot'+i);
+    if(dot){
+      dot.style.background=i<n?'#34d399':i===n?'#5B5BD6':'rgba(255,255,255,0.15)';
+      dot.style.color=i<=n?'#fff':'#6b7280';
+    }
+  });
+}
+function nextStep(n){
+  if(n===2){
+    const id=document.getElementById('su_id').value.trim();
+    const pw=document.getElementById('su_pw').value;
+    const pw2=document.getElementById('su_pw2').value;
+    const nm=document.getElementById('su_name').value.trim();
+    if(!id||!pw||!nm){alert('필수 항목을 모두 입력해주세요.');return;}
+    if(pw!==pw2){alert('비밀번호가 일치하지 않습니다.');return;}
+    if(pw.length<6){alert('비밀번호는 6자 이상이어야 합니다.');return;}
+  }
+  if(n===3){
+    const hn=document.getElementById('su_hosp').value.trim();
+    const addr=document.getElementById('su_addr').value.trim();
+    const type=document.getElementById('su_type').value;
+    if(!hn||!addr||!type){alert('병원명·주소·유형을 입력해주세요.');return;}
+  }
+  setStep(n);
+}
+function completeSignup(){
+  const id=document.getElementById('su_id').value.trim();
+  const nm=document.getElementById('su_name').value.trim();
+  const hn=document.getElementById('su_hosp').value.trim();
+  const addr=document.getElementById('su_addr').value.trim();
+  const type=document.getElementById('su_type').value;
+  const beds=document.getElementById('su_beds').value||'0';
+  const cats=[...document.querySelectorAll('.su-cat-cb:checked')].map(c=>c.value).join(', ');
+  const intro=document.getElementById('su_intro').value.trim();
+  const phone=document.getElementById('su_phone').value.trim();
+  const admin={
+    id:Date.now(),loginId:id,name:nm,hosp:{
+      name:hn,addr,type,beds:parseInt(beds),categories:cats,intro,phone,
+      created_at:new Date().toLocaleString('ko-KR')
+    }
+  };
+  const list=JSON.parse(localStorage.getItem('nuvin_admins')||'[]');
+  list.push(admin);
+  localStorage.setItem('nuvin_admins',JSON.stringify(admin));
+  localStorage.setItem('nuvin_current_admin',JSON.stringify(admin));
+  // 사이드바 병원명 업데이트
+  document.querySelector('.sb-hosp-name').textContent=hn;
+  document.querySelector('.sb-uname').textContent=nm;
+  document.getElementById('signupModal').style.display='none';
+  alert(`✅ 등록 완료!\n${hn} 병원 계정이 생성되었습니다.\n지금부터 대시보드를 사용하실 수 있습니다.`);
+}
+
+// ── 기존 계정 로드 ──
+const curAdmin=JSON.parse(localStorage.getItem('nuvin_current_admin')||'null');
+if(curAdmin&&curAdmin.hosp){
+  document.querySelector('.sb-hosp-name').textContent=curAdmin.hosp.name||'내 병원';
+  document.querySelector('.sb-uname').textContent=curAdmin.name||'관리자';
+}
+
+// ── 카카오맵 앱 키 자동 저장 (검색 페이지에서 바로 사용되도록) ──
+localStorage.setItem('nuvin_kakao_key', 'a3ff4692336f7a55c868d43e254d287c');
+</script>
+
+<!-- ══ 회원가입 / 병원정보 입력 모달 ══ -->
+<div id="signupModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:16px;">
+<div style="background:#0f0f1c;border:1.5px solid rgba(255,255,255,0.1);border-radius:24px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;padding:28px;">
+
+  <!-- 헤더 -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <div>
+      <div style="font-size:18px;font-weight:900;">병원 관리자 등록</div>
+      <div style="font-size:12px;color:#6b7280;margin-top:3px;">계정 생성 후 병원 정보를 입력합니다</div>
+    </div>
+    <button onclick="closeSignupModal()" style="width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:#9ca3af;cursor:pointer;font-size:14px;">✕</button>
+  </div>
+
+  <!-- 스텝 인디케이터 -->
+  <div style="display:flex;align-items:center;gap:0;margin-bottom:24px;">
+    <div style="display:flex;align-items:center;gap:6px;flex:1;">
+      <div id="stepDot1" style="width:26px;height:26px;border-radius:50%;background:#5B5BD6;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">1</div>
+      <span style="font-size:11px;font-weight:700;color:#8B5CF6;">계정 생성</span>
+    </div>
+    <div style="flex:1;height:1px;background:rgba(255,255,255,0.08);margin:0 8px;"></div>
+    <div style="display:flex;align-items:center;gap:6px;flex:1;">
+      <div id="stepDot2" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.1);color:#6b7280;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">2</div>
+      <span style="font-size:11px;font-weight:700;color:#6b7280;">병원 기본정보</span>
+    </div>
+    <div style="flex:1;height:1px;background:rgba(255,255,255,0.08);margin:0 8px;"></div>
+    <div style="display:flex;align-items:center;gap:6px;flex:1;">
+      <div id="stepDot3" style="width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,0.1);color:#6b7280;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;">3</div>
+      <span style="font-size:11px;font-weight:700;color:#6b7280;">서비스 설정</span>
+    </div>
+  </div>
+
+  <!-- STEP 1: 계정 생성 -->
+  <div id="signupStep1">
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">아이디 (이메일) <span style="color:#f87171;">*</span></label>
+        <input id="su_id" type="email" placeholder="admin@hospital.com" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;" onfocus="this.style.borderColor='rgba(102,126,234,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">비밀번호 <span style="color:#f87171;">*</span></label>
+        <input id="su_pw" type="password" placeholder="6자 이상" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;" onfocus="this.style.borderColor='rgba(102,126,234,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">비밀번호 확인 <span style="color:#f87171;">*</span></label>
+        <input id="su_pw2" type="password" placeholder="비밀번호 재입력" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;" onfocus="this.style.borderColor='rgba(102,126,234,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">담당자 이름 <span style="color:#f87171;">*</span></label>
+        <input id="su_name" type="text" placeholder="홍길동 원장" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;" onfocus="this.style.borderColor='rgba(102,126,234,0.5)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'"/>
+      </div>
+    </div>
+    <button onclick="nextStep(2)" style="width:100%;margin-top:18px;padding:13px;background:linear-gradient(135deg,#5B5BD6,#8B5CF6);border:none;border-radius:11px;color:#fff;font-size:13px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">다음 단계 →</button>
+  </div>
+
+  <!-- STEP 2: 병원 기본정보 -->
+  <div id="signupStep2" style="display:none;">
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">병원명 <span style="color:#f87171;">*</span></label>
+        <input id="su_hosp" type="text" placeholder="○○요양병원" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;"/>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">주소 <span style="color:#f87171;">*</span></label>
+        <input id="su_addr" type="text" placeholder="서울시 강남구 테헤란로 123" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;"/>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">병원 유형 <span style="color:#f87171;">*</span></label>
+        <select id="su_type" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;appearance:none;">
+          <option value="">유형 선택</option>
+          <option>요양병원</option><option>재활병원</option>
+          <option>신장투석 클리닉</option><option>대사질환 클리닉</option>
+          <option>종합병원</option><option>기타</option>
+        </select>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">전화번호</label>
+        <input id="su_phone" type="tel" placeholder="02-0000-0000" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;"/>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">총 병상 수</label>
+        <input id="su_beds" type="number" placeholder="예) 42" min="1" max="999" style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;"/>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px;">
+      <button onclick="setStep(1)" style="padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9ca3af;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">← 이전</button>
+      <button onclick="nextStep(3)" style="padding:12px;background:linear-gradient(135deg,#5B5BD6,#8B5CF6);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">다음 단계 →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: 서비스 설정 -->
+  <div id="signupStep3" style="display:none;">
+    <div style="display:flex;flex-direction:column;gap:13px;">
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:8px;">진료 카테고리 (복수 선택)</label>
+        <div style="display:flex;flex-wrap:wrap;gap:7px;">
+          <label style="display:flex;align-items:center;gap:5px;background:#161628;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:#9ca3af;"><input type="checkbox" class="su-cat-cb" value="암수술후 요양" style="accent-color:#5B5BD6;"/>🎗️ 암수술후 요양</label>
+          <label style="display:flex;align-items:center;gap:5px;background:#161628;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:#9ca3af;"><input type="checkbox" class="su-cat-cb" value="뇌수술후 요양" style="accent-color:#5B5BD6;"/>🧠 뇌수술후 요양</label>
+          <label style="display:flex;align-items:center;gap:5px;background:#161628;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:#9ca3af;"><input type="checkbox" class="su-cat-cb" value="24시간 신장투석" style="accent-color:#5B5BD6;"/>🩸 24시간 신장투석</label>
+          <label style="display:flex;align-items:center;gap:5px;background:#161628;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:#9ca3af;"><input type="checkbox" class="su-cat-cb" value="대사질환 외래" style="accent-color:#5B5BD6;"/>🩺 대사질환 외래</label>
+          <label style="display:flex;align-items:center;gap:5px;background:#161628;border:1px solid rgba(255,255,255,0.08);border-radius:8px;padding:7px 10px;cursor:pointer;font-size:12px;color:#9ca3af;"><input type="checkbox" class="su-cat-cb" value="신장투석" style="accent-color:#5B5BD6;"/>💉 신장투석</label>
+        </div>
+      </div>
+      <div>
+        <label style="font-size:11px;font-weight:800;color:#6b7280;display:block;margin-bottom:6px;">병원 소개 (선택)</label>
+        <textarea id="su_intro" placeholder="병원 특장점, 시설 안내, 의료진 소개 등을 입력하세요." style="width:100%;background:#161628;border:1.5px solid rgba(255,255,255,0.08);border-radius:10px;padding:11px 13px;color:#f0f0ff;font-size:13px;outline:none;font-family:'Noto Sans KR',sans-serif;resize:vertical;min-height:80px;line-height:1.6;"></textarea>
+      </div>
+      <div style="background:rgba(52,211,153,0.06);border:1px solid rgba(52,211,153,0.15);border-radius:10px;padding:12px 14px;font-size:12px;color:#6ee7b7;line-height:1.7;">
+        ✅ 등록 완료 후 즉시 환자 앱에 노출됩니다<br/>
+        ✅ 카카오맵 API 연동 완료 — 지도에 병원 위치 즉시 노출<br/>
+        ✅ 심평원 데이터 자동 연동은 프리미엄 플랜에서 지원
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px;">
+      <button onclick="setStep(2)" style="padding:12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#9ca3af;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">← 이전</button>
+      <button onclick="completeSignup()" style="padding:12px;background:linear-gradient(135deg,#34d399,#059669);border:none;border-radius:10px;color:#fff;font-size:13px;font-weight:900;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">✅ 등록 완료</button>
+    </div>
+  </div>
+
+</div>
+</div>
+
+</body>
+</html>

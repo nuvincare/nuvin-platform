@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>NUVIN — 내 주변 병원 찾기</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans KR',sans-serif;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#F4F5F8;
+  --surface:#FFFFFF;
+  --surface2:#F9FAFB;
+  --border:#E5E7EB;
+  --text:#111827;
+  --text2:#4B5563;
+  --text3:#9CA3AF;
+  --accent:#5B5BD6;
+  --accent2:#8B5CF6;
+  --brand-light:#EEF0FF;
+  --grad:linear-gradient(135deg,#5B5BD6,#8B5CF6);
+  --red:#EF4444;
+  --green:#10B981;
+  --amber:#F59E0B;
+  --shadow-xs:0 1px 3px rgba(0,0,0,0.06);
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+  --r-sm:12px;--r-md:16px;--r-lg:20px;--r-full:999px;
+}
+html,body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+
+/* HEADER */
+.header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid #F3F4F6;padding:0 16px;box-shadow:0 1px 0 rgba(0,0,0,0.04);}
+.header-inner{display:flex;align-items:center;justify-content:space-between;height:56px;}
+.logo{display:flex;align-items:center;gap:7px;text-decoration:none;}
+.logo-mark{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#5B5BD6,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:white;}
+.logo-txt{font-size:18px;font-weight:900;color:var(--text);letter-spacing:1.5px;}
+.header-right{display:flex;align-items:center;gap:6px;}
+.icon-btn{width:36px;height:36px;border-radius:50%;background:none;border:none;display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;font-size:16px;transition:background 0.15s;}
+.icon-btn:active{background:var(--border);}
+
+/* LOCATION BAR */
+.loc-section{padding:12px 16px 0;}
+.loc-bar{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.06);transition:border-color 0.2s;}
+.loc-bar:hover{border-color:var(--accent);}
+.loc-bar:active{background:var(--surface2);}
+.loc-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);flex-shrink:0;}
+.loc-text{flex:1;font-size:14px;font-weight:600;color:var(--text);}
+.loc-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.loc-arrow{color:var(--text3);font-size:12px;}
+
+/* RADIUS BUTTONS */
+.radius-row{display:flex;gap:8px;padding:10px 16px 0;overflow-x:auto;scrollbar-width:none;}
+.radius-row::-webkit-scrollbar{display:none;}
+.r-btn{flex-shrink:0;padding:7px 16px;border-radius:999px;border:1.5px solid var(--border);background:transparent;color:var(--text3);font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;white-space:nowrap;}
+.r-btn.on{background:var(--grad);border-color:transparent;color:#fff;}
+
+/* SUMMARY BAR */
+.summary-bar{margin:12px 16px 0;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+.sum-item{text-align:center;flex:1;}
+.sum-item+.sum-item{border-left:1px solid var(--border);}
+.sum-val{font-size:18px;font-weight:900;color:var(--accent);}
+.sum-lbl{font-size:10px;color:var(--text3);margin-top:2px;}
+
+/* SECTION TITLE */
+.sec-head{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 10px;}
+.sec-title{font-size:15px;font-weight:800;}
+.sec-more{font-size:12px;color:var(--text3);}
+
+/* CATEGORY CARDS */
+.cat-scroll{display:flex;gap:10px;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none;}
+.cat-scroll::-webkit-scrollbar{display:none;}
+.cat-card{flex-shrink:0;width:150px;border-radius:18px;padding:16px 14px;cursor:pointer;position:relative;overflow:hidden;border:none;box-shadow:0 4px 16px rgba(0,0,0,0.10);transition:transform 0.15s,box-shadow 0.15s;}
+.cat-card:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(0,0,0,0.12);}
+
+.cat-cancer{background:linear-gradient(135deg,#FF6B6B,#C62828);}
+.cat-brain{background:linear-gradient(135deg,#7C3AED,#4C1D95);}
+.cat-dialysis24{background:linear-gradient(135deg,#0EA5E9,#075985);}
+.cat-meta{background:linear-gradient(135deg,#F59E0B,#B45309);}
+.cat-dialysis{background:linear-gradient(135deg,#10B981,#065F46);}
+
+.cat-icon{font-size:24px;margin-bottom:10px;}
+.cat-name{font-size:12px;font-weight:800;line-height:1.3;margin-bottom:8px;}
+.cat-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,0.20);border-radius:8px;padding:4px 8px;}
+.cat-badge-val{font-size:11px;font-weight:800;}
+.cat-badge-lbl{font-size:9px;color:rgba(255,255,255,0.6);}
+
+/* URGENT BANNER */
+.urgent{margin:0 16px;background:#FEF2F2;border:1.5px solid rgba(239,68,68,0.25);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;box-shadow:0 2px 8px rgba(239,68,68,0.08);}
+.urgent-dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0.4);}50%{box-shadow:0 0 0 6px rgba(248,113,113,0);}}
+.urgent-text{flex:1;font-size:12px;font-weight:700;color:var(--red);}
+.urgent-count{font-size:11px;background:var(--red);color:#fff;border-radius:6px;padding:2px 7px;font-weight:800;}
+
+/* NEARBY HOSPITAL CARDS */
+.hosp-list{padding:0 16px;display:flex;flex-direction:column;gap:10px;margin-bottom:4px;}
+.hosp-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:14px;display:flex;gap:12px;cursor:pointer;transition:all 0.2s;box-shadow:0 2px 8px rgba(0,0,0,0.05);}
+.hosp-card:active{border-color:var(--accent);box-shadow:0 4px 16px rgba(91,91,214,0.12);}
+.hosp-thumb{width:60px;height:60px;border-radius:12px;background:var(--bg);border:1px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.hosp-info{flex:1;min-width:0;}
+.hosp-name-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+.hosp-name{font-size:14px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pro-badge{background:var(--grad);border-radius:5px;padding:1px 5px;font-size:9px;font-weight:800;flex-shrink:0;}
+.hosp-dist{font-size:11px;color:var(--text3);margin-bottom:5px;}
+.hosp-tags{display:flex;flex-wrap:wrap;gap:4px;}
+.tag{padding:2px 7px;border-radius:6px;font-size:10px;font-weight:700;background:#EEF0FF;color:var(--accent);border:1px solid rgba(91,91,214,0.15);}
+.bed-badge{margin-left:auto;text-align:right;flex-shrink:0;}
+.bed-num{font-size:16px;font-weight:900;color:var(--green);}
+.bed-lbl{font-size:9px;color:var(--text3);}
+
+/* BOTTOM NAV — T맵 통일 스타일 */
+.bnav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(255,255,255,0.97);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid #F3F4F6;display:flex;height:70px;align-items:flex-start;padding-top:8px;box-shadow:0 -2px 16px rgba(0,0,0,0.07);padding-bottom:env(safe-area-inset-bottom);}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:2px 4px 0;cursor:pointer;background:none;border:none;font-family:'Noto Sans KR',sans-serif;position:relative;}
+.bnav-item:active{transform:scale(0.90);}
+.bnav-icon-wrap{width:44px;height:28px;display:flex;align-items:center;justify-content:center;position:relative;}
+.bnav-pill{position:absolute;inset:0;border-radius:14px;background:#EEF0FF;transform:scale(0.3,0.5);opacity:0;transition:transform 0.28s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s;}
+.bnav-item.on .bnav-pill{transform:scale(1);opacity:1;}
+.bnav-icon{font-size:20px;position:relative;z-index:1;color:var(--text3);transition:color 0.2s;}
+.bnav-item.on .bnav-icon{color:var(--accent);}
+.bnav-lbl{font-size:10px;font-weight:700;color:var(--text3);white-space:nowrap;transition:color 0.2s;}
+.bnav-item.on .bnav-lbl{color:var(--accent);}
+
+/* CONTENT BOTTOM PADDING */
+.content{padding-bottom:80px;}
+
+/* SCROLL RECENT */
+.recent-scroll{display:flex;gap:8px;padding:0 16px 4px;overflow-x:auto;scrollbar-width:none;}
+.recent-scroll::-webkit-scrollbar{display:none;}
+.recent-chip{flex-shrink:0;padding:6px 12px;border-radius:999px;border:1.5px solid var(--border);background:var(--surface);font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;box-shadow:0 1px 4px rgba(0,0,0,0.05);}
+.recent-chip i{font-size:11px;color:var(--text3);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <a class="logo" href="index.html">
+      <div class="logo-mark">N</div>
+      <span class="logo-txt">NUVIN</span>
+    </a>
+    <div class="header-right">
+      <div class="icon-btn" onclick="window.location.href='nuvin2-search.html'"><i class="fas fa-search"></i></div>
+      <div class="icon-btn" onclick="window.location.href='nuvin2-admin.html'"><i class="fas fa-shield-alt"></i></div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- LOCATION -->
+  <div class="loc-section">
+    <div class="loc-bar" onclick="detectLocation()">
+      <div class="loc-dot"></div>
+      <div style="flex:1;">
+        <div class="loc-text" id="locText">서울특별시 강남구</div>
+        <div class="loc-sub">현재 위치 기준 · 탭하여 변경</div>
+      </div>
+      <i class="fas fa-chevron-right loc-arrow"></i>
+    </div>
+  </div>
+
+  <!-- RADIUS -->
+  <div class="radius-row" id="radiusRow">
+    <button class="r-btn on" onclick="setRadius(this,'5km')">반경 5km</button>
+    <button class="r-btn" onclick="setRadius(this,'10km')">반경 10km</button>
+    <button class="r-btn" onclick="setRadius(this,'20km')">반경 20km</button>
+    <button class="r-btn" onclick="setRadius(this,'all')">전국</button>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-bar">
+    <div class="sum-item">
+      <div class="sum-val" id="totalHosp">64</div>
+      <div class="sum-lbl">주변 병원</div>
+    </div>
+    <div class="sum-item">
+      <div class="sum-val" id="totalBed" style="color:#34d399;">218</div>
+      <div class="sum-lbl">빈 병상</div>
+    </div>
+    <div class="sum-item">
+      <div class="sum-val" id="avgTime" style="color:#fbbf24;">12분</div>
+      <div class="sum-lbl">평균 거리</div>
+    </div>
+  </div>
+
+  <!-- URGENT -->
+  <div style="margin:12px 16px 0;">
+    <div class="urgent" onclick="goSearch('urgent')">
+      <div class="urgent-dot"></div>
+      <div class="urgent-text">🚨 오늘 긴급 입원 가능 병원</div>
+      <div class="urgent-count">3곳</div>
+      <i class="fas fa-chevron-right" style="color:var(--red);font-size:11px;"></i>
+    </div>
+  </div>
+
+  <!-- CATEGORIES -->
+  <div class="sec-head">
+    <div class="sec-title">진료 카테고리</div>
+  </div>
+  <div class="cat-scroll">
+    <!-- 1. 암수술후 요양 -->
+    <div class="cat-card cat-cancer" onclick="goSearch('cancer')">
+      <div class="cat-icon">🎗️</div>
+      <div class="cat-name">암수술후<br>요양</div>
+      <div class="cat-badge">
+        <div>
+          <div class="cat-badge-val" style="color:#fca5a5;">38</div>
+          <div class="cat-badge-lbl">병원</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 6px;height:20px;"></div>
+        <div>
+          <div class="cat-badge-val" style="color:#fca5a5;">62</div>
+          <div class="cat-badge-lbl">빈병상</div>
+        </div>
+      </div>
+    </div>
+    <!-- 2. 뇌수술후 요양 -->
+    <div class="cat-card cat-brain" onclick="goSearch('brain')">
+      <div class="cat-icon">🧠</div>
+      <div class="cat-name">뇌수술후<br>요양</div>
+      <div class="cat-badge">
+        <div>
+          <div class="cat-badge-val" style="color:#c4b5fd;">24</div>
+          <div class="cat-badge-lbl">병원</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 6px;height:20px;"></div>
+        <div>
+          <div class="cat-badge-val" style="color:#c4b5fd;">41</div>
+          <div class="cat-badge-lbl">빈병상</div>
+        </div>
+      </div>
+    </div>
+    <!-- 3. 24시간 신장투석 -->
+    <div class="cat-card cat-dialysis24" onclick="goSearch('dialysis24')">
+      <div class="cat-icon">🩸</div>
+      <div class="cat-name">24시간<br>신장투석</div>
+      <div class="cat-badge">
+        <div>
+          <div class="cat-badge-val" style="color:#67e8f9;">18</div>
+          <div class="cat-badge-lbl">병원</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 6px;height:20px;"></div>
+        <div>
+          <div class="cat-badge-val" style="color:#67e8f9;">35</div>
+          <div class="cat-badge-lbl">빈병상</div>
+        </div>
+      </div>
+    </div>
+    <!-- 4. 대사질환 외래 -->
+    <div class="cat-card cat-meta" onclick="goSearch('meta')">
+      <div class="cat-icon">🩺</div>
+      <div class="cat-name">대사질환<br>외래</div>
+      <div class="cat-badge">
+        <div>
+          <div class="cat-badge-val" style="color:#fde68a;">29</div>
+          <div class="cat-badge-lbl">병원</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 6px;height:20px;"></div>
+        <div>
+          <div class="cat-badge-val" style="color:#fde68a;">—</div>
+          <div class="cat-badge-lbl">외래</div>
+        </div>
+      </div>
+    </div>
+    <!-- 5. 신장투석 -->
+    <div class="cat-card cat-dialysis" onclick="goSearch('dialysis')">
+      <div class="cat-icon">💉</div>
+      <div class="cat-name">신장<br>투석</div>
+      <div class="cat-badge">
+        <div>
+          <div class="cat-badge-val" style="color:#6ee7b7;">22</div>
+          <div class="cat-badge-lbl">병원</div>
+        </div>
+        <div style="width:1px;background:rgba(255,255,255,0.1);margin:0 6px;height:20px;"></div>
+        <div>
+          <div class="cat-badge-val" style="color:#6ee7b7;">48</div>
+          <div class="cat-badge-lbl">빈병상</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RECENT SEARCHES -->
+  <div class="sec-head" style="padding-top:18px;">
+    <div class="sec-title">최근 검색</div>
+    <div class="sec-more" onclick="clearRecent()">삭제</div>
+  </div>
+  <div class="recent-scroll">
+    <div class="recent-chip" onclick="goSearch('dialysis24')"><i class="fas fa-clock"></i>24시간 신장투석</div>
+    <div class="recent-chip" onclick="goSearch('cancer')"><i class="fas fa-clock"></i>암수술후 요양</div>
+    <div class="recent-chip" onclick="goSearch('brain')"><i class="fas fa-clock"></i>뇌수술후 요양</div>
+  </div>
+
+  <!-- NEARBY HOSPITALS -->
+  <div class="sec-head" style="padding-top:18px;">
+    <div class="sec-title">내 주변 추천 병원</div>
+    <div class="sec-more" onclick="window.location.href='nuvin2-search.html'">전체보기 →</div>
+  </div>
+  <div class="hosp-list" id="hospList">
+
+    <div class="hosp-card" onclick="goHospital('hankook')">
+      <div class="hosp-thumb">🏥</div>
+      <div class="hosp-info">
+        <div class="hosp-name-row">
+          <div class="hosp-name">한국요양병원</div>
+          <div class="pro-badge">PRO</div>
+        </div>
+        <div class="hosp-dist"><i class="fas fa-map-marker-alt" style="color:var(--accent2);font-size:10px;"></i> 1.2km · 강남구</div>
+        <div class="hosp-tags">
+          <span class="tag">암수술후요양</span>
+          <span class="tag">1인실</span>
+          <span class="tag">격리실</span>
+        </div>
+      </div>
+      <div class="bed-badge">
+        <div class="bed-num">8</div>
+        <div class="bed-lbl">빈병상</div>
+        <div style="font-size:10px;color:var(--amber);font-weight:700;margin-top:2px;">★ 4.8</div>
+      </div>
+    </div>
+
+    <div class="hosp-card" onclick="goHospital('seoul')">
+      <div class="hosp-thumb">🏨</div>
+      <div class="hosp-info">
+        <div class="hosp-name-row">
+          <div class="hosp-name">서울재활의학병원</div>
+        </div>
+        <div class="hosp-dist"><i class="fas fa-map-marker-alt" style="color:var(--accent2);font-size:10px;"></i> 2.4km · 서초구</div>
+        <div class="hosp-tags">
+          <span class="tag">뇌수술후요양</span>
+          <span class="tag">재활치료</span>
+        </div>
+      </div>
+      <div class="bed-badge">
+        <div class="bed-num">5</div>
+        <div class="bed-lbl">빈병상</div>
+        <div style="font-size:10px;color:var(--amber);font-weight:700;margin-top:2px;">★ 4.6</div>
+      </div>
+    </div>
+
+    <div class="hosp-card" onclick="goHospital('gangnam')">
+      <div class="hosp-thumb">💊</div>
+      <div class="hosp-info">
+        <div class="hosp-name-row">
+          <div class="hosp-name">강남신장클리닉</div>
+          <div class="pro-badge">PRO</div>
+        </div>
+        <div class="hosp-dist"><i class="fas fa-map-marker-alt" style="color:var(--accent2);font-size:10px;"></i> 0.8km · 강남구</div>
+        <div class="hosp-tags">
+          <span class="tag">24시간투석</span>
+          <span class="tag">야간진료</span>
+        </div>
+      </div>
+      <div class="bed-badge">
+        <div class="bed-num">12</div>
+        <div class="bed-lbl">빈병상</div>
+        <div style="font-size:10px;color:var(--amber);font-weight:700;margin-top:2px;">★ 4.9</div>
+      </div>
+    </div>
+
+    <div class="hosp-card" onclick="goHospital('mirae')">
+      <div class="hosp-thumb">🏪</div>
+      <div class="hosp-info">
+        <div class="hosp-name-row">
+          <div class="hosp-name">미래내과의원</div>
+        </div>
+        <div class="hosp-dist"><i class="fas fa-map-marker-alt" style="color:var(--accent2);font-size:10px;"></i> 1.7km · 송파구</div>
+        <div class="hosp-tags">
+          <span class="tag">대사질환외래</span>
+          <span class="tag">당뇨·갑상선</span>
+        </div>
+      </div>
+      <div class="bed-badge">
+        <div style="font-size:11px;color:var(--green);font-weight:800;">외래</div>
+        <div class="bed-lbl">당일예약</div>
+        <div style="font-size:10px;color:var(--amber);font-weight:700;margin-top:2px;">★ 4.7</div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /content -->
+
+<!-- BOTTOM NAV -->
+<nav class="bnav">
+  <button class="bnav-item" onclick="location.href='index.html'">
+    <div class="bnav-icon-wrap"><div class="bnav-pill"></div><i class="fas fa-home bnav-icon"></i></div>
+    <span class="bnav-lbl">홈</span>
+  </button>
+  <button class="bnav-item on">
+    <div class="bnav-icon-wrap"><div class="bnav-pill"></div><i class="fas fa-map-marker-alt bnav-icon"></i></div>
+    <span class="bnav-lbl">동네병원</span>
+  </button>
+  <button class="bnav-item" onclick="location.href='index.html'" style="flex:1;">
+    <div class="bnav-icon-wrap"><div class="bnav-pill"></div><i class="fas fa-comments bnav-icon"></i></div>
+    <span class="bnav-lbl">소통공간</span>
+  </button>
+  <button class="bnav-item" onclick="location.href='index.html'">
+    <div class="bnav-icon-wrap"><div class="bnav-pill"></div><i class="fas fa-user bnav-icon"></i></div>
+    <span class="bnav-lbl">마이누빈</span>
+  </button>
+</nav>
+
+<script>
+const CAT_NAMES = {
+  cancer:'암수술후 요양', brain:'뇌수술후 요양',
+  dialysis24:'24시간 신장투석', meta:'대사질환 외래',
+  dialysis:'신장투석', urgent:'긴급 입원 가능'
+};
+
+function setRadius(btn, radius){
+  document.querySelectorAll('.r-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  updateStats(radius);
+}
+function updateStats(r){
+  const data = {
+    '5km':{hosp:64,bed:218,time:'12분'},
+    '10km':{hosp:128,bed:412,time:'18분'},
+    '20km':{hosp:247,bed:834,time:'28분'},
+    'all':{hosp:1240,bed:4120,time:'—'}
+  };
+  const d = data[r] || data['5km'];
+  document.getElementById('totalHosp').textContent = d.hosp;
+  document.getElementById('totalBed').textContent = d.bed;
+  document.getElementById('avgTime').textContent = d.time;
+}
+
+function goSearch(cat){
+  localStorage.setItem('nuvin_search_cat', cat);
+  window.location.href = 'nuvin2-search.html?cat=' + cat;
+}
+function goHospital(id){
+  localStorage.setItem('nuvin_hosp_id', id);
+  window.location.href = 'nuvin2-hospital.html?id=' + id;
+}
+function detectLocation(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(
+      pos => { document.getElementById('locText').textContent = '현재 위치 감지됨'; },
+      () => {}
+    );
+  }
+}
+function clearRecent(){
+  localStorage.removeItem('nuvin_recent');
+}
+</script>
+</body>
+</html>

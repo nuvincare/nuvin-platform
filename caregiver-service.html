@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>간병 서비스 — NUVIN 누빈</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --brand:#5B5BD6;--brand-dark:#4747B8;--brand-lg:linear-gradient(135deg,#5B5BD6,#7C3AED);
+  --green:#10B981;--orange:#F97316;--pink:#EC4899;--teal:#14B8A6;--blue:#3B82F6;
+  --t1:#111827;--t2:#374151;--t3:#6B7280;--t4:#9CA3AF;
+  --bg:#F7F8FA;--surf:#fff;--border:#E5E7EB;--border-light:#F3F4F6;
+  --sh-sm:0 1px 4px rgba(0,0,0,0.06);--sh-md:0 4px 16px rgba(0,0,0,0.08);--sh-lg:0 8px 32px rgba(0,0,0,0.10);
+  --r:14px;--r-lg:20px;--r-xl:28px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* ── HEADER ── */
+.hdr{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);height:60px;display:flex;align-items:center;padding:0 20px;gap:12px;}
+.hdr-back{width:36px;height:36px;border:none;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);font-size:16px;flex-shrink:0;}
+.hdr-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.hdr-mark{width:30px;height:30px;border-radius:9px;background:var(--brand-lg);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;}
+.hdr-name{font-size:17px;font-weight:900;color:var(--t1);letter-spacing:1px;}
+.hdr-spacer{flex:1;}
+.hdr-cta{padding:8px 16px;background:var(--brand-lg);border:none;border-radius:999px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 12px rgba(91,91,214,0.28);}
+
+/* ── HERO ── */
+.hero{background:var(--brand-lg);padding:56px 20px 48px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,0.07);}
+.hero::after{content:'';position:absolute;bottom:-50px;left:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.05);}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.18);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.95);margin-bottom:16px;}
+.hero h1{font-size:28px;font-weight:900;color:#fff;line-height:1.3;margin-bottom:12px;letter-spacing:-0.5px;}
+.hero p{font-size:15px;color:rgba(255,255,255,0.85);line-height:1.7;margin-bottom:28px;max-width:320px;margin-left:auto;margin-right:auto;}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-white{padding:12px 22px;background:#fff;border:none;border-radius:999px;color:var(--brand);font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,0.12);}
+.btn-outline{padding:12px 22px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.5);border-radius:999px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;backdrop-filter:blur(8px);}
+.hero-stat-row{display:flex;justify-content:center;gap:24px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.2);}
+.hero-stat{text-align:center;}
+.hero-stat-num{font-size:22px;font-weight:900;color:#fff;}
+.hero-stat-lbl{font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;}
+
+/* ── SECTIONS ── */
+.section{padding:36px 20px;}
+.sec-title{font-size:20px;font-weight:900;color:var(--t1);margin-bottom:6px;}
+.sec-sub{font-size:13px;color:var(--t3);margin-bottom:20px;line-height:1.6;}
+
+/* ── FLOW STEPS ── */
+.flow-list{display:flex;flex-direction:column;gap:0;}
+.flow-item{display:flex;gap:16px;position:relative;padding-bottom:24px;}
+.flow-item:last-child{padding-bottom:0;}
+.flow-item:not(:last-child)::before{content:'';position:absolute;left:19px;top:40px;width:2px;bottom:0;background:linear-gradient(to bottom,var(--brand),transparent);opacity:0.25;}
+.flow-num{width:38px;height:38px;border-radius:50%;background:var(--brand-lg);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(91,91,214,0.28);}
+.flow-body{flex:1;padding-top:4px;}
+.flow-body h3{font-size:15px;font-weight:800;color:var(--t1);margin-bottom:4px;}
+.flow-body p{font-size:13px;color:var(--t3);line-height:1.6;}
+.flow-tag{display:inline-block;background:#EEF0FF;color:var(--brand);font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;margin-top:6px;}
+
+/* ── SERVICE CARDS ── */
+.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.svc-card{background:var(--surf);border-radius:var(--r);padding:20px 16px;box-shadow:var(--sh-sm);border:1px solid var(--border-light);position:relative;overflow:hidden;}
+.svc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.svc-card.c1::before{background:linear-gradient(90deg,#5B5BD6,#7C3AED);}
+.svc-card.c2::before{background:linear-gradient(90deg,#10B981,#059669);}
+.svc-card.c3::before{background:linear-gradient(90deg,#F97316,#EF4444);}
+.svc-card.c4::before{background:linear-gradient(90deg,#EC4899,#A855F7);}
+.svc-card.c5::before{background:linear-gradient(90deg,#3B82F6,#0EA5E9);}
+.svc-card.c6::before{background:linear-gradient(90deg,#14B8A6,#0D9488);}
+.svc-icon{font-size:28px;margin-bottom:10px;}
+.svc-name{font-size:13px;font-weight:800;color:var(--t1);margin-bottom:4px;}
+.svc-desc{font-size:11px;color:var(--t3);line-height:1.5;}
+.svc-badge{position:absolute;top:12px;right:12px;background:#FEF3C7;color:#D97706;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;}
+
+/* ── CONDITION CARDS ── */
+.cond-list{display:flex;flex-direction:column;gap:10px;}
+.cond-card{background:var(--surf);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh-sm);border:1px solid var(--border-light);}
+.cond-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.cond-ico.cancer{background:#FEF2F2;}
+.cond-ico.brain{background:#EFF6FF;}
+.cond-ico.metabolic{background:#F0FDF4;}
+.cond-body{flex:1;}
+.cond-name{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:3px;}
+.cond-desc{font-size:12px;color:var(--t3);line-height:1.5;}
+.cond-arrow{color:var(--t4);font-size:13px;}
+
+/* ── CAREGIVER PROFILE ── */
+.profile-card{background:var(--surf);border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-md);border:1px solid var(--border-light);margin-bottom:12px;}
+.profile-top{display:flex;align-items:center;gap:14px;margin-bottom:14px;}
+.profile-avatar{width:52px;height:52px;border-radius:50%;background:var(--brand-lg);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;flex-shrink:0;}
+.profile-info{flex:1;}
+.profile-name{font-size:15px;font-weight:800;color:var(--t1);}
+.profile-role{font-size:12px;color:var(--t3);margin-top:2px;}
+.profile-stars{color:#F59E0B;font-size:13px;margin-top:3px;}
+.profile-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.profile-tag{background:#F3F4F6;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--t2);}
+.profile-tag.hi{background:#EEF0FF;color:var(--brand);}
+.profile-stats{display:flex;gap:16px;}
+.profile-stat{text-align:center;}
+.profile-stat-n{font-size:17px;font-weight:900;color:var(--brand);}
+.profile-stat-l{font-size:11px;color:var(--t4);margin-top:1px;}
+.profile-btn{width:100%;padding:12px;background:var(--brand-lg);border:none;border-radius:var(--r);color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:14px;box-shadow:0 4px 12px rgba(91,91,214,0.25);}
+
+/* ── REVIEW CARD ── */
+.review-card{background:var(--surf);border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);border:1px solid var(--border-light);margin-bottom:10px;}
+.review-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.review-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#E0E7FF,#C7D2FE);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--brand);}
+.review-name{font-size:13px;font-weight:700;color:var(--t1);}
+.review-date{font-size:11px;color:var(--t4);}
+.review-stars{color:#F59E0B;font-size:12px;margin-top:1px;}
+.review-text{font-size:13px;color:var(--t2);line-height:1.7;}
+.review-tag{display:inline-block;background:#F0FDF4;color:#059669;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;margin-top:8px;}
+
+/* ── PRICE TABLE ── */
+.price-card{background:var(--surf);border-radius:var(--r-lg);padding:20px;box-shadow:var(--sh-md);border:1px solid var(--border-light);margin-bottom:12px;}
+.price-card.featured{border-color:var(--brand);box-shadow:0 6px 24px rgba(91,91,214,0.15);}
+.price-badge{display:inline-block;background:var(--brand-lg);color:#fff;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;margin-bottom:10px;}
+.price-name{font-size:16px;font-weight:900;color:var(--t1);margin-bottom:4px;}
+.price-val{font-size:26px;font-weight:900;color:var(--brand);margin-bottom:4px;}
+.price-unit{font-size:13px;color:var(--t3);}
+.price-divider{height:1px;background:var(--border-light);margin:14px 0;}
+.price-items{display:flex;flex-direction:column;gap:8px;}
+.price-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--t2);}
+.price-item i{color:var(--green);font-size:12px;flex-shrink:0;}
+.price-cta{width:100%;padding:13px;border:none;border-radius:var(--r);font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-top:16px;}
+.price-cta.primary{background:var(--brand-lg);color:#fff;box-shadow:0 4px 12px rgba(91,91,214,0.25);}
+.price-cta.secondary{background:var(--bg);color:var(--brand);border:2px solid var(--brand);}
+
+/* ── FAQ ── */
+.faq-item{background:var(--surf);border-radius:var(--r);margin-bottom:8px;overflow:hidden;border:1px solid var(--border-light);}
+.faq-q{padding:16px;font-size:14px;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.faq-q i{color:var(--t4);font-size:13px;transition:transform 0.2s;}
+.faq-q.open i{transform:rotate(180deg);}
+.faq-a{display:none;padding:0 16px 16px;font-size:13px;color:var(--t3);line-height:1.7;}
+.faq-a.show{display:block;}
+
+/* ── BOTTOM CTA ── */
+.bottom-cta{background:var(--brand-lg);padding:36px 20px;text-align:center;}
+.bottom-cta h2{font-size:22px;font-weight:900;color:#fff;margin-bottom:10px;}
+.bottom-cta p{font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:24px;line-height:1.6;}
+.bottom-cta-btns{display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;}
+
+/* ── TRUST BADGE ── */
+.trust-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+.trust-row::-webkit-scrollbar{display:none;}
+.trust-item{flex-shrink:0;background:var(--surf);border:1px solid var(--border-light);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh-sm);}
+.trust-ico{font-size:18px;}
+.trust-txt{font-size:12px;font-weight:700;color:var(--t2);white-space:nowrap;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1F2937;color:#fff;padding:12px 20px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all 0.25s;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ── GRADIENT BG SECTION ── */
+.sec-gradient{background:linear-gradient(135deg,#EEF0FF 0%,#F3F4F6 100%);}
+
+@media(min-width:480px){
+  .hero h1{font-size:32px;}
+  .svc-grid{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <button class="hdr-back" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <a href="index.html" class="hdr-logo">
+    <div class="hdr-mark">N</div>
+    <span class="hdr-name">NUVIN</span>
+  </a>
+  <div class="hdr-spacer"></div>
+  <button class="hdr-cta" onclick="showRegister()">무료 시작하기</button>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">💜 간병 보호자 전용 서비스</div>
+  <h1>지치지 않는 간병,<br>누빈이 함께합니다</h1>
+  <p>암·뇌·대사질환 보호자를 위한 맞춤형 간병 매칭, 멘토링, 병원 연결까지 — 완전 무료</p>
+  <div class="hero-btns">
+    <button class="btn-white" onclick="showRegister()">💜 무료 시작하기</button>
+    <button class="btn-outline" onclick="scrollTo({top:document.getElementById('services').offsetTop-70,behavior:'smooth'})">서비스 둘러보기</button>
+  </div>
+  <div class="hero-stat-row">
+    <div class="hero-stat"><div class="hero-stat-num">4,200+</div><div class="hero-stat-lbl">등록 회원</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">320+</div><div class="hero-stat-lbl">연계 병원</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">4.9★</div><div class="hero-stat-lbl">평균 만족도</div></div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="section" style="padding-top:24px;padding-bottom:20px;">
+  <div class="trust-row">
+    <div class="trust-item"><span class="trust-ico">🏛️</span><span class="trust-txt">국립암센터 협력</span></div>
+    <div class="trust-item"><span class="trust-ico">🔒</span><span class="trust-txt">개인정보 안전 보관</span></div>
+    <div class="trust-item"><span class="trust-ico">💊</span><span class="trust-txt">전문의 검증 가이드</span></div>
+    <div class="trust-item"><span class="trust-ico">📱</span><span class="trust-txt">24시간 온라인 상담</span></div>
+    <div class="trust-item"><span class="trust-ico">🆓</span><span class="trust-txt">보호자 완전 무료</span></div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="section" id="flow">
+  <div class="sec-title">이용 방법</div>
+  <div class="sec-sub">3단계로 간편하게 시작하세요</div>
+  <div class="flow-list">
+    <div class="flow-item">
+      <div class="flow-num">1</div>
+      <div class="flow-body">
+        <h3>회원 가입 (1분 완료)</h3>
+        <p>이름·이메일만으로 가입. 환자 질환과 간병 기간을 선택하면 맞춤 서비스가 시작됩니다.</p>
+        <span class="flow-tag">무료 · 즉시 시작</span>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-num">2</div>
+      <div class="flow-body">
+        <h3>맞춤 서비스 추천</h3>
+        <p>질환별 전문 가이드북, 나와 비슷한 경험의 멘토, 근처 요양병원 정보를 자동 추천합니다.</p>
+        <span class="flow-tag">AI 맞춤 추천</span>
+      </div>
+    </div>
+    <div class="flow-item">
+      <div class="flow-num">3</div>
+      <div class="flow-body">
+        <h3>커뮤니티 · 병원 연결</h3>
+        <p>같은 상황의 보호자들과 소통하고, 필요 시 담당 병원과의 소통도 누빈이 도와드립니다.</p>
+        <span class="flow-tag">실시간 소통</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section sec-gradient" id="services">
+  <div class="sec-title">누빈 서비스 전체</div>
+  <div class="sec-sub">보호자의 모든 필요를 하나의 플랫폼에서</div>
+  <div class="svc-grid">
+    <div class="svc-card c1">
+      <div class="svc-icon">📖</div>
+      <div class="svc-name">맞춤 가이드북</div>
+      <div class="svc-desc">질환별 52쪽 전문 가이드 무료 제공</div>
+      <span class="svc-badge">무료</span>
+    </div>
+    <div class="svc-card c2">
+      <div class="svc-icon">🤝</div>
+      <div class="svc-name">멘토 매칭</div>
+      <div class="svc-desc">같은 경험 선배 보호자와 1:1 연결</div>
+    </div>
+    <div class="svc-card c3">
+      <div class="svc-icon">🏥</div>
+      <div class="svc-name">병원 찾기</div>
+      <div class="svc-desc">내 주변 요양병원 실시간 빈 병상 확인</div>
+    </div>
+    <div class="svc-card c4">
+      <div class="svc-icon">💬</div>
+      <div class="svc-name">커뮤니티</div>
+      <div class="svc-desc">보호자들의 솔직한 이야기 공간</div>
+    </div>
+    <div class="svc-card c5">
+      <div class="svc-icon">🧑‍⚕️</div>
+      <div class="svc-name">간병인 매칭</div>
+      <div class="svc-desc">검증된 전문 간병인 연결</div>
+      <span class="svc-badge">NEW</span>
+    </div>
+    <div class="svc-card c6">
+      <div class="svc-icon">📊</div>
+      <div class="svc-name">케어 대시보드</div>
+      <div class="svc-desc">투약·식사·증상 기록 관리</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONDITIONS -->
+<section class="section" id="conditions">
+  <div class="sec-title">지원 질환</div>
+  <div class="sec-sub">전문화된 질환별 맞춤 지원을 제공합니다</div>
+  <div class="cond-list">
+    <div class="cond-card" onclick="location.href='nuvin2-home.html?cat=cancer'" style="cursor:pointer;">
+      <div class="cond-ico cancer">🎗️</div>
+      <div class="cond-body">
+        <div class="cond-name">암 수술후 요양</div>
+        <div class="cond-desc">수술 후 회복·항암치료·호스피스까지 전 과정 지원. 전국 38개 협력 병원</div>
+      </div>
+      <i class="fas fa-chevron-right cond-arrow"></i>
+    </div>
+    <div class="cond-card" onclick="location.href='nuvin2-home.html?cat=brain'" style="cursor:pointer;">
+      <div class="cond-ico brain">🧠</div>
+      <div class="cond-body">
+        <div class="cond-name">뇌 수술후 요양</div>
+        <div class="cond-desc">뇌졸중·뇌종양·외상성 뇌손상 재활 전문. 전국 24개 협력 병원</div>
+      </div>
+      <i class="fas fa-chevron-right cond-arrow"></i>
+    </div>
+    <div class="cond-card" onclick="location.href='nuvin2-home.html?cat=metabolic'" style="cursor:pointer;">
+      <div class="cond-ico metabolic">💊</div>
+      <div class="cond-body">
+        <div class="cond-name">대사질환 관리</div>
+        <div class="cond-desc">당뇨·고혈압·신장투석·갑상선 외래 관리. 전국 29개 협력 병원</div>
+      </div>
+      <i class="fas fa-chevron-right cond-arrow"></i>
+    </div>
+  </div>
+</section>
+
+<!-- CAREGIVER PROFILES -->
+<section class="section sec-gradient">
+  <div class="sec-title">전문 간병인 소개</div>
+  <div class="sec-sub">누빈이 직접 검증한 전문 간병인입니다</div>
+
+  <div class="profile-card">
+    <div class="profile-top">
+      <div class="profile-avatar">김</div>
+      <div class="profile-info">
+        <div class="profile-name">김미래 간병사</div>
+        <div class="profile-role">전문간병사 · 경력 8년</div>
+        <div class="profile-stars">★★★★★ <span style="color:#6B7280;font-size:11px;">4.9 (리뷰 127건)</span></div>
+      </div>
+    </div>
+    <div class="profile-tags">
+      <span class="profile-tag hi">암수술후요양</span>
+      <span class="profile-tag hi">뇌졸중재활</span>
+      <span class="profile-tag">야간케어 가능</span>
+      <span class="profile-tag">산소호흡기</span>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="profile-stat-n">127</div><div class="profile-stat-l">리뷰</div></div>
+      <div class="profile-stat"><div class="profile-stat-n">8년</div><div class="profile-stat-l">경력</div></div>
+      <div class="profile-stat"><div class="profile-stat-n">98%</div><div class="profile-stat-l">완료율</div></div>
+    </div>
+    <button class="profile-btn" onclick="showToast('간병인 매칭 요청이 접수되었습니다')">매칭 요청하기</button>
+  </div>
+
+  <div class="profile-card">
+    <div class="profile-top">
+      <div class="profile-avatar" style="background:linear-gradient(135deg,#10B981,#059669);">박</div>
+      <div class="profile-info">
+        <div class="profile-name">박하늘 간병사</div>
+        <div class="profile-role">전문간병사 · 경력 5년</div>
+        <div class="profile-stars">★★★★★ <span style="color:#6B7280;font-size:11px;">4.8 (리뷰 89건)</span></div>
+      </div>
+    </div>
+    <div class="profile-tags">
+      <span class="profile-tag hi">신장투석전문</span>
+      <span class="profile-tag hi">대사질환관리</span>
+      <span class="profile-tag">식이요법</span>
+    </div>
+    <div class="profile-stats">
+      <div class="profile-stat"><div class="profile-stat-n">89</div><div class="profile-stat-l">리뷰</div></div>
+      <div class="profile-stat"><div class="profile-stat-n">5년</div><div class="profile-stat-l">경력</div></div>
+      <div class="profile-stat"><div class="profile-stat-n">96%</div><div class="profile-stat-l">완료율</div></div>
+    </div>
+    <button class="profile-btn" onclick="showToast('간병인 매칭 요청이 접수되었습니다')" style="background:linear-gradient(135deg,#10B981,#059669);">매칭 요청하기</button>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section">
+  <div class="sec-title">실제 이용 후기</div>
+  <div class="sec-sub">누빈을 경험한 보호자들의 이야기</div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="review-avatar">이</div>
+      <div>
+        <div class="review-name">이서연 님</div>
+        <div class="review-date">2026.03.15 · 암 수술후 요양</div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+    </div>
+    <div class="review-text">"아버지 위암 수술 후 어떻게 해야 할지 막막했는데, 누빈 가이드북 덕분에 퇴원 후 첫 달을 잘 버텼어요. 멘토 매칭도 너무 좋았고, 병원 빈 병상 정보가 특히 유용했습니다."</div>
+    <span class="review-tag">가이드북 · 멘토 매칭</span>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="review-avatar" style="background:linear-gradient(135deg,#E0F2FE,#BAE6FD);color:#0284C7;">박</div>
+      <div>
+        <div class="review-name">박도현 님</div>
+        <div class="review-date">2026.02.28 · 뇌졸중 재활</div>
+        <div class="review-stars">★★★★★</div>
+      </div>
+    </div>
+    <div class="review-text">"어머니 뇌졸중 이후 2년째 간병 중인데, 누빈 커뮤니티에서 비슷한 분들 만나고 나서 혼자가 아니라는 게 느껴졌어요. 간병인 매칭도 빠르고 전문적이었습니다."</div>
+    <span class="review-tag">커뮤니티 · 간병인 매칭</span>
+  </div>
+
+  <div class="review-card">
+    <div class="review-top">
+      <div class="review-avatar" style="background:linear-gradient(135deg,#DCFCE7,#BBF7D0);color:#16A34A;">최</div>
+      <div>
+        <div class="review-name">최지아 님</div>
+        <div class="review-date">2026.01.20 · 신장투석</div>
+        <div class="review-stars">★★★★☆</div>
+      </div>
+    </div>
+    <div class="review-text">"남편 신장투석 때문에 주3회 병원 스케줄 맞추기가 너무 힘들었어요. 누빈에서 24시간 투석 가능한 병원 찾고 예약까지 도움받았습니다. 대기시간도 많이 줄었어요."</div>
+    <span class="review-tag">병원 찾기 · 예약</span>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section sec-gradient" id="pricing">
+  <div class="sec-title">이용 요금</div>
+  <div class="sec-sub">보호자는 모든 서비스 완전 무료</div>
+
+  <div class="price-card">
+    <div class="price-badge">✨ 보호자 플랜</div>
+    <div class="price-name">보호자 멤버십</div>
+    <div class="price-val">무료<span class="price-unit"> / 평생</span></div>
+    <div class="price-divider"></div>
+    <div class="price-items">
+      <div class="price-item"><i class="fas fa-check"></i> 질환별 맞춤 가이드북 (52쪽)</div>
+      <div class="price-item"><i class="fas fa-check"></i> 선배 멘토 1:1 매칭</div>
+      <div class="price-item"><i class="fas fa-check"></i> 내 주변 병원 실시간 검색</div>
+      <div class="price-item"><i class="fas fa-check"></i> 커뮤니티 무제한 이용</div>
+      <div class="price-item"><i class="fas fa-check"></i> 케어 일지 기록</div>
+      <div class="price-item"><i class="fas fa-check"></i> 전문 간병인 매칭 (중개비 없음)</div>
+    </div>
+    <button class="price-cta primary" onclick="showRegister()">무료 시작하기 →</button>
+  </div>
+
+  <div class="price-card featured">
+    <div class="price-badge" style="background:linear-gradient(135deg,#F97316,#EF4444);">🏥 병원·기관 플랜</div>
+    <div class="price-name">요양병원 파트너</div>
+    <div class="price-val">문의<span class="price-unit"> / B2B 제휴</span></div>
+    <div class="price-divider"></div>
+    <div class="price-items">
+      <div class="price-item"><i class="fas fa-check" style="color:#F97316;"></i> 빈 병상 실시간 노출</div>
+      <div class="price-item"><i class="fas fa-check" style="color:#F97316;"></i> CRM 환자 관리 시스템</div>
+      <div class="price-item"><i class="fas fa-check" style="color:#F97316;"></i> 디지털 예약 시스템</div>
+      <div class="price-item"><i class="fas fa-check" style="color:#F97316;"></i> 보호자 직접 연결</div>
+    </div>
+    <button class="price-cta secondary" style="border-color:#F97316;color:#F97316;" onclick="location.href='nuvin2-landing.html'">병원 파트너 신청 →</button>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="sec-title">자주 묻는 질문</div>
+  <div class="sec-sub">궁금한 점을 해결해 드립니다</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">누빈은 정말 무료인가요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">보호자 회원에게는 가이드북, 멘토 매칭, 병원 검색, 커뮤니티 모든 기능이 100% 무료입니다. 수익은 병원·기관 B2B 파트너십을 통해 발생합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">간병인 매칭은 어떻게 이루어지나요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">등록된 전문 간병인 중 환자 질환·위치·일정에 맞는 분을 AI가 추천합니다. 평균 4시간 내 매칭이 완료되며, 중개 수수료는 없습니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">개인정보는 안전하게 보호되나요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">의료 정보를 포함한 모든 개인정보는 암호화하여 보관하며, 제3자 제공 시 반드시 사전 동의를 받습니다. 언제든지 삭제 요청이 가능합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">멘토는 어떤 분들인가요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">같은 질환 환자를 간병한 경험이 있는 선배 보호자분들입니다. 누빈 팀이 직접 인터뷰하고 검증한 분들만 멘토로 활동합니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">가이드북은 어떤 내용인가요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">국립암센터·국립재활원 협력으로 제작된 52쪽 분량의 질환별 가이드입니다. 치료 과정, 간병 체크리스트, 응급 대응, 재활, 영양, 심리 지원 등이 담겨 있습니다.</div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+  <h2>지금 시작하면<br>가이드북이 무료!</h2>
+  <p>52쪽 질환별 전문 가이드북을<br>지금 가입하면 바로 받으실 수 있습니다</p>
+  <div class="bottom-cta-btns">
+    <button class="btn-white" onclick="showRegister()">💜 무료로 가입하기</button>
+    <button class="btn-outline" onclick="location.href='index.html'">메인으로 돌아가기</button>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+function showRegister() {
+  // Go to index.html and open register modal
+  window.location.href = 'index.html?register=1';
+}
+function toggleFaq(el) {
+  const a = el.nextElementSibling;
+  const isOpen = a.classList.contains('show');
+  // Close all
+  document.querySelectorAll('.faq-a').forEach(x=>x.classList.remove('show'));
+  document.querySelectorAll('.faq-q').forEach(x=>x.classList.remove('open'));
+  if (!isOpen) {
+    a.classList.add('show');
+    el.classList.add('open');
+  }
+}
+// Auto-open register modal if redirected
+window.addEventListener('DOMContentLoaded', () => {
+  if (new URLSearchParams(location.search).get('open') === 'register') {
+    setTimeout(showRegister, 500);
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>관리자 로그인 - 누빈</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    * { font-family: 'Noto Sans KR', sans-serif; }
+    body { background: #0f0f1a; }
+    .gradient-bg {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    }
+    .input-dark {
+      background: #1e1e35;
+      border: 1.5px solid #333;
+      color: white;
+      border-radius: 14px;
+      padding: 14px 16px;
+      width: 100%;
+      font-size: 15px;
+      transition: border-color 0.2s;
+      outline: none;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .input-dark:focus { border-color: #667eea; }
+    .input-dark::placeholder { color: #555; }
+    .btn-login {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 14px;
+      padding: 15px;
+      width: 100%;
+      color: white;
+      font-weight: 900;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Noto Sans KR', sans-serif;
+    }
+    .btn-login:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(102,126,234,0.4); }
+    .btn-login:active { transform: scale(0.98); opacity: 0.9; }
+    .btn-login:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
+    .card {
+      background: #1a1a2e;
+      border-radius: 24px;
+      border: 1px solid #2a2a45;
+    }
+    .shake { animation: shake 0.4s ease; }
+    @keyframes shake {
+      0%,100%{transform:translateX(0)}
+      20%,60%{transform:translateX(-8px)}
+      40%,80%{transform:translateX(8px)}
+    }
+    .logo-glow { filter: drop-shadow(0 0 20px rgba(102,126,234,0.5)); }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.8);
+      z-index: 100; display: flex; align-items: flex-end; justify-content: center;
+    }
+    .modal-sheet {
+      background: #1a1a2e; border-radius: 24px 24px 0 0;
+      padding: 24px; width: 100%; max-width: 480px;
+      border-top: 1px solid #2a2a45;
+    }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg flex flex-col items-center justify-center px-5 py-12">
+
+  <div class="text-center mb-8 logo-glow">
+    <div class="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center text-4xl font-black text-white"
+      style="background: linear-gradient(135deg, #667eea, #764ba2);">N</div>
+    <h1 class="text-3xl font-black text-white tracking-wider">NUVIN</h1>
+    <p class="text-sm text-gray-500 mt-1">관리자 전용 포털</p>
+  </div>
+
+  <!-- 로그인 카드 -->
+  <div class="card w-full max-w-sm p-7">
+    <h2 class="text-xl font-black text-white mb-1">관리자 로그인</h2>
+    <p class="text-xs text-gray-500 mb-6">운영자 계정으로만 접근 가능합니다</p>
+
+    <!-- 에러 메시지 -->
+    <div id="errorMsg" class="hidden bg-red-900 bg-opacity-40 border border-red-700 text-red-300 text-sm rounded-xl px-4 py-3 mb-4 flex items-center gap-2">
+      <i class="fas fa-exclamation-circle"></i>
+      <span id="errorText">오류가 발생했습니다.</span>
+    </div>
+
+    <!-- 성공 메시지 -->
+    <div id="successMsg" class="hidden bg-green-900 bg-opacity-40 border border-green-700 text-green-300 text-sm rounded-xl px-4 py-3 mb-4 flex items-center gap-2">
+      <i class="fas fa-check-circle"></i>
+      <span id="successText">성공!</span>
+    </div>
+
+    <div class="space-y-4">
+      <div>
+        <label class="text-xs text-gray-400 font-bold mb-2 block">
+          <i class="fas fa-envelope mr-1"></i>관리자 이메일
+        </label>
+        <input id="adminEmail" type="email" class="input-dark" placeholder="admin@nuvin.kr"
+          autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()"/>
+      </div>
+      <div>
+        <label class="text-xs text-gray-400 font-bold mb-2 block">
+          <i class="fas fa-lock mr-1"></i>비밀번호
+        </label>
+        <div class="relative">
+          <input id="adminPw" type="password" class="input-dark" placeholder="비밀번호 입력"
+            autocomplete="current-password" style="padding-right: 48px;"
+            onkeydown="if(event.key==='Enter')doLogin()"/>
+          <button onclick="togglePw()" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors" id="pwToggle">
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+      </div>
+      <button onclick="doLogin()" class="btn-login mt-2" id="loginBtn">
+        <i class="fas fa-shield-alt mr-2"></i>로그인
+      </button>
+    </div>
+
+    <!-- 힌트 -->
+    <div class="mt-6 pt-5 border-t border-gray-800 space-y-1">
+      <p class="text-xs text-gray-600 text-center">
+        초기 비밀번호: <span class="text-purple-400 font-bold cursor-pointer hover:text-purple-300" onclick="fillDemo()">데모 계정 자동 입력</span>
+      </p>
+      <p class="text-xs text-gray-700 text-center">⚠️ 로그인 후 반드시 비밀번호를 변경하세요</p>
+    </div>
+  </div>
+
+  <!-- 설정 안내 -->
+  <div class="mt-5 text-center">
+    <p class="text-xs text-gray-600">관리자 계정 설정이 필요하신가요?</p>
+    <button onclick="showSetup()" class="text-xs text-purple-400 font-bold mt-1 hover:text-purple-300 transition-colors">
+      최초 관리자 계정 설정 →
+    </button>
+  </div>
+
+  <!-- 홈으로 -->
+  <div class="mt-4">
+    <a href="index.html" class="text-xs text-gray-600 hover:text-gray-400 transition-colors">
+      <i class="fas fa-home mr-1"></i>메인으로 돌아가기
+    </a>
+  </div>
+
+  <!-- ═══ 초기 설정 모달 ═══ -->
+  <div id="setupModal" class="modal-overlay hidden" onclick="if(event.target===this)closeSetup()">
+    <div class="modal-sheet">
+      <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+      <h3 class="text-lg font-black text-white mb-1">
+        <i class="fas fa-key mr-2 text-yellow-400"></i>최초 관리자 설정
+      </h3>
+      <p class="text-xs text-gray-500 mb-4">관리자 계정을 처음 만드세요</p>
+      <div class="space-y-3">
+        <input id="setupEmail" type="email" class="input-dark" placeholder="관리자 이메일"/>
+        <input id="setupName" type="text" class="input-dark" placeholder="이름 (예: 홍길동)"/>
+        <input id="setupPw" type="password" class="input-dark" placeholder="비밀번호 (8자 이상)"/>
+        <div class="bg-yellow-900 bg-opacity-30 border border-yellow-700 rounded-xl p-3">
+          <p class="text-xs text-yellow-300 font-bold">
+            <i class="fas fa-info-circle mr-1"></i>설정 키: <span class="text-white">NUVIN_SETUP_2024</span>
+          </p>
+        </div>
+        <input id="setupKey" type="password" class="input-dark" placeholder="설정 키 입력"/>
+        <button onclick="doSetup()" class="btn-login">
+          <i class="fas fa-user-plus mr-2"></i>계정 생성
+        </button>
+        <button onclick="closeSetup()" class="w-full text-sm text-gray-500 py-2 hover:text-gray-300 transition-colors">취소</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 비밀번호 변경 모달 ═══ -->
+  <div id="changePwModal" class="modal-overlay hidden" onclick="if(event.target===this)this.classList.add('hidden')">
+    <div class="modal-sheet">
+      <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+      <h3 class="text-lg font-black text-white mb-1">
+        <i class="fas fa-lock mr-2 text-green-400"></i>비밀번호 변경
+      </h3>
+      <p class="text-xs text-gray-500 mb-4">초기 비밀번호를 안전한 비밀번호로 변경하세요</p>
+      <div class="space-y-3">
+        <input id="cpEmail" type="email" class="input-dark" placeholder="관리자 이메일"/>
+        <input id="cpCurrent" type="password" class="input-dark" placeholder="현재 비밀번호"/>
+        <input id="cpNew" type="password" class="input-dark" placeholder="새 비밀번호 (8자 이상)"/>
+        <button onclick="doChangePw()" class="btn-login" style="background:linear-gradient(135deg,#43e97b,#38f9d7);color:#111;">
+          <i class="fas fa-check mr-2"></i>변경하기
+        </button>
+        <button onclick="document.getElementById('changePwModal').classList.add('hidden')"
+          class="w-full text-sm text-gray-500 py-2 hover:text-gray-300 transition-colors">취소</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+// ─── Helpers ───
+function togglePw() {
+  const inp = document.getElementById('adminPw');
+  const ico = document.getElementById('pwToggle').querySelector('i');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    ico.className = 'fas fa-eye-slash';
+  } else {
+    inp.type = 'password';
+    ico.className = 'fas fa-eye';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  document.getElementById('errorText').textContent = msg;
+  el.classList.remove('hidden');
+  document.getElementById('successMsg').classList.add('hidden');
+  const card = document.querySelector('.card');
+  card.classList.add('shake');
+  setTimeout(() => card.classList.remove('shake'), 500);
+}
+
+function showSuccess(msg) {
+  const el = document.getElementById('successMsg');
+  document.getElementById('successText').textContent = msg;
+  el.classList.remove('hidden');
+  document.getElementById('errorMsg').classList.add('hidden');
+}
+
+function fillDemo() {
+  document.getElementById('adminEmail').value = 'admin@nuvin.kr';
+  document.getElementById('adminPw').value = 'nuvin-admin-2024';
+  showSuccess('데모 계정이 자동 입력되었습니다. 로그인 버튼을 누르세요!');
+}
+
+// ─── Login ─── (서버 API 완전 제거, 로컬 전용)
+function doLogin() {
+  const email = document.getElementById('adminEmail').value.trim();
+  const pw = document.getElementById('adminPw').value;
+
+  if (!email || !pw) {
+    showError('이메일과 비밀번호를 모두 입력하세요.');
+    return;
+  }
+
+  // 기본 내장 계정
+  if (email === 'admin@nuvin.kr' && pw === 'nuvin-admin-2024') {
+    loginSuccess(email, '누빈관리자', pw);
+    return;
+  }
+
+  // 직접 만든 계정
+  const admins = JSON.parse(localStorage.getItem('nuvin_admins') || '[]');
+  const found = admins.find(function(a) {
+    return a.email === email && a.password === pw;
+  });
+
+  if (found) {
+    loginSuccess(found.email, found.name, pw);
+    return;
+  }
+
+  // 모두 실패
+  showError('이메일 또는 비밀번호가 틀렸습니다.\n기본 계정: admin@nuvin.kr / nuvin-admin-2024');
+}
+
+function loginSuccess(email, name, pw) {
+  localStorage.setItem('nuvin_admin', JSON.stringify({
+    id: 1, email: email, name: name, is_admin: 1
+  }));
+  // 바로 대시보드로 이동
+  window.location.href = 'admin.html';
+}
+
+function handleLoginSuccess(email, pw) {
+  // 바로 대시보드로 이동
+  window.location.href = 'admin.html';
+}
+
+// ─── Setup ───
+function showSetup() {
+  document.getElementById('setupModal').classList.remove('hidden');
+}
+function closeSetup() {
+  document.getElementById('setupModal').classList.add('hidden');
+}
+
+async function doSetup() {
+  const email = document.getElementById('setupEmail').value.trim();
+  const name = document.getElementById('setupName').value.trim();
+  const pw = document.getElementById('setupPw').value;
+  const key = document.getElementById('setupKey').value;
+
+  if (!email || !pw || !key) { alert('모든 항목을 입력해주세요.'); return; }
+  if (pw.length < 8) { alert('비밀번호는 8자 이상이어야 합니다.'); return; }
+  if (key !== 'NUVIN_SETUP_2024') { alert('설정 키가 올바르지 않습니다.'); return; }
+
+  try {
+    const res = await fetch('/api/admin-auth/setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name, password: pw, setup_key: key })
+    });
+    const data = await res.json();
+    if (data.success) {
+      alert('✅ 관리자 계정이 생성되었습니다! 이제 로그인하세요.');
+      closeSetup();
+      document.getElementById('adminEmail').value = email;
+    } else {
+      alert('❌ ' + (data.error || '설정에 실패했습니다.'));
+    }
+  } catch(e) {
+    // Demo: save to localStorage
+    const admins = JSON.parse(localStorage.getItem('nuvin_admins') || '[]');
+    admins.push({ id: Date.now(), email, name, password: pw, is_admin: 1 });
+    localStorage.setItem('nuvin_admins', JSON.stringify(admins));
+    alert('✅ 관리자 계정이 생성되었습니다! 이제 로그인하세요.');
+    closeSetup();
+    document.getElementById('adminEmail').value = email;
+  }
+}
+
+// ─── Change Password ───
+async function doChangePw() {
+  const email = document.getElementById('cpEmail').value.trim();
+  const current = document.getElementById('cpCurrent').value.trim();
+  const newPw = document.getElementById('cpNew').value.trim();
+  if (!email || !current || !newPw) { alert('모든 항목을 입력하세요.'); return; }
+  if (newPw.length < 8) { alert('새 비밀번호는 8자 이상이어야 합니다.'); return; }
+
+  // localStorage에서 현재 비밀번호 검증
+  const DEMO_PW = 'nuvin-admin-2024';
+  const DEMO_EMAIL = 'admin@nuvin.kr';
+  let admins = JSON.parse(localStorage.getItem('nuvin_admins') || '[]');
+  let storedAdmin = admins.find(a => a.email === email);
+  let storedPw = storedAdmin ? storedAdmin.password : (email === DEMO_EMAIL ? DEMO_PW : null);
+
+  if (!storedPw) { alert('❌ 해당 이메일의 관리자 계정을 찾을 수 없습니다.'); return; }
+  if (current !== storedPw) { alert('❌ 현재 비밀번호가 올바르지 않습니다.'); return; }
+
+  // 비밀번호 업데이트
+  if (storedAdmin) {
+    storedAdmin.password = newPw;
+    localStorage.setItem('nuvin_admins', JSON.stringify(admins));
+  } else {
+    // 데모 계정 최초 변경 → nuvin_admins에 등록
+    admins.push({ email, name: '관리자', password: newPw, is_admin: true });
+    localStorage.setItem('nuvin_admins', JSON.stringify(admins));
+  }
+
+  // 현재 세션도 업데이트
+  let session = JSON.parse(localStorage.getItem('nuvin_admin') || '{}');
+  if (session.email === email) {
+    session.password = newPw;
+    localStorage.setItem('nuvin_admin', JSON.stringify(session));
+  }
+
+  alert('✅ 비밀번호가 성공적으로 변경되었습니다!\n다시 로그인해주세요.');
+  localStorage.removeItem('nuvin_admin');
+  document.getElementById('changePwModal').classList.add('hidden');
+  window.location.href = 'admin-login.html';
+}
+
+// ─── Init: Check if already logged in ───
+(function() {
+  const admin = JSON.parse(localStorage.getItem('nuvin_admin') || 'null');
+  if (admin && admin.is_admin) {
+    window.location.href = 'admin.html';
+  }
+})();
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
+}
+</script>
+
+<div style="background:#0a0a15;padding:14px 24px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
+  <p style="font-size:12px;color:#4b5563;font-family:'Noto Sans KR',sans-serif;">
+    © 2026 누빈(NUVIN)  · 
+    <a href="privacy.html" style="color:#6b7280;text-decoration:none;">개인정보처리방침</a>
+  </p>
+</div>
+</body>
+</html>

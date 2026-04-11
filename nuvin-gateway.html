@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>NUVIN 내부 포털</title>
+<!-- 검색엔진 색인 차단 -->
+<meta name="robots" content="noindex, nofollow"/>
+<meta name="googlebot" content="noindex, nofollow"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans KR',sans-serif;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#07070f;--surface:#0f0f1c;--surface2:#141426;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.05);
+  --text:#f0f0ff;--text2:#9ca3af;--text3:#6b7280;--text4:#4b5563;
+  --v1-a:#667eea;--v1-b:#764ba2;
+  --v2-a:#06b6d4;--v2-b:#0284c7;
+  --va-a:#f59e0b;
+  --sa-a:#34d399;
+}
+html,body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:-80px;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(102,126,234,0.05) 0%,transparent 65%);pointer-events:none;}
+
+/* ══ LOCK SCREEN ══ */
+#lockScreen{
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px;
+}
+.lock-box{
+  width:100%;max-width:360px;
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:24px;padding:32px 28px;
+}
+.lock-icon{
+  width:64px;height:64px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(102,126,234,0.2),rgba(118,75,162,0.12));
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;margin:0 auto 20px;
+}
+.lock-title{font-size:20px;font-weight:900;text-align:center;margin-bottom:6px;}
+.lock-sub{font-size:12.5px;color:var(--text2);text-align:center;line-height:1.6;margin-bottom:24px;}
+.lock-label{font-size:11px;font-weight:700;color:var(--text3);margin-bottom:7px;display:block;}
+.lock-input{
+  width:100%;background:var(--surface2);
+  border:1.5px solid var(--border);border-radius:12px;
+  padding:13px 16px;color:var(--text);font-size:15px;
+  font-family:'Noto Sans KR',sans-serif;outline:none;
+  transition:border-color 0.2s;letter-spacing:3px;
+}
+.lock-input:focus{border-color:rgba(102,126,234,0.5);}
+.lock-input.shake{animation:shake 0.35s ease;}
+.lock-input.error{border-color:rgba(239,68,68,0.6);}
+.lock-btn{
+  width:100%;margin-top:14px;padding:14px;
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  border:none;border-radius:12px;
+  color:#fff;font-size:14px;font-weight:900;
+  cursor:pointer;font-family:'Noto Sans KR',sans-serif;
+  transition:opacity 0.2s;
+}
+.lock-btn:hover{opacity:0.9;}
+.lock-err{
+  margin-top:10px;font-size:12px;color:#f87171;
+  text-align:center;min-height:18px;font-weight:600;
+}
+.lock-hint{
+  margin-top:18px;padding:12px 14px;
+  background:rgba(255,255,255,0.03);border:1px solid var(--border2);
+  border-radius:10px;font-size:11px;color:var(--text4);text-align:center;line-height:1.7;
+}
+.lock-hint strong{color:var(--text3);}
+
+/* ══ MAIN CONTENT (처음엔 숨김) ══ */
+#mainContent{display:none;width:100%;}
+
+.wrap{width:100%;max-width:460px;padding:28px 18px 44px;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1;margin:0 auto;}
+
+/* TOP NAV */
+.top-nav{width:100%;display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--v1-a),var(--v1-b));display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:900;color:#fff;}
+.nav-wordmark{font-size:19px;font-weight:900;color:var(--text);letter-spacing:1px;}
+.internal-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:800;letter-spacing:1px;
+  background:rgba(245,158,11,0.1);color:#fcd34d;
+  border:1px solid rgba(245,158,11,0.2);border-radius:6px;
+  padding:3px 9px;
+}
+.logout-btn{
+  font-size:10px;font-weight:700;color:var(--text4);
+  background:none;border:1px solid var(--border2);
+  border-radius:7px;padding:4px 10px;cursor:pointer;
+  font-family:'Noto Sans KR',sans-serif;transition:all 0.15s;
+}
+.logout-btn:hover{color:var(--text3);border-color:var(--border);}
+
+/* HERO */
+.hero{text-align:center;margin-bottom:28px;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:5px 13px;margin-bottom:13px;}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:#34d399;animation:blink 1.5s infinite;}
+.eyebrow-txt{font-size:11px;font-weight:700;color:#fcd34d;letter-spacing:0.6px;}
+.hero-title{font-size:22px;font-weight:900;line-height:1.35;margin-bottom:7px;}
+.hero-title em{font-style:normal;background:linear-gradient(135deg,var(--v1-a),#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:12.5px;color:var(--text2);line-height:1.7;}
+
+/* SECTION DIVIDER */
+.sec-div{width:100%;display:flex;align-items:center;gap:10px;margin:18px 0 12px;}
+.sec-line{flex:1;height:1px;background:var(--border2);}
+.sec-lbl{font-size:10px;font-weight:800;color:var(--text4);letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;}
+
+/* CARD */
+.card{width:100%;background:var(--surface);border:1.5px solid var(--border);border-radius:19px;padding:17px;cursor:pointer;transition:all 0.2s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;text-decoration:none;display:block;margin-bottom:10px;}
+.card-glow{position:absolute;inset:0;opacity:0;transition:opacity 0.2s;border-radius:19px;}
+.card:hover .card-glow{opacity:1;}
+.card:active{transform:scale(0.985);}
+.card:hover{border-color:transparent;}
+.ci{position:relative;z-index:1;}
+.ch{display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;}
+.c-icon{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;}
+.cm{flex:1;min-width:0;}
+.cbg{display:inline-flex;align-items:center;gap:4px;font-size:9px;font-weight:800;letter-spacing:1.3px;text-transform:uppercase;border-radius:5px;padding:2px 7px;margin-bottom:5px;border:1px solid;}
+.ct{font-size:15px;font-weight:900;color:var(--text);line-height:1.25;}
+.ca{color:var(--text4);font-size:11px;flex-shrink:0;margin-top:3px;transition:transform 0.18s,color 0.18s;}
+.card:hover .ca{transform:translateX(4px);}
+.cd{font-size:12px;color:var(--text2);line-height:1.65;margin-bottom:10px;}
+.tags{display:flex;flex-wrap:wrap;gap:4px;}
+.tag{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:6px;font-size:10px;font-weight:600;border:1px solid;}
+
+/* V1 보라 */
+.v1 .card-glow{background:linear-gradient(135deg,rgba(102,126,234,0.06),transparent);}
+.v1:hover{box-shadow:0 0 0 1.5px #667eea,0 6px 20px rgba(102,126,234,0.1);}
+.v1 .c-icon{background:rgba(102,126,234,0.14);}
+.v1 .cbg{background:rgba(102,126,234,0.1);color:#818cf8;border-color:rgba(102,126,234,0.18);}
+.v1:hover .ca{color:#667eea;}
+.v1 .tag{background:rgba(102,126,234,0.07);color:#a78bfa;border-color:rgba(102,126,234,0.12);}
+
+/* V2 청록 */
+.v2 .card-glow{background:linear-gradient(135deg,rgba(6,182,212,0.06),transparent);}
+.v2:hover{box-shadow:0 0 0 1.5px #06b6d4,0 6px 20px rgba(6,182,212,0.1);}
+.v2 .c-icon{background:rgba(6,182,212,0.14);}
+.v2 .cbg{background:rgba(6,182,212,0.1);color:#67e8f9;border-color:rgba(6,182,212,0.16);}
+.v2:hover .ca{color:#06b6d4;}
+.v2 .tag{background:rgba(6,182,212,0.07);color:#67e8f9;border-color:rgba(6,182,212,0.11);}
+
+/* VA 황금(간병 관리자) */
+.va .card-glow{background:linear-gradient(135deg,rgba(245,158,11,0.07),transparent);}
+.va:hover{box-shadow:0 0 0 1.5px #f59e0b,0 6px 20px rgba(245,158,11,0.08);}
+.va .c-icon{background:rgba(245,158,11,0.13);}
+.va .cbg{background:rgba(245,158,11,0.09);color:#fcd34d;border-color:rgba(245,158,11,0.18);}
+.va:hover .ca{color:#f59e0b;}
+.va .tag{background:rgba(245,158,11,0.06);color:#fcd34d;border-color:rgba(245,158,11,0.12);}
+
+/* SA 초록(병원 SaaS) */
+.sa .card-glow{background:linear-gradient(135deg,rgba(52,211,153,0.06),transparent);}
+.sa:hover{box-shadow:0 0 0 1.5px #34d399,0 6px 20px rgba(52,211,153,0.08);}
+.sa .c-icon{background:rgba(52,211,153,0.12);}
+.sa .cbg{background:rgba(52,211,153,0.08);color:#6ee7b7;border-color:rgba(52,211,153,0.15);}
+.sa:hover .ca{color:#34d399;}
+.sa .tag{background:rgba(52,211,153,0.06);color:#6ee7b7;border-color:rgba(52,211,153,0.11);}
+
+/* QUICK LINKS */
+.qls{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:4px;}
+.ql{background:var(--surface2);border:1px solid var(--border2);border-radius:12px;padding:10px 6px;text-align:center;text-decoration:none;transition:all 0.17s;}
+.ql:hover{border-color:rgba(255,255,255,0.1);background:var(--surface);}
+.qi{font-size:16px;display:block;margin-bottom:4px;}
+.qn{font-size:10px;font-weight:700;color:var(--text3);}
+
+/* FOOTER */
+.footer{width:100%;text-align:center;margin-top:24px;padding-top:16px;border-top:1px solid var(--border2);}
+.footer p{font-size:11px;color:var(--text4);line-height:1.9;}
+.footer a{color:var(--text3);text-decoration:none;}
+.footer a:hover{color:var(--text2);}
+.mb{display:inline-block;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:4px;padding:1px 5px;font-size:9px;font-weight:700;color:var(--text4);vertical-align:middle;}
+
+/* ANIM */
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0.2;}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+@keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-6px);}40%,80%{transform:translateX(6px);}}
+.fu{animation:fadeUp 0.36s ease both;}
+.d0{animation-delay:0s;}.d1{animation-delay:0.06s;}.d2{animation-delay:0.11s;}
+.d3{animation-delay:0.15s;}.d4{animation-delay:0.19s;}.d5{animation-delay:0.23s;}
+.d6{animation-delay:0.27s;}.d7{animation-delay:0.31s;}.d8{animation-delay:0.35s;}
+.d9{animation-delay:0.39s;}.d10{animation-delay:0.43s;}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     🔒 LOCK SCREEN (내부 전용)
+══════════════════════════════════ -->
+<div id="lockScreen">
+  <div class="lock-box">
+    <div class="lock-icon">🔐</div>
+    <h2 class="lock-title">NUVIN 내부 포털</h2>
+    <p class="lock-sub">사내 운영팀 전용 페이지입니다.<br/>내부 접속 코드를 입력하세요.</p>
+    <span class="lock-label">접속 코드</span>
+    <input id="lockInput" class="lock-input" type="password"
+      placeholder="••••••••"
+      maxlength="20"
+      autocomplete="off"
+      onkeydown="if(event.key==='Enter')tryUnlock()"/>
+    <p class="lock-err" id="lockErr"></p>
+    <button class="lock-btn" onclick="tryUnlock()">
+      <i class="fas fa-unlock-alt" style="margin-right:6px;"></i>입장하기
+    </button>
+    <div class="lock-hint">
+      <strong>누빈 운영팀 전용</strong><br/>
+      외부 공개 페이지: <a href="index.html" style="color:#667eea;text-decoration:none;">누빈 서비스 바로가기 →</a>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     MAIN CONTENT (잠금 해제 후 표시)
+══════════════════════════════════ -->
+<div id="mainContent">
+<div class="wrap">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav fu d0">
+    <a class="nav-logo" href="index.html">
+      <div class="nav-icon">N</div>
+      <span class="nav-wordmark">NUVIN</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="internal-badge"><i class="fas fa-lock" style="font-size:7px;margin-right:3px;"></i>내부 전용</span>
+      <button class="logout-btn" onclick="lockPortal()"><i class="fas fa-sign-out-alt" style="margin-right:3px;"></i>잠금</button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero fu d1">
+    <div class="hero-eyebrow">
+      <span class="eyebrow-dot"></span>
+      <span class="eyebrow-txt">NUVIN 운영팀 전용 포털</span>
+    </div>
+    <h1 class="hero-title">통합 서비스 운영<br/><em>관리자 허브</em></h1>
+    <p class="hero-sub">v1.0 간병 케어 플랫폼 + v2.0 병원 찾기 + SaaS<br/>모든 서비스를 한 곳에서 관리합니다.</p>
+  </div>
+
+  <!-- ── 사용자 서비스 ── -->
+  <div class="sec-div fu d2">
+    <div class="sec-line"></div>
+    <span class="sec-lbl">👤 사용자 서비스</span>
+    <div class="sec-line"></div>
+  </div>
+
+  <!-- V1 간병 보호자 -->
+  <a class="card v1 fu d3" href="index.html">
+    <div class="card-glow"></div>
+    <div class="ci">
+      <div class="ch">
+        <div class="c-icon">🤲</div>
+        <div class="cm">
+          <div class="cbg">NUVIN 1.0 · 간병 보호자</div>
+          <div class="ct">간병 보호자 케어<br/>가이드 플랫폼</div>
+        </div>
+        <i class="fas fa-chevron-right ca"></i>
+      </div>
+      <p class="cd">암·뇌질환·대사질환 보호자를 위한 맞춤 가이드북, 선배 멘토 연결, 커뮤니티. 30초 무료 가입.</p>
+      <div class="tags">
+        <span class="tag"><i class="fas fa-book-open"></i>&nbsp;가이드북</span>
+        <span class="tag"><i class="fas fa-users"></i>&nbsp;멘토 연결</span>
+        <span class="tag"><i class="fas fa-comments"></i>&nbsp;커뮤니티</span>
+        <span class="tag"><i class="fas fa-gift"></i>&nbsp;무료</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- V2 병원 찾기 -->
+  <a class="card v2 fu d4" href="nuvin2-home.html">
+    <div class="card-glow"></div>
+    <div class="ci">
+      <div class="ch">
+        <div class="c-icon">📍</div>
+        <div class="cm">
+          <div class="cbg"><span style="width:5px;height:5px;border-radius:50%;background:#34d399;display:inline-block;animation:blink 1.5s infinite;margin-right:2px;"></span>NUVIN 2.0 · 병원 찾기</div>
+          <div class="ct">내 주변 병원<br/>실시간 검색 · 즉시 예약</div>
+        </div>
+        <i class="fas fa-chevron-right ca"></i>
+      </div>
+      <p class="cd">위치기반 암수술후요양·뇌수술후요양·24시간 신장투석·대사질환 외래 병원 검색, 빈병상 확인, 즉시 예약.</p>
+      <div class="tags">
+        <span class="tag"><i class="fas fa-map-marker-alt"></i>&nbsp;위치기반</span>
+        <span class="tag"><i class="fas fa-bed"></i>&nbsp;실시간 빈병상</span>
+        <span class="tag"><i class="fas fa-calendar-plus"></i>&nbsp;즉시 예약</span>
+        <span class="tag"><i class="fas fa-comment-dots"></i>&nbsp;채팅</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- ── 관리자 전용 ── -->
+  <div class="sec-div fu d5" style="margin-top:10px;">
+    <div class="sec-line" style="background:rgba(245,158,11,0.1);"></div>
+    <span class="sec-lbl" style="color:#92400e;">🔐 관리자 전용</span>
+    <div class="sec-line" style="background:rgba(245,158,11,0.1);"></div>
+  </div>
+
+  <!-- ① 간병 플랫폼 관리자 -->
+  <a class="card va fu d6" href="admin-login.html">
+    <div class="card-glow"></div>
+    <div class="ci">
+      <div class="ch">
+        <div class="c-icon">🛡️</div>
+        <div class="cm">
+          <div class="cbg"><i class="fas fa-lock" style="font-size:7px;"></i>&nbsp;NUVIN 1.0 · 플랫폼 관리자</div>
+          <div class="ct">간병 보호자 플랫폼<br/>관리자 대시보드</div>
+        </div>
+        <i class="fas fa-chevron-right ca"></i>
+      </div>
+      <p class="cd">회원 데이터·가입 퍼널 분석·질환별 CRM 필터·일별 통계. <strong style="color:#fcd34d;">계정: admin@nuvin.kr / nuvin-admin-2024</strong></p>
+      <div class="tags">
+        <span class="tag"><i class="fas fa-chart-bar"></i>&nbsp;퍼널 분석</span>
+        <span class="tag"><i class="fas fa-users"></i>&nbsp;회원 CRM</span>
+        <span class="tag"><i class="fas fa-chart-line"></i>&nbsp;일별 통계</span>
+        <span class="tag"><i class="fas fa-share-alt"></i>&nbsp;공유 도구</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- ② 병원 SaaS 관리자 -->
+  <a class="card sa fu d7" href="nuvin2-admin.html">
+    <div class="card-glow"></div>
+    <div class="ci">
+      <div class="ch">
+        <div class="c-icon">💻</div>
+        <div class="cm">
+          <div class="cbg">NUVIN 2.0 · 병원 SaaS</div>
+          <div class="ct">병원 관리자<br/>SaaS 대시보드 · CRM · 모니터링</div>
+        </div>
+        <i class="fas fa-chevron-right ca"></i>
+      </div>
+      <p class="cd">실시간 병상 관리, 예약 캘린더, 환자 CRM 채팅, 퇴원 후 활력징후 모니터링, 카카오 알림톡 자동 발송.</p>
+      <div class="tags">
+        <span class="tag"><i class="fas fa-chart-line"></i>&nbsp;KPI 대시보드</span>
+        <span class="tag"><i class="fas fa-bed"></i>&nbsp;병상 관리</span>
+        <span class="tag"><i class="fas fa-heartbeat"></i>&nbsp;모니터링</span>
+        <span class="tag"><i class="fas fa-comment-dots"></i>&nbsp;CRM</span>
+      </div>
+    </div>
+  </a>
+
+  <!-- QUICK LINKS -->
+  <div class="qls fu d8" style="margin-top:14px;">
+    <a class="ql" href="nuvin2-search.html"><span class="qi">🔍</span><span class="qn">병원 검색</span></a>
+    <a class="ql" href="nuvin2-crm.html"><span class="qi">💬</span><span class="qn">CRM·채팅</span></a>
+    <a class="ql" href="nuvin2-monitor.html"><span class="qi">📊</span><span class="qn">모니터링</span></a>
+    <a class="ql" href="admin-login.html"><span class="qi">🔐</span><span class="qn">간병 관리자</span></a>
+    <a class="ql" href="nuvin2-landing.html"><span class="qi">🌐</span><span class="qn">서비스 안내</span></a>
+    <a class="ql" href="hospital-manual.html"><span class="qi">📋</span><span class="qn">가입 메뉴얼</span></a>
+    <a class="ql" href="guidebook.html"><span class="qi">📖</span><span class="qn">가이드북</span></a>
+    <a class="ql" href="migration-guide.html"><span class="qi">🗺️</span><span class="qn">이전 안내</span></a>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer fu d9">
+    <p>© 2026 누빈(NUVIN) &nbsp;·&nbsp; 내부 운영팀 전용 포털</p>
+    <p style="margin-top:3px;">
+      <span class="mb">v1.0</span> 간병 케어 &nbsp;+&nbsp;
+      <span class="mb">v2.0</span> 병원 찾기 통합 운영
+    </p>
+  </div>
+
+</div>
+</div><!-- /mainContent -->
+
+<script>
+// ── 내부 접속 코드 (변경 가능) ──
+// SHA-256 방식이 아닌 단순 코드 비교 (내부 도구용)
+// 실제 운영 시 더 강력한 인증 도입 권장
+const INTERNAL_CODE = 'nuvin2026';
+const SESSION_KEY   = 'nuvin_internal_auth';
+const SESSION_TTL   = 8 * 60 * 60 * 1000; // 8시간
+
+function checkSession(){
+  try{
+    const raw = sessionStorage.getItem(SESSION_KEY);
+    if(!raw) return false;
+    const {ts} = JSON.parse(raw);
+    return (Date.now() - ts) < SESSION_TTL;
+  }catch(e){return false;}
+}
+
+function unlockPortal(){
+  sessionStorage.setItem(SESSION_KEY, JSON.stringify({ts:Date.now()}));
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'block';
+}
+
+function lockPortal(){
+  sessionStorage.removeItem(SESSION_KEY);
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('lockInput').value = '';
+  document.getElementById('lockErr').textContent = '';
+}
+
+function tryUnlock(){
+  const val = document.getElementById('lockInput').value.trim();
+  const inp = document.getElementById('lockInput');
+  const err = document.getElementById('lockErr');
+
+  if(val === INTERNAL_CODE){
+    err.textContent = '';
+    inp.classList.remove('error','shake');
+    unlockPortal();
+  } else {
+    inp.classList.add('error');
+    inp.classList.remove('shake');
+    void inp.offsetWidth; // reflow for re-trigger
+    inp.classList.add('shake');
+    err.textContent = '잘못된 접속 코드입니다. 다시 입력해주세요.';
+    inp.value = '';
+    inp.focus();
+  }
+}
+
+// 페이지 진입 시 세션 확인
+if(checkSession()){
+  unlockPortal();
+}
+
+// PWA
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(r=>console.log('[SW]:',r.scope))
+      .catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>

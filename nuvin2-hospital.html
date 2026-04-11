@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>NUVIN — 병원 상세</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet"/>
+<!-- 카카오맵 SDK -->
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=a3ff4692336f7a55c868d43e254d287c&libraries=services"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Noto Sans KR',sans-serif;-webkit-tap-highlight-color:transparent;}
+:root{
+  --bg:#0a0a14;--surface:#12121f;--surface2:#1a1a2e;
+  --border:rgba(255,255,255,0.08);--text:#f0f0ff;--text2:#9ca3af;--text3:#6b7280;
+  --accent:#7c6ef0;--accent2:#a78bfa;--grad:linear-gradient(135deg,#667eea,#764ba2);
+  --red:#f87171;--green:#34d399;--amber:#fbbf24;
+}
+html,body{background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+/* STICKY TOP HEADER */
+.header{position:sticky;top:0;z-index:50;background:rgba(10,10,20,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 14px;}
+.header-inner{display:flex;align-items:center;height:52px;gap:8px;}
+.back-btn{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;flex-shrink:0;}
+.header-title{flex:1;font-size:15px;font-weight:800;}
+.header-share{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;}
+
+/* GALLERY */
+.gallery{position:relative;overflow:hidden;}
+.gallery-slides{display:flex;transition:transform 0.35s ease;width:100%;}
+.gallery-slide{min-width:100%;height:220px;display:flex;align-items:center;justify-content:center;font-size:64px;}
+.gallery-slide:nth-child(1){background:linear-gradient(160deg,rgba(102,126,234,0.2),rgba(118,75,162,0.1));}
+.gallery-slide:nth-child(2){background:linear-gradient(160deg,rgba(16,185,129,0.15),rgba(5,150,105,0.1));}
+.gallery-slide:nth-child(3){background:linear-gradient(160deg,rgba(239,68,68,0.12),rgba(220,38,38,0.06));}
+.gallery-dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;}
+.gdot{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.4);transition:all 0.2s;}
+.gdot.on{background:#fff;width:18px;border-radius:3px;}
+.gallery-prev,.gallery-next{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;background:rgba(0,0,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;cursor:pointer;font-size:12px;}
+.gallery-prev{left:8px;}
+.gallery-next{right:8px;}
+.gallery-cnt{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.6);border-radius:8px;padding:3px 8px;font-size:11px;font-weight:700;}
+
+/* CONTENT */
+.content{padding:0 0 120px;}
+
+/* HOSPITAL SUMMARY */
+.hosp-summary{padding:16px 14px 12px;}
+.summary-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.hosp-name-big{font-size:20px;font-weight:900;line-height:1.2;}
+.pro-badge{background:var(--grad);border-radius:6px;padding:3px 8px;font-size:10px;font-weight:800;margin-top:4px;display:inline-block;}
+.bed-live{text-align:right;}
+.bed-live-num{font-size:28px;font-weight:900;color:var(--green);}
+.bed-live-lbl{font-size:10px;color:var(--text3);}
+.bed-live-badge{background:rgba(52,211,153,0.15);border:1px solid rgba(52,211,153,0.3);border-radius:8px;padding:4px 8px;font-size:11px;font-weight:700;color:var(--green);margin-top:4px;display:inline-block;}
+.hosp-addr-row{display:flex;align-items:center;gap:6px;color:var(--text2);font-size:13px;margin-bottom:8px;}
+.star-row{display:flex;align-items:center;gap:4px;margin-bottom:10px;}
+.star{color:var(--amber);font-size:13px;}
+.star-num{font-size:13px;font-weight:800;color:var(--amber);}
+.rev-cnt{font-size:11px;color:var(--text3);}
+.rev-link{font-size:11px;color:var(--accent2);font-weight:700;cursor:pointer;}
+
+/* SPEC TAGS */
+.spec-tags{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 14px;}
+.tag{padding:5px 10px;border-radius:8px;font-size:11px;font-weight:700;background:rgba(124,110,240,0.12);color:var(--accent2);border:1px solid rgba(124,110,240,0.18);}
+.tag.green{background:rgba(52,211,153,0.1);color:var(--green);border-color:rgba(52,211,153,0.2);}
+.tag.amber{background:rgba(251,191,36,0.1);color:var(--amber);border-color:rgba(251,191,36,0.2);}
+.tag.red{background:rgba(248,113,113,0.12);color:var(--red);border-color:rgba(248,113,113,0.2);}
+
+/* DIVIDER */
+.divider{height:8px;background:rgba(0,0,0,0.4);}
+
+/* SECTION */
+.section{padding:16px 14px;}
+.sec-title{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* PRICE TABLE */
+.price-table{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.price-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--border);}
+.price-row:last-child{border-bottom:none;}
+.price-cat{font-size:12px;color:var(--text2);}
+.price-item{font-size:13px;font-weight:700;}
+.price-val{font-size:14px;font-weight:900;color:var(--accent2);}
+.price-unit{font-size:10px;color:var(--text3);}
+
+/* INFO ITEMS */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.info-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;}
+.info-icon{font-size:18px;margin-bottom:6px;}
+.info-label{font-size:10px;color:var(--text3);margin-bottom:2px;}
+.info-val{font-size:13px;font-weight:700;}
+
+/* REVIEWS */
+.review-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+.rev-header{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.rev-avatar{width:32px;height:32px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:14px;}
+.rev-name{font-size:13px;font-weight:700;}
+.rev-date{font-size:10px;color:var(--text3);}
+.rev-text{font-size:12px;color:var(--text2);line-height:1.6;}
+.rev-disease{font-size:10px;background:rgba(124,110,240,0.12);color:var(--accent2);border-radius:6px;padding:2px 7px;display:inline-block;margin-top:6px;}
+
+/* STICKY CTA */
+.cta-bar{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(10,10,20,0.98);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:12px 14px;padding-bottom:calc(12px + env(safe-area-inset-bottom,0));}
+.cta-row{display:flex;gap:8px;}
+.cta-btn{flex:1;padding:14px 8px;border-radius:14px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;border:none;transition:all 0.15s;}
+.cta-btn:active{transform:scale(0.97);}
+.cta-call{background:rgba(52,211,153,0.15);border:1.5px solid rgba(52,211,153,0.3);color:var(--green);}
+.cta-chat{background:rgba(251,191,36,0.12);border:1.5px solid rgba(251,191,36,0.25);color:var(--amber);}
+.cta-book{background:var(--grad);color:#fff;box-shadow:0 4px 20px rgba(102,126,234,0.4);flex:1.5;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="back-btn" onclick="history.back()"><i class="fas fa-arrow-left"></i></div>
+    <div class="header-title" id="pageTitleBar">한국요양병원</div>
+    <div class="header-share" onclick="shareHosp()"><i class="fas fa-share-alt"></i></div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery" id="gallery">
+  <div class="gallery-slides" id="gallerySlides">
+    <div class="gallery-slide">🏥</div>
+    <div class="gallery-slide">🌿</div>
+    <div class="gallery-slide">🛏️</div>
+  </div>
+  <div class="gallery-prev" onclick="galleryPrev()"><i class="fas fa-chevron-left"></i></div>
+  <div class="gallery-next" onclick="galleryNext()"><i class="fas fa-chevron-right"></i></div>
+  <div class="gallery-dots" id="galleryDots">
+    <div class="gdot on"></div><div class="gdot"></div><div class="gdot"></div>
+  </div>
+  <div class="gallery-cnt" id="galleryCnt">1 / 3</div>
+</div>
+
+<div class="content">
+
+  <!-- HOSPITAL SUMMARY -->
+  <div class="hosp-summary">
+    <div class="summary-top">
+      <div>
+        <div class="hosp-name-big" id="hospName">한국요양병원</div>
+        <div class="pro-badge">PRO 인증 병원</div>
+      </div>
+      <div class="bed-live">
+        <div class="bed-live-num" id="bedNum">8</div>
+        <div class="bed-live-lbl">빈 병상</div>
+        <div class="bed-live-badge"><i class="fas fa-circle" style="font-size:8px;margin-right:3px;"></i>실시간 업데이트</div>
+      </div>
+    </div>
+    <div class="hosp-addr-row">
+      <i class="fas fa-map-marker-alt" style="color:var(--accent2);"></i>
+      <span id="hospAddr">서울 강남구 역삼동 123-45 · 1.2km</span>
+    </div>
+    <div class="star-row">
+      <i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star star"></i><i class="fas fa-star-half-alt star"></i>
+      <span class="star-num">4.8</span>
+      <span class="rev-cnt">(124개 리뷰)</span>
+      <span class="rev-link" onclick="scrollToReviews()" style="margin-left:6px;">리뷰 보기 →</span>
+    </div>
+  </div>
+
+  <!-- SPEC TAGS -->
+  <div class="spec-tags">
+    <span class="tag">🎗️ 암수술후요양</span>
+    <span class="tag green">1인실 운영</span>
+    <span class="tag green">격리실 보유</span>
+    <span class="tag amber"><i class="fas fa-bolt"></i> 즉시입원 가능</span>
+    <span class="tag">야간간호</span>
+    <span class="tag">물리치료</span>
+    <span class="tag">주차가능</span>
+    <span class="tag red">입원경쟁 높음</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- PRICE TABLE -->
+  <div class="section">
+    <div class="sec-title">💰 진료비 안내</div>
+    <div class="price-table">
+      <div class="price-row">
+        <div>
+          <div class="price-cat">병실</div>
+          <div class="price-item">1인실</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="price-val">180,000<span class="price-unit">원</span></div>
+          <div class="price-unit">/1일 기준</div>
+        </div>
+      </div>
+      <div class="price-row">
+        <div>
+          <div class="price-cat">병실</div>
+          <div class="price-item">2인실</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="price-val">120,000<span class="price-unit">원</span></div>
+          <div class="price-unit">/1일 기준</div>
+        </div>
+      </div>
+      <div class="price-row">
+        <div>
+          <div class="price-cat">병실</div>
+          <div class="price-item">다인실 (4인)</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="price-val">65,000<span class="price-unit">원</span></div>
+          <div class="price-unit">/1일 기준</div>
+        </div>
+      </div>
+      <div class="price-row">
+        <div>
+          <div class="price-cat">투석</div>
+          <div class="price-item">신장투석 (1회)</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="price-val">15,000<span class="price-unit">원</span></div>
+          <div class="price-unit">본인부담금</div>
+        </div>
+      </div>
+      <div class="price-row">
+        <div>
+          <div class="price-cat">격리</div>
+          <div class="price-item">격리실 (1인)</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="price-val">25,000<span class="price-unit">원</span></div>
+          <div class="price-unit">/1일 추가</div>
+        </div>
+      </div>
+      <div class="price-row" style="background:rgba(124,110,240,0.05);">
+        <div style="font-size:11px;color:var(--text3);">※ 건강보험 적용 기준 / 실제 비용은 상담 후 확정</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 카카오맵 위치 -->
+  <div class="section">
+    <div class="sec-title">🗺️ 병원 위치</div>
+    <div id="hospDetailMap" style="width:100%;height:200px;border-radius:14px;overflow:hidden;background:#12121f;border:1px solid rgba(255,255,255,0.08);"></div>
+    <div style="margin-top:8px;display:flex;align-items:center;gap:6px;">
+      <i class="fas fa-map-marker-alt" style="color:#a78bfa;font-size:12px;"></i>
+      <span style="font-size:12px;color:#9ca3af;" id="mapAddrLabel">서울 강남구 역삼동 123-45</span>
+      <span style="margin-left:auto;font-size:11px;color:#a78bfa;cursor:pointer;font-weight:700;" onclick="openKakaoNavi()">길찾기 →</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- INFO GRID -->
+  <div class="section">
+    <div class="sec-title">📋 병원 정보</div>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-icon">🕐</div>
+        <div class="info-label">운영시간</div>
+        <div class="info-val">24시간 365일</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🏠</div>
+        <div class="info-label">총 병상 수</div>
+        <div class="info-val">총 42병상</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">👨‍⚕️</div>
+        <div class="info-label">전문의</div>
+        <div class="info-val">내과·외과·재활</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🚗</div>
+        <div class="info-label">주차</div>
+        <div class="info-val">50대 무료</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📞</div>
+        <div class="info-label">대표 전화</div>
+        <div class="info-val">02-1234-5678</div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📅</div>
+        <div class="info-label">개원</div>
+        <div class="info-val">2008년 3월</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- REVIEWS -->
+  <div class="section" id="reviewSection">
+    <div class="sec-title">⭐ 이용 후기</div>
+
+    <div class="review-card">
+      <div class="rev-header">
+        <div class="rev-avatar">👤</div>
+        <div>
+          <div class="rev-name">이**님 보호자</div>
+          <div class="rev-date">2026.03.28 · ★★★★★ 5.0</div>
+        </div>
+      </div>
+      <div class="rev-text">간호사 선생님들이 너무 친절하고 시설이 깨끗합니다. 아버지 암수술 후 회복 기간 동안 정말 편안하게 지내셨어요. 빈병상 앱으로 미리 확인하고 예약할 수 있어서 너무 편리했습니다.</div>
+      <span class="rev-disease">암수술후요양</span>
+    </div>
+
+    <div class="review-card">
+      <div class="rev-header">
+        <div class="rev-avatar">👤</div>
+        <div>
+          <div class="rev-name">박**님 보호자</div>
+          <div class="rev-date">2026.03.15 · ★★★★☆ 4.0</div>
+        </div>
+      </div>
+      <div class="rev-text">전반적으로 만족스럽습니다. 식사 퀄리티도 좋고 물리치료도 꼼꼼하게 해주십니다. 1인실이 가격 대비 충분한 가치가 있었습니다.</div>
+      <span class="rev-disease">암수술후요양</span>
+    </div>
+
+    <div class="review-card">
+      <div class="rev-header">
+        <div class="rev-avatar">👤</div>
+        <div>
+          <div class="rev-name">김**님 보호자</div>
+          <div class="rev-date">2026.02.20 · ★★★★★ 5.0</div>
+        </div>
+      </div>
+      <div class="rev-text">긴급 입원이 필요한 상황에서 NUVIN 앱으로 실시간 빈병상 확인하고 바로 예약했어요. 채팅으로 담당자와 빠르게 소통할 수 있어서 정말 좋았습니다.</div>
+      <span class="rev-disease">신장투석</span>
+    </div>
+
+    <div style="text-align:center;margin-top:4px;">
+      <div style="display:inline-block;padding:10px 24px;border-radius:10px;border:1px solid var(--border);font-size:12px;font-weight:700;color:var(--text3);cursor:pointer;" onclick="loadMoreReviews()">리뷰 더보기 (124개)</div>
+    </div>
+  </div>
+
+</div><!-- /content -->
+
+<!-- STICKY CTA -->
+<div class="cta-bar">
+  <div class="cta-row">
+    <div class="cta-btn cta-call" onclick="callHosp()">
+      <i class="fas fa-phone"></i>
+      <div>
+        <div style="font-size:11px;">전화</div>
+        <div style="font-size:10px;opacity:0.7;">상담</div>
+      </div>
+    </div>
+    <div class="cta-btn cta-chat" onclick="chatHosp()">
+      <i class="fas fa-comment-dots"></i>
+      <div>
+        <div style="font-size:11px;">채팅</div>
+        <div style="font-size:10px;opacity:0.7;">문의</div>
+      </div>
+    </div>
+    <div class="cta-btn cta-book" onclick="bookHosp()">
+      <i class="fas fa-calendar-plus"></i>
+      <div>
+        <div>입원 예약하기</div>
+        <div style="font-size:10px;opacity:0.85;">빈병상 8개 · 즉시가능</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RESERVATION MODAL -->
+<div id="bookModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;display:none;align-items:flex-end;">
+  <div style="background:var(--surface);border-radius:20px 20px 0 0;padding:20px 16px;width:100%;max-height:80vh;overflow-y:auto;">
+    <div style="width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;"></div>
+    <div style="font-size:16px;font-weight:800;margin-bottom:16px;">📅 입원 예약 신청</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:6px;">병원명</div>
+    <div style="font-size:14px;font-weight:700;margin-bottom:14px;" id="modalHospName">한국요양병원</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:6px;">희망 입원일</div>
+    <input type="date" id="bookDate" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--text);margin-bottom:12px;outline:none;font-family:'Noto Sans KR',sans-serif;">
+    <div style="font-size:13px;color:var(--text3);margin-bottom:6px;">병실 유형</div>
+    <select id="bookRoom" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--text);margin-bottom:12px;outline:none;font-family:'Noto Sans KR',sans-serif;">
+      <option>1인실 (180,000원/일)</option>
+      <option>2인실 (120,000원/일)</option>
+      <option>다인실 4인 (65,000원/일)</option>
+      <option>격리실 (+25,000원/일)</option>
+    </select>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:6px;">환자 성함</div>
+    <input type="text" id="bookName" placeholder="홍길동" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--text);margin-bottom:12px;outline:none;font-family:'Noto Sans KR',sans-serif;">
+    <div style="font-size:13px;color:var(--text3);margin-bottom:6px;">연락처</div>
+    <input type="tel" id="bookPhone" placeholder="010-0000-0000" style="width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;font-size:14px;color:var(--text);margin-bottom:16px;outline:none;font-family:'Noto Sans KR',sans-serif;">
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeModal()" style="flex:1;padding:14px;border-radius:12px;background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">취소</button>
+      <button onclick="submitBooking()" style="flex:2;padding:14px;border-radius:12px;background:var(--grad);border:none;color:#fff;font-size:14px;font-weight:800;cursor:pointer;font-family:'Noto Sans KR',sans-serif;">예약 신청하기</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let gSlide = 0;
+const totalSlides = 3;
+
+function galleryNext(){
+  gSlide = (gSlide+1)%totalSlides;
+  updateGallery();
+}
+function galleryPrev(){
+  gSlide = (gSlide-1+totalSlides)%totalSlides;
+  updateGallery();
+}
+function updateGallery(){
+  document.getElementById('gallerySlides').style.transform = `translateX(-${gSlide*100}%)`;
+  document.querySelectorAll('.gdot').forEach((d,i)=>d.classList.toggle('on',i===gSlide));
+  document.getElementById('galleryCnt').textContent = `${gSlide+1} / ${totalSlides}`;
+}
+
+// Init from URL / localStorage
+const urlId = new URLSearchParams(window.location.search).get('id') || localStorage.getItem('nuvin_hosp_id') || 'hankook';
+const HOSP_DATA = {
+  hankook:{name:'한국요양병원',addr:'서울 강남구 역삼동 123-45 · 1.2km',bed:8},
+  gangnam:{name:'강남신장클리닉',addr:'서울 강남구 삼성동 456-78 · 0.8km',bed:12},
+  seoul:{name:'서울재활의학병원',addr:'서울 서초구 반포동 789-12 · 2.4km',bed:5},
+  mirae:{name:'미래내과의원',addr:'서울 송파구 잠실동 234-56 · 1.7km',bed:null},
+  hanyang:{name:'한양요양병원',addr:'서울 성동구 행당동 345-67 · 3.1km',bed:3},
+};
+const hosp = HOSP_DATA[urlId] || HOSP_DATA.hankook;
+document.getElementById('pageTitleBar').textContent = hosp.name;
+document.getElementById('hospName').textContent = hosp.name;
+document.getElementById('hospAddr').textContent = hosp.addr;
+if(hosp.bed){document.getElementById('bedNum').textContent = hosp.bed;}
+else{document.getElementById('bedNum').textContent='외래'; document.querySelector('.bed-live-lbl').textContent='당일예약';}
+document.getElementById('modalHospName').textContent = hosp.name;
+
+// Touch swipe
+let touchStartX = 0;
+document.getElementById('gallery').addEventListener('touchstart', e=>{ touchStartX = e.touches[0].clientX; },{passive:true});
+document.getElementById('gallery').addEventListener('touchend', e=>{
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if(dx < -40) galleryNext();
+  else if(dx > 40) galleryPrev();
+});
+
+function scrollToReviews(){
+  document.getElementById('reviewSection').scrollIntoView({behavior:'smooth'});
+}
+function callHosp(){
+  if(confirm(hosp.name+'\n전화 연결하시겠습니까?')) window.location.href='tel:0212345678';
+}
+function chatHosp(){
+  localStorage.setItem('nuvin_chat_hosp', hosp.name);
+  window.location.href='nuvin2-crm.html';
+}
+function bookHosp(){
+  document.getElementById('bookModal').style.display='flex';
+}
+function closeModal(){
+  document.getElementById('bookModal').style.display='none';
+}
+function submitBooking(){
+  const date = document.getElementById('bookDate').value;
+  const room = document.getElementById('bookRoom').value;
+  const name = document.getElementById('bookName').value;
+  const phone = document.getElementById('bookPhone').value;
+  if(!date||!name||!phone){alert('모든 항목을 입력해주세요.');return;}
+  const reservation = {
+    hosp_id: urlId, hosp_name: hosp.name,
+    date, room, name, phone,
+    created_at: new Date().toISOString(), status:'pending'
+  };
+  const reservations = JSON.parse(localStorage.getItem('nuvin_reservations')||'[]');
+  reservations.unshift(reservation);
+  localStorage.setItem('nuvin_reservations', JSON.stringify(reservations));
+  closeModal();
+  alert('✅ 예약 신청이 완료되었습니다!\n병원에서 확인 후 연락드립니다.');
+}
+function shareHosp(){
+  if(navigator.share){
+    navigator.share({title:hosp.name, url:window.location.href});
+  } else {
+    navigator.clipboard.writeText(window.location.href).then(()=>alert('링크 복사됨!'));
+  }
+}
+function loadMoreReviews(){alert('리뷰 더보기: 준비 중');}
+
+// ── 카카오맵 상세 지도 ──
+const HOSP_COORDS = {
+  hankook: {lat:37.5005, lng:127.0313, name:'한국요양병원',    addr:'서울 강남구 역삼동 123-45'},
+  gangnam: {lat:37.4976, lng:127.0276, name:'강남신장투석센터', addr:'서울 서초구 방배동 456-7'},
+  seoul:   {lat:37.5135, lng:127.1005, name:'서울재활요양병원', addr:'서울 송파구 잠실동 789-1'},
+  mirae:   {lat:37.4952, lng:127.0610, name:'미래내과의원',     addr:'서울 강남구 대치동 234-5'},
+  hanyang: {lat:37.3882, lng:127.1232, name:'한양요양병원',     addr:'경기 성남시 분당구 정자동'},
+};
+
+function initDetailMap(){
+  const id = new URLSearchParams(location.search).get('id') || 'hankook';
+  const info = HOSP_COORDS[id] || HOSP_COORDS['hankook'];
+
+  // 주소 라벨 업데이트
+  const lbl = document.getElementById('mapAddrLabel');
+  if(lbl) lbl.textContent = info.addr;
+
+  const container = document.getElementById('hospDetailMap');
+  if(!container) return;
+
+  const map = new kakao.maps.Map(container, {
+    center: new kakao.maps.LatLng(info.lat, info.lng),
+    level: 4
+  });
+
+  // 커스텀 말풍선 마커
+  const content = [
+    '<div style="cursor:pointer;font-family:\'Noto Sans KR\',sans-serif;">',
+    '<div style="background:linear-gradient(135deg,#667eea,#764ba2);border-radius:10px;padding:7px 12px;white-space:nowrap;box-shadow:0 4px 16px rgba(102,126,234,0.45);">',
+    `<div style="font-size:12px;font-weight:900;color:#fff;">${info.name}</div>`,
+    `<div style="font-size:10px;color:rgba(255,255,255,0.8);margin-top:2px;">📍 ${info.addr}</div>`,
+    '</div>',
+    '<div style="width:8px;height:8px;background:#764ba2;margin:0 auto;clip-path:polygon(50% 100%,0 0,100% 0);"></div>',
+    '</div>'
+  ].join('');
+
+  new kakao.maps.CustomOverlay({
+    map, position: new kakao.maps.LatLng(info.lat, info.lng),
+    content, yAnchor: 1.0
+  });
+}
+
+function openKakaoNavi(){
+  const id = new URLSearchParams(location.search).get('id') || 'hankook';
+  const info = HOSP_COORDS[id] || HOSP_COORDS['hankook'];
+  // 카카오맵 길찾기 딥링크
+  const url = `https://map.kakao.com/link/to/${encodeURIComponent(info.name)},${info.lat},${info.lng}`;
+  window.open(url, '_blank');
+}
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  if(window.kakao && kakao.maps){
+    initDetailMap();
+  } else {
+    const tryInit = setInterval(()=>{
+      if(window.kakao && kakao.maps){ clearInterval(tryInit); initDetailMap(); }
+    }, 300);
+    setTimeout(()=>{ clearInterval(tryInit); }, 8000);
+  }
+});
+</script>
+</body>
+</html>

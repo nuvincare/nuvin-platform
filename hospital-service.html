@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>병원 서비스 — NUVIN 누빈</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+:root{
+  --brand:#5B5BD6;--brand-dark:#4747B8;--brand-lg:linear-gradient(135deg,#5B5BD6,#7C3AED);
+  --green:#10B981;--orange:#F97316;--red:#EF4444;--blue:#3B82F6;--teal:#14B8A6;
+  --t1:#111827;--t2:#374151;--t3:#6B7280;--t4:#9CA3AF;
+  --bg:#F7F8FA;--surf:#fff;--border:#E5E7EB;--border-light:#F3F4F6;
+  --sh-sm:0 1px 4px rgba(0,0,0,0.06);--sh-md:0 4px 16px rgba(0,0,0,0.08);
+  --r:14px;--r-lg:20px;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+
+/* HEADER */
+.hdr{position:sticky;top:0;z-index:200;background:rgba(255,255,255,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-light);height:60px;display:flex;align-items:center;padding:0 20px;gap:12px;}
+.hdr-back{width:36px;height:36px;border:none;background:var(--bg);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);font-size:16px;}
+.hdr-logo{display:flex;align-items:center;gap:8px;text-decoration:none;}
+.hdr-mark{width:30px;height:30px;border-radius:9px;background:var(--brand-lg);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900;color:#fff;}
+.hdr-name{font-size:17px;font-weight:900;color:var(--t1);letter-spacing:1px;}
+.hdr-spacer{flex:1;}
+.hdr-cta{padding:8px 16px;background:var(--brand-lg);border:none;border-radius:999px;color:#fff;font-size:13px;font-weight:800;cursor:pointer;font-family:inherit;}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,#1D4ED8 0%,#2563EB 40%,#5B5BD6 100%);padding:56px 20px 48px;text-align:center;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-80px;right:-80px;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,0.07);}
+.hero::after{content:'';position:absolute;bottom:-50px;left:-50px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.05);}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.18);border-radius:999px;padding:5px 13px;font-size:12px;font-weight:700;color:rgba(255,255,255,0.95);margin-bottom:16px;}
+.hero h1{font-size:28px;font-weight:900;color:#fff;line-height:1.3;margin-bottom:12px;letter-spacing:-0.5px;}
+.hero p{font-size:15px;color:rgba(255,255,255,0.85);line-height:1.7;margin-bottom:28px;max-width:320px;margin-left:auto;margin-right:auto;}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.btn-white{padding:12px 22px;background:#fff;border:none;border-radius:999px;color:#1D4ED8;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(0,0,0,0.12);}
+.btn-outline{padding:12px 22px;background:rgba(255,255,255,0.15);border:2px solid rgba(255,255,255,0.5);border-radius:999px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;}
+.hero-stat-row{display:flex;justify-content:center;gap:24px;margin-top:28px;padding-top:24px;border-top:1px solid rgba(255,255,255,0.2);}
+.hero-stat-num{font-size:22px;font-weight:900;color:#fff;}
+.hero-stat-lbl{font-size:11px;color:rgba(255,255,255,0.75);margin-top:2px;}
+
+/* SECTIONS */
+.section{padding:36px 20px;}
+.sec-title{font-size:20px;font-weight:900;color:var(--t1);margin-bottom:6px;}
+.sec-sub{font-size:13px;color:var(--t3);margin-bottom:20px;line-height:1.6;}
+.sec-gradient{background:linear-gradient(135deg,#EFF6FF 0%,#F3F4F6 100%);}
+
+/* HOSPITAL STATS */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.stat-box{background:var(--surf);border-radius:var(--r);padding:16px;text-align:center;box-shadow:var(--sh-sm);border:1px solid var(--border-light);}
+.stat-box-num{font-size:24px;font-weight:900;color:var(--brand);margin-bottom:4px;}
+.stat-box-lbl{font-size:12px;color:var(--t3);}
+.stat-box.green .stat-box-num{color:var(--green);}
+.stat-box.orange .stat-box-num{color:var(--orange);}
+.stat-box.blue .stat-box-num{color:var(--blue);}
+
+/* HOSPITAL CARDS */
+.hosp-card{background:var(--surf);border-radius:var(--r-lg);padding:18px;box-shadow:var(--sh-sm);border:1px solid var(--border-light);margin-bottom:12px;cursor:pointer;transition:transform 0.1s, box-shadow 0.1s;}
+.hosp-card:active{transform:scale(0.99);}
+.hosp-top{display:flex;align-items:flex-start;gap:13px;margin-bottom:12px;}
+.hosp-icon{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,#EFF6FF,#DBEAFE);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.hosp-info{flex:1;}
+.hosp-name-row{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+.hosp-name{font-size:15px;font-weight:800;color:var(--t1);}
+.hosp-pro{background:linear-gradient(135deg,#5B5BD6,#7C3AED);color:#fff;font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;}
+.hosp-addr{font-size:12px;color:var(--t3);margin-bottom:4px;}
+.hosp-rating{font-size:12px;color:var(--t2);}
+.hosp-rating i{color:#F59E0B;}
+.hosp-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px;}
+.hosp-tag{background:#F3F4F6;border-radius:999px;padding:4px 9px;font-size:11px;color:var(--t2);}
+.hosp-tag.hi{background:#EEF0FF;color:var(--brand);}
+.hosp-row{display:flex;align-items:center;justify-content:space-between;}
+.hosp-beds{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;color:var(--green);}
+.hosp-btns{display:flex;gap:6px;}
+.hosp-btn{padding:7px 13px;border:1.5px solid var(--border);border-radius:999px;background:var(--surf);font-size:12px;font-weight:700;color:var(--t2);cursor:pointer;font-family:inherit;}
+.hosp-btn.primary{background:var(--brand-lg);border:none;color:#fff;}
+
+/* CATEGORY MAP */
+.cat-map{display:flex;flex-direction:column;gap:10px;}
+.cat-item{background:var(--surf);border-radius:var(--r);padding:16px;display:flex;align-items:center;gap:14px;box-shadow:var(--sh-sm);border:1px solid var(--border-light);cursor:pointer;}
+.cat-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.cat-ico.c1{background:#FEF2F2;}
+.cat-ico.c2{background:#EFF6FF;}
+.cat-ico.c3{background:#ECFDF5;}
+.cat-ico.c4{background:#FFF7ED;}
+.cat-body{flex:1;}
+.cat-name{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:3px;}
+.cat-nums{font-size:12px;color:var(--t3);}
+.cat-nums b{color:var(--brand);font-weight:800;}
+.cat-arrow{color:var(--t4);font-size:13px;}
+
+/* FEATURE ITEMS */
+.feat-list{display:flex;flex-direction:column;gap:14px;}
+.feat-item{display:flex;gap:14px;align-items:flex-start;background:var(--surf);border-radius:var(--r);padding:16px;box-shadow:var(--sh-sm);border:1px solid var(--border-light);}
+.feat-ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.feat-ico.blue{background:#EFF6FF;}
+.feat-ico.green{background:#ECFDF5;}
+.feat-ico.orange{background:#FFF7ED;}
+.feat-ico.purple{background:#F5F3FF;}
+.feat-body h3{font-size:14px;font-weight:800;color:var(--t1);margin-bottom:4px;}
+.feat-body p{font-size:13px;color:var(--t3);line-height:1.6;}
+
+/* B2B CTA */
+.b2b-card{background:linear-gradient(135deg,#1D4ED8,#2563EB,#5B5BD6);border-radius:var(--r-lg);padding:24px 20px;color:#fff;position:relative;overflow:hidden;}
+.b2b-card::before{content:'';position:absolute;top:-40px;right:-40px;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,0.08);}
+.b2b-tag{display:inline-block;background:rgba(255,255,255,0.2);border-radius:999px;padding:4px 11px;font-size:11px;font-weight:700;margin-bottom:12px;}
+.b2b-card h3{font-size:18px;font-weight:900;margin-bottom:8px;}
+.b2b-card p{font-size:13px;color:rgba(255,255,255,0.85);line-height:1.6;margin-bottom:18px;}
+.b2b-btn{padding:12px 20px;background:#fff;border:none;border-radius:999px;color:#1D4ED8;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;width:100%;}
+
+/* PROCESS */
+.process-list{display:flex;flex-direction:column;gap:0;}
+.process-item{display:flex;gap:16px;position:relative;padding-bottom:24px;}
+.process-item:last-child{padding-bottom:0;}
+.process-item:not(:last-child)::before{content:'';position:absolute;left:19px;top:40px;width:2px;bottom:0;background:linear-gradient(to bottom,#3B82F6,transparent);opacity:0.25;}
+.process-num{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#1D4ED8,#2563EB);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0;box-shadow:0 4px 12px rgba(37,99,235,0.28);}
+.process-body{flex:1;padding-top:4px;}
+.process-body h3{font-size:15px;font-weight:800;color:var(--t1);margin-bottom:4px;}
+.process-body p{font-size:13px;color:var(--t3);line-height:1.6;}
+.process-tag{display:inline-block;background:#DBEAFE;color:#1D4ED8;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;margin-top:6px;}
+
+/* MAP SEARCH */
+.map-search{background:var(--surf);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--sh-md);border:1px solid var(--border-light);margin-bottom:16px;}
+.map-mock{background:linear-gradient(135deg,#DBEAFE,#EFF6FF);height:140px;display:flex;align-items:center;justify-content:center;position:relative;}
+.map-pin{position:absolute;font-size:28px;}
+.map-pin.p1{top:30%;left:35%;}
+.map-pin.p2{top:50%;left:55%;}
+.map-pin.p3{top:35%;left:65%;}
+.map-overlay{position:absolute;bottom:12px;left:12px;right:12px;background:rgba(255,255,255,0.95);border-radius:10px;padding:10px 14px;display:flex;align-items:center;gap:8px;}
+.map-overlay-txt{font-size:12px;font-weight:700;color:var(--t1);}
+.map-overlay-sub{font-size:11px;color:var(--t3);margin-top:1px;}
+.map-body{padding:14px 16px;}
+.map-body-row{display:flex;gap:8px;}
+.map-search-btn{flex:1;padding:11px;border:none;border-radius:var(--r);font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;}
+.map-search-btn.primary{background:linear-gradient(135deg,#1D4ED8,#2563EB);color:#fff;}
+.map-search-btn.secondary{background:var(--bg);color:var(--t2);border:1px solid var(--border);}
+
+/* TRUST */
+.trust-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+.trust-row::-webkit-scrollbar{display:none;}
+.trust-item{flex-shrink:0;background:var(--surf);border:1px solid var(--border-light);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:8px;box-shadow:var(--sh-sm);}
+.trust-ico{font-size:18px;}
+.trust-txt{font-size:12px;font-weight:700;color:var(--t2);white-space:nowrap;}
+
+/* BOTTOM CTA */
+.bottom-cta{background:linear-gradient(135deg,#1D4ED8 0%,#2563EB 50%,#5B5BD6 100%);padding:36px 20px;text-align:center;}
+.bottom-cta h2{font-size:22px;font-weight:900;color:#fff;margin-bottom:10px;}
+.bottom-cta p{font-size:14px;color:rgba(255,255,255,0.85);margin-bottom:24px;line-height:1.6;}
+.bottom-cta-btns{display:flex;flex-direction:column;gap:10px;max-width:300px;margin:0 auto;}
+
+/* FAQ */
+.faq-item{background:var(--surf);border-radius:var(--r);margin-bottom:8px;overflow:hidden;border:1px solid var(--border-light);}
+.faq-q{padding:16px;font-size:14px;font-weight:700;color:var(--t1);display:flex;align-items:center;justify-content:space-between;cursor:pointer;}
+.faq-q i{color:var(--t4);font-size:13px;transition:transform 0.2s;}
+.faq-q.open i{transform:rotate(180deg);}
+.faq-a{display:none;padding:0 16px 16px;font-size:13px;color:var(--t3);line-height:1.7;}
+.faq-a.show{display:block;}
+
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:#1F2937;color:#fff;padding:12px 20px;border-radius:999px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:all 0.25s;z-index:999;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="hdr">
+  <button class="hdr-back" onclick="history.back()"><i class="fas fa-arrow-left"></i></button>
+  <a href="index.html" class="hdr-logo">
+    <div class="hdr-mark">N</div>
+    <span class="hdr-name">NUVIN</span>
+  </a>
+  <div class="hdr-spacer"></div>
+  <button class="hdr-cta" onclick="location.href='nuvin2-home.html'">병원 찾기</button>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">🏥 전국 병원 실시간 연결</div>
+  <h1>내 주변 요양병원,<br>빈 병상 바로 확인</h1>
+  <p>암·뇌·투석·대사질환 요양병원을 실시간으로 찾고 예약하세요. 전국 320개 이상 협력 병원</p>
+  <div class="hero-btns">
+    <button class="btn-white" onclick="location.href='nuvin2-home.html'">🏥 가까운 병원 찾기</button>
+    <button class="btn-outline" onclick="location.href='nuvin2-landing.html'">병원 파트너 신청</button>
+  </div>
+  <div class="hero-stat-row">
+    <div class="hero-stat"><div class="hero-stat-num">320+</div><div class="hero-stat-lbl">협력 병원</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">4,120</div><div class="hero-stat-lbl">실시간 빈 병상</div></div>
+    <div class="hero-stat"><div class="hero-stat-num">18분</div><div class="hero-stat-lbl">평균 이동시간</div></div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="section" style="padding-top:24px;padding-bottom:20px;">
+  <div class="trust-row">
+    <div class="trust-item"><span class="trust-ico">📊</span><span class="trust-txt">실시간 빈 병상</span></div>
+    <div class="trust-item"><span class="trust-ico">📍</span><span class="trust-txt">위치 기반 검색</span></div>
+    <div class="trust-item"><span class="trust-ico">⚡</span><span class="trust-txt">즉시 예약</span></div>
+    <div class="trust-item"><span class="trust-ico">🔍</span><span class="trust-txt">심평원 연동</span></div>
+    <div class="trust-item"><span class="trust-ico">💳</span><span class="trust-txt">요양급여 안내</span></div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="sec-title">전국 병원 현황</div>
+  <div class="sec-sub">실시간 업데이트 기준 (2026.04.09)</div>
+  <div class="stat-grid">
+    <div class="stat-box"><div class="stat-box-num">320</div><div class="stat-box-lbl">협력 병원 수</div></div>
+    <div class="stat-box green"><div class="stat-box-num">4,120</div><div class="stat-box-lbl">전체 빈 병상</div></div>
+    <div class="stat-box orange"><div class="stat-box-num">18분</div><div class="stat-box-lbl">평균 이동시간</div></div>
+    <div class="stat-box blue"><div class="stat-box-num">98%</div><div class="stat-box-lbl">병원 정보 정확도</div></div>
+  </div>
+</section>
+
+<!-- MAP SEARCH -->
+<section class="section" style="padding-top:0;">
+  <div class="map-search">
+    <div class="map-mock">
+      <span class="map-pin p1">📍</span>
+      <span class="map-pin p2">🏥</span>
+      <span class="map-pin p3">🏥</span>
+      <div class="map-overlay">
+        <span style="font-size:20px;">📍</span>
+        <div>
+          <div class="map-overlay-txt">서울 강남구 현재 위치</div>
+          <div class="map-overlay-sub">5km 반경 · 64개 병원 · 218개 빈 병상</div>
+        </div>
+      </div>
+    </div>
+    <div class="map-body">
+      <div class="map-body-row">
+        <button class="map-search-btn primary" onclick="location.href='nuvin2-home.html'">🗺️ 지도에서 검색</button>
+        <button class="map-search-btn secondary" onclick="location.href='nuvin2-search.html'">목록 보기</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section sec-gradient" id="categories">
+  <div class="sec-title">진료 분야별 검색</div>
+  <div class="sec-sub">질환에 맞는 전문 병원을 찾아드립니다</div>
+  <div class="cat-map">
+    <div class="cat-item" onclick="location.href='nuvin2-home.html?cat=cancer'">
+      <div class="cat-ico c1">🎗️</div>
+      <div class="cat-body">
+        <div class="cat-name">암 수술후 요양</div>
+        <div class="cat-nums">전국 <b>38개</b> 병원 · 빈 병상 <b>62개</b></div>
+      </div>
+      <i class="fas fa-chevron-right cat-arrow"></i>
+    </div>
+    <div class="cat-item" onclick="location.href='nuvin2-home.html?cat=brain'">
+      <div class="cat-ico c2">🧠</div>
+      <div class="cat-body">
+        <div class="cat-name">뇌 수술후 요양</div>
+        <div class="cat-nums">전국 <b>24개</b> 병원 · 빈 병상 <b>41개</b></div>
+      </div>
+      <i class="fas fa-chevron-right cat-arrow"></i>
+    </div>
+    <div class="cat-item" onclick="location.href='nuvin2-home.html?cat=dialysis24'">
+      <div class="cat-ico c3">💉</div>
+      <div class="cat-body">
+        <div class="cat-name">24시간 신장투석</div>
+        <div class="cat-nums">전국 <b>18개</b> 병원 · 빈 병상 <b>35개</b></div>
+      </div>
+      <i class="fas fa-chevron-right cat-arrow"></i>
+    </div>
+    <div class="cat-item" onclick="location.href='nuvin2-home.html?cat=meta'">
+      <div class="cat-ico c4">💊</div>
+      <div class="cat-body">
+        <div class="cat-name">대사질환 외래</div>
+        <div class="cat-nums">전국 <b>29개</b> 병원 · 당일 예약</div>
+      </div>
+      <i class="fas fa-chevron-right cat-arrow"></i>
+    </div>
+  </div>
+</section>
+
+<!-- NEARBY HOSPITALS -->
+<section class="section">
+  <div class="sec-title">추천 협력 병원</div>
+  <div class="sec-sub">누빈이 직접 검증한 우수 병원</div>
+
+  <div class="hosp-card" onclick="location.href='nuvin2-hospital.html?id=hankook'">
+    <div class="hosp-top">
+      <div class="hosp-icon">🏥</div>
+      <div class="hosp-info">
+        <div class="hosp-name-row">
+          <span class="hosp-name">한국요양병원</span>
+          <span class="hosp-pro">PRO</span>
+        </div>
+        <div class="hosp-addr">📍 서울 강남구 · 1.2km</div>
+        <div class="hosp-rating"><i class="fas fa-star"></i> 4.8 (리뷰 203건)</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="hosp-tag hi">암수술후요양</span>
+      <span class="hosp-tag hi">1인실</span>
+      <span class="hosp-tag">격리실 보유</span>
+      <span class="hosp-tag">야간간호</span>
+    </div>
+    <div class="hosp-row">
+      <div class="hosp-beds"><i class="fas fa-bed" style="font-size:12px;"></i> 빈 병상 8개</div>
+      <div class="hosp-btns">
+        <button class="hosp-btn" onclick="event.stopPropagation();showToast('전화 연결 중...')">📞 전화</button>
+        <button class="hosp-btn primary" onclick="event.stopPropagation();location.href='nuvin2-hospital.html?id=hankook'">예약</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hosp-card" onclick="location.href='nuvin2-hospital.html?id=gangnam'">
+    <div class="hosp-top">
+      <div class="hosp-icon" style="background:linear-gradient(135deg,#ECFDF5,#D1FAE5);">🏥</div>
+      <div class="hosp-info">
+        <div class="hosp-name-row">
+          <span class="hosp-name">강남신장클리닉</span>
+          <span class="hosp-pro">PRO</span>
+        </div>
+        <div class="hosp-addr">📍 서울 서초구 · 0.8km</div>
+        <div class="hosp-rating"><i class="fas fa-star"></i> 4.9 (리뷰 318건)</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="hosp-tag hi">24시간투석</span>
+      <span class="hosp-tag hi">야간진료</span>
+      <span class="hosp-tag">주말 운영</span>
+    </div>
+    <div class="hosp-row">
+      <div class="hosp-beds"><i class="fas fa-bed" style="font-size:12px;"></i> 빈 병상 12개</div>
+      <div class="hosp-btns">
+        <button class="hosp-btn" onclick="event.stopPropagation();showToast('전화 연결 중...')">📞 전화</button>
+        <button class="hosp-btn primary" onclick="event.stopPropagation();location.href='nuvin2-hospital.html?id=gangnam'">예약</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hosp-card" onclick="location.href='nuvin2-hospital.html?id=seoul'">
+    <div class="hosp-top">
+      <div class="hosp-icon" style="background:linear-gradient(135deg,#F0F9FF,#E0F2FE);">🏥</div>
+      <div class="hosp-info">
+        <div class="hosp-name-row">
+          <span class="hosp-name">서울재활요양병원</span>
+        </div>
+        <div class="hosp-addr">📍 서울 송파구 · 2.4km</div>
+        <div class="hosp-rating"><i class="fas fa-star"></i> 4.6 (리뷰 156건)</div>
+      </div>
+    </div>
+    <div class="hosp-tags">
+      <span class="hosp-tag hi">뇌수술후요양</span>
+      <span class="hosp-tag hi">재활치료</span>
+      <span class="hosp-tag">물리치료</span>
+    </div>
+    <div class="hosp-row">
+      <div class="hosp-beds"><i class="fas fa-bed" style="font-size:12px;"></i> 빈 병상 5개</div>
+      <div class="hosp-btns">
+        <button class="hosp-btn" onclick="event.stopPropagation();showToast('전화 연결 중...')">📞 전화</button>
+        <button class="hosp-btn primary" onclick="event.stopPropagation();location.href='nuvin2-hospital.html?id=seoul'">예약</button>
+      </div>
+    </div>
+  </div>
+
+  <button style="width:100%;padding:13px;background:var(--bg);border:1.5px solid var(--border);border-radius:var(--r);font-size:14px;font-weight:700;color:var(--t2);cursor:pointer;font-family:inherit;" onclick="location.href='nuvin2-search.html'">
+    전체 병원 보기 <i class="fas fa-arrow-right" style="margin-left:4px;"></i>
+  </button>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section sec-gradient" id="how">
+  <div class="sec-title">병원 찾기 이용 방법</div>
+  <div class="sec-sub">3단계로 병원을 예약하세요</div>
+  <div class="process-list">
+    <div class="process-item">
+      <div class="process-num">1</div>
+      <div class="process-body">
+        <h3>위치 설정 & 조건 입력</h3>
+        <p>현재 위치를 자동 감지하거나 주소를 직접 입력. 질환·반경·방 종류를 설정합니다.</p>
+        <span class="process-tag">GPS 자동 감지</span>
+      </div>
+    </div>
+    <div class="process-item">
+      <div class="process-num">2</div>
+      <div class="process-body">
+        <h3>실시간 빈 병상 확인</h3>
+        <p>협력 병원의 실시간 빈 병상 수와 요금, 시설 정보를 한눈에 비교합니다.</p>
+        <span class="process-tag">실시간 업데이트</span>
+      </div>
+    </div>
+    <div class="process-item">
+      <div class="process-num">3</div>
+      <div class="process-body">
+        <h3>온라인 예약 또는 전화 연결</h3>
+        <p>앱에서 바로 예약하거나 병원에 직접 전화 연결. 예약 확인 문자가 발송됩니다.</p>
+        <span class="process-tag">즉시 예약</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="sec-title">누빈 병원 서비스 특징</div>
+  <div class="sec-sub">다른 곳과 다릅니다</div>
+  <div class="feat-list">
+    <div class="feat-item">
+      <div class="feat-ico blue">📊</div>
+      <div class="feat-body">
+        <h3>실시간 빈 병상 데이터</h3>
+        <p>심평원·병원 직접 연동으로 헛걸음 없이 정확한 빈 병상 정보를 제공합니다.</p>
+      </div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico green">⭐</div>
+      <div class="feat-body">
+        <h3>보호자 실제 리뷰</h3>
+        <p>구매 전환율 97% 이상의 실제 이용 보호자 리뷰만 게시합니다. 광고 리뷰 없음.</p>
+      </div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico orange">💰</div>
+      <div class="feat-body">
+        <h3>요양급여·비용 안내</h3>
+        <p>건강보험 적용 여부, 본인부담금, 요양급여 신청 방법까지 상세 안내합니다.</p>
+      </div>
+    </div>
+    <div class="feat-item">
+      <div class="feat-ico purple">🗺️</div>
+      <div class="feat-body">
+        <h3>카카오맵 길찾기 연동</h3>
+        <p>병원 선택 즉시 카카오맵 내비게이션으로 연결. 대중교통 경로도 확인 가능합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- B2B CTA -->
+<section class="section" style="padding-top:0;">
+  <div class="b2b-card">
+    <div class="b2b-tag">🏥 병원 관계자 안내</div>
+    <h3>요양병원 파트너 신청</h3>
+    <p>누빈 플랫폼에 빈 병상을 등록하고 적합한 보호자와 연결받으세요. 무료로 시작할 수 있습니다.</p>
+    <button class="b2b-btn" onclick="location.href='nuvin2-landing.html'">병원 파트너 신청 →</button>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section sec-gradient">
+  <div class="sec-title">자주 묻는 질문</div>
+  <div class="sec-sub">병원 검색 관련 궁금증</div>
+
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">병원 정보는 얼마나 자주 업데이트되나요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">협력 병원은 매일 오전 6시, 오후 2시 빈 병상 데이터를 업데이트합니다. 긴급 변경 사항은 실시간 반영됩니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">온라인 예약 후 취소가 가능한가요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">입원 예정일 24시간 전까지 앱에서 무료 취소 가능합니다. 이후 취소는 각 병원 정책에 따릅니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">요양급여 신청은 어떻게 하나요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">각 병원 상세 페이지에서 요양급여 적용 여부와 본인부담금을 확인할 수 있습니다. 신청 절차 안내는 병원 담당자가 도와드립니다.</div>
+  </div>
+  <div class="faq-item">
+    <div class="faq-q" onclick="toggleFaq(this)">지방 병원도 검색되나요? <i class="fas fa-chevron-down"></i></div>
+    <div class="faq-a">현재 서울·경기·인천·부산·대구·광주·대전·수원 지역 320개 이상 병원이 등록되어 있으며, 2026년 하반기 전국 확대 예정입니다.</div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta">
+  <h2>지금 바로<br>병원을 찾아보세요</h2>
+  <p>위치 기반 실시간 병원 검색,<br>무료로 시작하세요</p>
+  <div class="bottom-cta-btns">
+    <button class="btn-white" onclick="location.href='nuvin2-home.html'">🏥 병원 찾기 시작</button>
+    <button class="btn-outline" onclick="location.href='index.html'">메인으로 돌아가기</button>
+    <button class="btn-outline" onclick="shareHospitalPage()" style="background:rgba(255,255,255,0.15);"><i class="fas fa-share-alt"></i> 이 페이지 공유</button>
+  </div>
+</section>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+function shareHospitalPage(){
+  const d={title:'누빈 병원 서비스 — 요양병원 실시간 보호자 연결 플랫폼',text:'의료진과 구살대를 연담하는 누빈 병원 서비스를 공유해보세요.',url:window.location.href};
+  if(navigator.share){navigator.share(d).catch(()=>{});}
+  else{navigator.clipboard.writeText(window.location.href).then(()=>showToast('📋 링크가 복사되었습니다!'));}
+}
+function toggleFaq(el){
+  const a=el.nextElementSibling;
+  const isOpen=a.classList.contains('show');
+  document.querySelectorAll('.faq-a').forEach(x=>x.classList.remove('show'));
+  document.querySelectorAll('.faq-q').forEach(x=>x.classList.remove('open'));
+  if(!isOpen){a.classList.add('show');el.classList.add('open');}
+}
+</script>
+</body>
+</html>
