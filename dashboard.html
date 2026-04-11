@@ -61,6 +61,10 @@
       <button onclick="showPatientEdit()" style="font-size:12px;color:rgba(255,255,255,0.85);background:none;border:none;cursor:pointer;">설정 변경 →</button>
     </div>
   </div>
+  <!-- 로그인 사용자 표시 -->
+  <div id="dashUserBadge" style="display:none;margin-top:8px;">
+    <span style="background:rgba(255,255,255,0.2);font-size:11px;font-weight:700;padding:3px 10px;border-radius:8px;color:white;" id="dashUserName"></span>
+  </div>
 </div>
 
 <div class="px-4 mt-5 space-y-4 max-w-lg mx-auto">
@@ -80,7 +84,7 @@
     <!-- 항목 추가 -->
     <div class="flex gap-2 mt-3">
       <input id="newCheckItem" type="text" class="input-dark flex-1 text-xs" placeholder="새 항목 추가 (예: 혈압 측정)"/>
-      <button onclick="addCheckItem()" class="bg-purple-700 text-white text-xs px-3 py-2 rounded-xl font-bold hover:bg-purple-600 transition-colors whitespace-nowrap">추가</button>
+      <button onclick="addCheckItem()" class="text-white text-xs px-3 py-2 rounded-xl font-bold whitespace-nowrap" style="background:var(--brand);">추가</button>
     </div>
   </div>
 
@@ -118,7 +122,7 @@
   <div class="card">
     <div class="flex items-center justify-between mb-4">
       <h2 class="font-black text-sm flex items-center gap-2"><i class="fas fa-pills text-blue-400"></i> 투약 관리</h2>
-      <button onclick="showMedModal()" class="text-xs text-purple-400 font-bold hover:text-purple-300">+ 추가</button>
+      <button onclick="showMedModal()" class="text-xs font-bold" style="color:var(--brand);">+ 추가</button>
     </div>
     <div id="medList" class="space-y-2">
       <p class="text-xs text-gray-600 text-center py-2">투약 목록을 추가해보세요</p>
@@ -141,17 +145,17 @@
 <!-- Bottom Nav -->
 <div class="bottom-nav">
   <div class="flex items-center justify-around max-w-lg mx-auto px-4">
-    <a href="index.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white"><i class="fas fa-home text-lg"></i><span class="text-xs">홈</span></a>
-    <a href="mentors.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white"><i class="fas fa-hands-helping text-lg"></i><span class="text-xs">멘토링</span></a>
-    <a href="community.html" class="flex flex-col items-center gap-1 text-gray-500 hover:text-white"><i class="fas fa-comments text-lg"></i><span class="text-xs">커뮤니티</span></a>
-    <a href="dashboard.html" class="flex flex-col items-center gap-1 text-purple-400"><i class="fas fa-chart-line text-lg"></i><span class="text-xs font-bold">대시보드</span></a>
+    <a href="index.html" class="flex flex-col items-center gap-1" style="color:var(--text3);text-decoration:none;"><i class="fas fa-home text-lg"></i><span class="text-xs">홈</span></a>
+    <a href="mentors.html" class="flex flex-col items-center gap-1" style="color:var(--text3);text-decoration:none;"><i class="fas fa-hands-helping text-lg"></i><span class="text-xs">멘토링</span></a>
+    <a href="community.html" class="flex flex-col items-center gap-1" style="color:var(--text3);text-decoration:none;"><i class="fas fa-comments text-lg"></i><span class="text-xs">커뮤니티</span></a>
+    <a href="dashboard.html" class="flex flex-col items-center gap-1" style="color:var(--brand);text-decoration:none;"><i class="fas fa-chart-line text-lg"></i><span class="text-xs font-bold">대시보드</span></a>
   </div>
 </div>
 
 <!-- 환자 이름 설정 Modal -->
 <div id="patientModal" class="modal-overlay hidden" onclick="if(event.target===this)closePatientEdit()">
   <div class="modal-sheet">
-    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <div class="w-10 h-1 rounded-full mx-auto mb-5" style="background:var(--border);"></div>
     <h2 class="text-lg font-black mb-4">👤 환자 정보 설정</h2>
     <div class="space-y-3">
       <input id="patientNameInput" type="text" class="input-dark" placeholder="환자 성함 (예: 아버지, 어머니, 홍길동)"/>
@@ -165,7 +169,7 @@
 <!-- 투약 추가 Modal -->
 <div id="medModal" class="modal-overlay hidden" onclick="if(event.target===this)closeMedModal()">
   <div class="modal-sheet">
-    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <div class="w-10 h-1 rounded-full mx-auto mb-5" style="background:var(--border);"></div>
     <h2 class="text-lg font-black mb-4">💊 투약 추가</h2>
     <div class="space-y-3">
       <input id="medName" type="text" class="input-dark" placeholder="약 이름 (예: 타이레놀)"/>
@@ -346,15 +350,15 @@ function renderWeek() {
     var key = d.toISOString().slice(0,10);
     var dayData = JSON.parse(localStorage.getItem('nuvin_dash_' + key) || '{}');
     var mood = dayData.caregiverMood || '';
-    var color = '#2a2a45';
+    var color = 'var(--surface3)';
     if (mood === '😄' || mood === '😊') color = '#43e97b';
     else if (mood === '😐') color = '#fbbf24';
     else if (mood === '😫') color = '#f5576c';
     var isToday = key === TODAY;
     html += '<div class="text-center">' +
-      '<div class="text-xs text-gray-500 mb-1">' + days[d.getDay()] + '</div>' +
+      '<div class="text-xs mb-1" style="color:var(--text3);">' + days[d.getDay()] + '</div>' +
       '<div class="w-full aspect-square rounded-xl flex items-center justify-center text-base ' + (isToday ? 'ring-2 ring-purple-500' : '') + '" style="background:' + color + '">' +
-      (mood || (isToday ? '<span class="text-gray-600 text-xs">오늘</span>' : '')) +
+      (mood || (isToday ? '<span class="text-xs" style="color:var(--text3);">오늘</span>' : '')) +
       '</div>' +
       '</div>';
   }
@@ -375,7 +379,7 @@ function showToast(msg) {
   if (!el) {
     el = document.createElement('div');
     el.id = 'toastEl';
-    el.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#1a1a2e;border:1px solid #667eea;color:white;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.5);font-family:Noto Sans KR,sans-serif;';
+    el.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#5B5BD6,#8B5CF6);border:none;color:white;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;text-align:center;box-shadow:0 8px 30px rgba(91,91,214,0.35);font-family:Noto Sans KR,sans-serif;';
     document.body.appendChild(el);
   }
   el.textContent = msg;
@@ -383,6 +387,22 @@ function showToast(msg) {
   clearTimeout(window._toast);
   window._toast = setTimeout(function() { el.style.display = 'none'; }, 2500);
 }
+
+// ── 로그인 사용자 표시 ──
+(function() {
+  try {
+    var users = JSON.parse(localStorage.getItem('nuvin_users') || '[]');
+    var user = users.length > 0 ? users[users.length - 1] : null;
+    if (user && user.name) {
+      var badge = document.getElementById('dashUserBadge');
+      var nameEl = document.getElementById('dashUserName');
+      if (badge && nameEl) {
+        nameEl.textContent = user.name + '님 로그인 중';
+        badge.style.display = 'block';
+      }
+    }
+  } catch(e) {}
+})();
 
 // ── 초기화 ──
 loadPatientInfo();
@@ -396,10 +416,10 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<div style="background:#0a0a15;padding:14px 24px 80px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
-  <p style="font-size:12px;color:#4b5563;font-family:'Noto Sans KR',sans-serif;">
+<div style="background:var(--surface2);padding:14px 24px 80px;text-align:center;border-top:1px solid var(--border);">
+  <p style="font-size:12px;color:var(--text3);font-family:'Noto Sans KR',sans-serif;">
     © 2026 누빈(NUVIN)  · 
-    <a href="privacy.html" style="color:#6b7280;text-decoration:none;">개인정보처리방침</a>
+    <a href="privacy.html" style="color:var(--brand);text-decoration:none;">개인정보처리방침</a>
   </p>
 </div>
 </body>

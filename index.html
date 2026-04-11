@@ -408,9 +408,10 @@
     /* ── 멘토 스토리 카드 ── */
     .story-card {
       flex: 0 0 190px; border-radius: var(--r-lg);
-      background: var(--card); border: 1px solid var(--border2);
+      background: #ffffff; border: 1px solid var(--border2);
       padding: 15px; box-shadow: var(--shadow-xs); cursor: pointer;
       transition: transform 0.12s, box-shadow 0.2s;
+      color: var(--text1);
     }
     .story-card:active { transform: scale(0.97); box-shadow: var(--shadow-sm); }
     .story-avt {
@@ -1125,35 +1126,6 @@
 ═══════════════════════════════════ -->
 <div id="tab-home">
 
-  <!-- 1분 체크인 -->
-  <div class="sec-head">
-    <span class="sec-title">🩺 지금 가장 힘든 게 뭐예요?</span>
-  </div>
-  <div class="checkin-box">
-    <p class="checkin-ttl">1분 상황 체크인</p>
-    <p class="checkin-sub">클릭 한 번으로 딱 맞는 도움을 찾아드릴게요</p>
-    <div class="checkin-grid">
-      <button class="ci-btn" onclick="selectNeed('식단관리')">
-        <span class="ci-emoji">🍽️</span>
-        <span class="ci-text">식단 관리</span>
-      </button>
-      <button class="ci-btn" onclick="selectNeed('심리적안정')">
-        <span class="ci-emoji">🧠</span>
-        <span class="ci-text">심리적 안정</span>
-      </button>
-      <button class="ci-btn" onclick="selectNeed('재정지원')">
-        <span class="ci-emoji">💸</span>
-        <span class="ci-text">재정 지원</span>
-      </button>
-      <button class="ci-btn" onclick="selectNeed('병원소통')">
-        <span class="ci-emoji">🏥</span>
-        <span class="ci-text">병원 소통</span>
-      </button>
-    </div>
-  </div>
-
-  <div class="divider"></div>
-
   <!-- 선배 멘토 스토리 -->
   <div class="sec-head">
     <span class="sec-title">🤝 선배 멘토 이야기</span>
@@ -1180,6 +1152,35 @@
       <p class="story-role">신장 투석 환자 보호자 · 5년 경험</p>
       <p class="story-quote">"24시간 투석 병원 찾기, 급여 혜택 챙기는 법 꼭 알아두세요."</p>
       <span class="story-tag" style="background:#CCFBF1;color:#14B8A6;">💉 대사질환</span>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 1분 체크인 -->
+  <div class="sec-head">
+    <span class="sec-title">🩺 지금 가장 힘든 게 뭐예요?</span>
+  </div>
+  <div class="checkin-box">
+    <p class="checkin-ttl">1분 상황 체크인</p>
+    <p class="checkin-sub">클릭 한 번으로 딱 맞는 도움을 찾아드릴게요</p>
+    <div class="checkin-grid">
+      <button class="ci-btn" onclick="selectNeed('식단관리')">
+        <span class="ci-emoji">🍽️</span>
+        <span class="ci-text">식단 관리</span>
+      </button>
+      <button class="ci-btn" onclick="selectNeed('심리적안정')">
+        <span class="ci-emoji">🧠</span>
+        <span class="ci-text">심리적 안정</span>
+      </button>
+      <button class="ci-btn" onclick="selectNeed('재정지원')">
+        <span class="ci-emoji">💸</span>
+        <span class="ci-text">재정 지원</span>
+      </button>
+      <button class="ci-btn" onclick="selectNeed('병원소통')">
+        <span class="ci-emoji">🏥</span>
+        <span class="ci-text">병원 소통</span>
+      </button>
     </div>
   </div>
 
@@ -1606,6 +1607,13 @@
 
   <!-- 병원 채팅 -->
   <div id="mani-hospital" class="mani-content">
+    <!-- 연결 병원 없을 때 안내 -->
+    <div id="maniHospEmpty" style="display:none;padding:20px 16px;text-align:center;border-bottom:1px solid rgba(91,91,214,0.1);">
+      <div style="font-size:32px;margin-bottom:8px;">🏥</div>
+      <p style="font-size:13px;font-weight:700;color:#374151;margin-bottom:4px;">아직 연결된 병원이 없어요</p>
+      <p style="font-size:11px;color:#6B7280;margin-bottom:12px;line-height:1.5;">파트너 병원을 연결하면<br/>여기서 직접 소통할 수 있어요</p>
+      <button onclick="toggleManiChat();location.href='nuvin2-home.html'" style="background:linear-gradient(135deg,#5B5BD6,#8B5CF6);color:white;border:none;border-radius:10px;padding:8px 18px;font-size:12px;font-weight:700;cursor:pointer;">🔍 병원 찾기</button>
+    </div>
     <div class="mani-msg-list" id="maniHospMsgs">
       <div class="mani-msg mani-msg-in">
         <div class="mani-msg-avatar">🏥</div>
@@ -2586,6 +2594,22 @@ function toggleManiChat() {
     if (badge) badge.style.display = 'none';
     const mBadge = document.getElementById('messengerBadge');
     if (mBadge) mBadge.style.display = 'none';
+    // 연결 병원 여부 확인 → 안내문 표시
+    try {
+      const ws = JSON.parse(localStorage.getItem('nuvin_ws_' + (user.id || user.email)) || '{}');
+      const hospitals = ws.hospitals || [];
+      const emptyEl = document.getElementById('maniHospEmpty');
+      const msgList = document.getElementById('maniHospMsgs');
+      if (emptyEl && msgList) {
+        if (hospitals.length === 0) {
+          emptyEl.style.display = 'block';
+          msgList.style.display = 'none';
+        } else {
+          emptyEl.style.display = 'none';
+          msgList.style.display = '';
+        }
+      }
+    } catch(e) {}
     scrollManiBottom();
   } else {
     panel.classList.add('hidden');

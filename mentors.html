@@ -64,6 +64,10 @@
     </div>
     <div style="background:linear-gradient(135deg,#5B5BD6,#8B5CF6); border-radius:10px; padding:4px 12px; font-size:13px; font-weight:900; color:white; letter-spacing:1px;">NUVIN</div>
   </div>
+  <!-- 로그인 사용자 표시 -->
+  <div id="mentorUserBadge" style="display:none;margin-bottom:8px;">
+    <span style="background:rgba(255,255,255,0.2);font-size:11px;font-weight:700;padding:3px 10px;border-radius:8px;color:white;" id="mentorUserName"></span>
+  </div>
   <!-- 배너 -->
   <div class="rounded-2xl p-4" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);">
     <p class="text-sm font-bold mb-1">💡 멘토링이란?</p>
@@ -119,13 +123,13 @@
 <!-- 멘토 신청 Modal -->
 <div id="applyModal" class="modal-overlay hidden" onclick="if(event.target===this)closeApply()">
   <div class="modal-sheet">
-    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <div class="w-10 h-1 rounded-full mx-auto mb-5" style="background:var(--border);"></div>
     <h2 class="text-lg font-black mb-1">🙋 멘토 신청</h2>
     <p class="text-xs text-gray-500 mb-5">심사 후 등록됩니다 (보통 3~5일)</p>
     <div class="space-y-3" id="applyFormContent">
       <input id="applyName" type="text" class="input-dark" placeholder="성함"/>
       <input id="applyPhone" type="tel" class="input-dark" placeholder="연락처"/>
-      <select id="applyDisease" class="input-dark" style="background:#0f0f1a;color:white">
+      <select id="applyDisease" class="input-dark" style="background:var(--surface2);color:var(--text);">
         <option value="">질환 선택</option>
         <option value="암">암</option>
         <option value="뇌질환">뇌질환</option>
@@ -142,7 +146,7 @@
 <!-- 멘토링 신청 Modal -->
 <div id="requestModal" class="modal-overlay hidden" onclick="if(event.target===this)closeRequest()">
   <div class="modal-sheet">
-    <div class="w-10 h-1 bg-gray-700 rounded-full mx-auto mb-5"></div>
+    <div class="w-10 h-1 rounded-full mx-auto mb-5" style="background:var(--border);"></div>
     <h2 class="text-lg font-black mb-1" id="requestTitle">멘토링 신청</h2>
     <p class="text-xs text-gray-500 mb-5">멘토에게 연락 요청을 보냅니다</p>
     <div class="space-y-3">
@@ -237,7 +241,7 @@ function renderMentors() {
       '</div>' +
       '<p class="text-xs text-gray-500 mt-3 leading-relaxed">' + (m.experience_summary || '') + '</p>' +
       '<div class="bg-purple-50 bg-opacity-50 rounded-xl px-3 py-2 mt-3">' +
-      '<p class="text-xs text-gray-200 italic">"' + (m.message || '') + '"</p>' +
+      '<p class="text-xs italic" style="color:var(--text2);">"' + (m.message || '') + '"</p>' +
       '</div>' +
       '<div class="flex flex-wrap gap-1 mt-3">' + tagsHtml + '</div>' +
       '<div class="flex items-center justify-between mt-4">' +
@@ -299,7 +303,7 @@ function showToast(msg) {
   if (!el) {
     el = document.createElement('div');
     el.id = 'toastEl';
-    el.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid #667eea;color:white;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,0.5);font-family:Noto Sans KR,sans-serif;white-space:pre-line;';
+    el.style.cssText = 'position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#5B5BD6,#8B5CF6);border:none;color:white;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:9999;text-align:center;box-shadow:0 8px 30px rgba(91,91,214,0.35);font-family:Noto Sans KR,sans-serif;white-space:pre-line;';
     document.body.appendChild(el);
   }
   el.textContent = msg;
@@ -309,15 +313,30 @@ function showToast(msg) {
 }
 
 loadMentors();
+// ── 로그인 사용자 표시 ──
+(function() {
+  try {
+    var users = JSON.parse(localStorage.getItem('nuvin_users') || '[]');
+    var user = users.length > 0 ? users[users.length - 1] : null;
+    if (user && user.name) {
+      var badge = document.getElementById('mentorUserBadge');
+      var nameEl = document.getElementById('mentorUserName');
+      if (badge && nameEl) {
+        nameEl.textContent = user.name + '님 로그인 중';
+        badge.style.display = 'block';
+      }
+    }
+  } catch(e) {}
+})();
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/service-worker.js').catch(()=>{});
 }
 </script>
 
-<div style="background:#0a0a15;padding:14px 24px 80px;text-align:center;border-top:1px solid rgba(255,255,255,0.05);">
-  <p style="font-size:12px;color:#4b5563;font-family:'Noto Sans KR',sans-serif;">
+<div style="background:var(--surface2);padding:14px 24px 80px;text-align:center;border-top:1px solid var(--border);">
+  <p style="font-size:12px;color:var(--text3);font-family:'Noto Sans KR',sans-serif;">
     © 2026 누빈(NUVIN)  · 
-    <a href="privacy.html" style="color:#6b7280;text-decoration:none;">개인정보처리방침</a>
+    <a href="privacy.html" style="color:var(--brand);text-decoration:none;">개인정보처리방침</a>
   </p>
 </div>
 </body>
